@@ -5,6 +5,8 @@ import (
 
 	"time"
 
+	"build-monitor-v2/server/db"
+
 	"github.com/kapitanov/go-teamcity"
 	"github.com/sirupsen/logrus"
 )
@@ -13,8 +15,13 @@ type ITcClient interface {
 	GetProjects() ([]teamcity.Project, error)
 }
 
+type IDb interface {
+	UpsertProject(r db.Project) (*db.Project, error)
+}
+
 type Server struct {
 	Tc                       ITcClient
+	Db                       IDb
 	Log                      *logrus.Entry
 	ProjectPollInterval      time.Duration
 	BuildPollInterval        time.Duration
@@ -23,9 +30,10 @@ type Server struct {
 	stopped                  chan bool
 }
 
-func NewServer(log *logrus.Entry, c *cfg.Config) Server {
+func NewServer(log *logrus.Entry, c *cfg.Config, appDb IDb) Server {
 	return Server{
 		Tc:                       teamcity.NewClient(c.TcUrl, teamcity.GuestAuth()),
+		Db:                       appDb,
 		Log:                      log,
 		ProjectPollInterval:      getIntervalDuration(log, "TcProjectPollInterval", c.TcProjectPollInterval),
 		BuildPollInterval:        getIntervalDuration(log, "TcBuildPollInterval", c.TcBuildPollInterval),
@@ -35,7 +43,7 @@ func NewServer(log *logrus.Entry, c *cfg.Config) Server {
 
 func (c *Server) Start() error {
 	// Refresh projects on start to ensure we are able to connect and read from the server
-	if err := c.refreshProjects(); err != nil {
+	if err := c.RefreshProjects(); err != nil {
 		return err
 	}
 
@@ -72,6 +80,7 @@ func getIntervalDuration(log *logrus.Entry, name, interval string) time.Duration
 func monitor(c *Server) {
 	c.Log.Info("Starting Teamcity monitor")
 	shouldStop := false
+
 	for shouldStop == false {
 		select {
 		//case m := <-msgs:
@@ -81,24 +90,9 @@ func monitor(c *Server) {
 			c.Log.Info("Stopping")
 			break
 		case <-time.After(c.ProjectPollInterval):
-			c.refreshProjects()
+			c.RefreshProjects()
 		}
 	}
 
 	c.stopped <- true
-}
-
-func (c *Server) refreshProjects() error {
-	projects, err := c.Tc.GetProjects()
-	if err != nil {
-		c.Log.Errorf("Failed to get projects from Team city: %v", err)
-		return err
-	}
-
-	c.Log.Infof("List of projects:\n")
-	for _, project := range projects {
-		c.Log.Infof(" * %s", project.ID)
-	}
-
-	return nil
 }

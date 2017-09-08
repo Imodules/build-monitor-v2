@@ -9,11 +9,13 @@ import (
 
 	"build-monitor-v2/server/tc"
 
+	"os"
+	"os/signal"
+	"time"
+
 	"github.com/ian-kent/gofigure"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
-	"os"
-	"os/signal"
 )
 
 func main() {
@@ -39,7 +41,10 @@ func main() {
 		log.Fatalf("Failed to setup server: %v", err)
 	}
 
-	tcMonitor := tc.NewServer(log.WithField("component", "tcMonitor"), &config)
+	tcLog := log.WithField("component", "tcMonitor")
+	tcDb := db.Create(session.Copy(), &config, tcLog, time.Now)
+
+	tcMonitor := tc.NewServer(tcLog, &config, tcDb)
 	if err := tcMonitor.Start(); err != nil {
 		log.Fatalf("Failed to start Teamcity monitor: %v", err)
 	}

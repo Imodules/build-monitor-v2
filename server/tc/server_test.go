@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"errors"
+
 	"github.com/kapitanov/go-teamcity"
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
@@ -26,8 +27,10 @@ func TestNewServer(t *testing.T) {
 			}
 			log := logrus.WithField("test", "TestNewServer")
 
+			dbMock := new(IDbMock)
+
 			Convey("It should return a new s object", func() {
-				server := tc.NewServer(log, &conf)
+				server := tc.NewServer(log, &conf, dbMock)
 
 				So(server, ShouldNotBeNil)
 				So(server.Log, ShouldEqual, log)
@@ -44,9 +47,10 @@ func TestNewServer(t *testing.T) {
 				TcRunningBuildPollInterval: "c",
 			}
 			log := logrus.WithField("test", "TestNewServer")
+			dbMock := new(IDbMock)
 
 			Convey("It should return a new s object", func() {
-				So(func() { tc.NewServer(log, &conf) }, ShouldPanic)
+				So(func() { tc.NewServer(log, &conf, dbMock) }, ShouldPanic)
 			})
 		})
 	})

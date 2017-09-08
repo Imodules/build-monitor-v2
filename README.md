@@ -11,6 +11,7 @@ our dev shop.
 3. Yarn (https://yarnpkg.com)
 4. Go Dep (https://github.com/golang/dep)
 5. Goconvey (http://goconvey.co/)
+6. And a MongoDb
 
 ## Setup
 1. ```cd ./server; ensure dep; cd ..```
@@ -24,3 +25,13 @@ our dev shop.
 
 ## Build
 ```make```
+
+## Config
+| Flag                  | Env                    | Default                                    |
+|-----------------------|------------------------|--------------------------------------------|
+| -db                   | BM_DB                  | mongodb://localhost:27017/build-monitor-v2 |
+| -port                 | BM_PORT                | 3030                                       |
+| -client-path          | BM_CLIENT_PATH         | ../client/dist                             |
+| -allowed-origin       | BM_ALLOWED_ORIGIN      | *                                          |
+| -password-salt        | BM_PASSWORD_SALT       | you-really-need-to-change-this             |
+| -jwt-secret           | BM_JWT_SECRET          | you-really-need-to-change-this-one-also    |

@@ -1,7 +1,7 @@
 package cfg
 
 type Config struct {
-	gofigure      interface{} `envPrefix:"IFER" order:"flag,env"`
+	gofigure      interface{} `envPrefix:"BM" order:"flag,env"`
 	Port          int         `env:"port" flag:"port" flagDesc:"Port to run the api server on"`
 	Db            string      `env:"db" flag:"db" flagDesc:"Url to mongodb"`
 	PasswordSalt  string      `env:"passwordSalt" flag:"passwordSalt" flagDesc:"Salt to use for the password"`

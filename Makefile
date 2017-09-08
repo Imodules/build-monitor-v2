@@ -11,7 +11,8 @@ setup: clean
 
 server: buildLinux
 	cp run.sh $(dist); \
-	chmod 755 $(dist)/run.sh
+	chmod 755 $(dist)/run.sh; \
+	chmod 755 $(dist)/server/$(exe)
 
 client: buildClient
 	 cp -R client/dist/* $(dist)/client

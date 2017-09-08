@@ -19,7 +19,7 @@ func TestCreateUser(t *testing.T) {
 		c := cfg.Config{PasswordSalt: "something here"}
 		log := logrus.WithField("test", "TestCreateUser")
 
-		appDb := db.Create(dbSession, &c, log)
+		appDb := db.Create(dbSession, &c, log, time.Now)
 
 		Convey("When validateUser succeeds", func() {
 
@@ -130,7 +130,7 @@ func TestUsers_FindUserByLogin(t *testing.T) {
 		c := cfg.Config{PasswordSalt: "something here"}
 		log := logrus.WithField("test", "TestUsers_FindUserByLogin")
 
-		appDb := db.Create(dbSession, &c, log)
+		appDb := db.Create(dbSession, &c, log, time.Now)
 
 		Convey("When a username and password match a user", func() {
 			user, userErr := appDb.CreateUser("psLogint1", "pslogint1@fwe.com", "cool1pass")
@@ -200,7 +200,7 @@ func TestFindUserById(t *testing.T) {
 		c := cfg.Config{PasswordSalt: "something here"}
 		log := logrus.WithField("test", "TestFindUserById")
 
-		appDb := db.Create(dbSession, &c, log)
+		appDb := db.Create(dbSession, &c, log, time.Now)
 
 		Convey("When a user exists with that Id", func() {
 			user, userErr := appDb.CreateUser("psFindId1", "psFindId1@fwe.com", "cool1pass")
@@ -235,7 +235,7 @@ func TestUsers_LogUserLogin(t *testing.T) {
 		c := cfg.Config{}
 		log := logrus.WithField("test", "TestUsers_LogUserLogin")
 
-		appDb := db.Create(dbSession, &c, log)
+		appDb := db.Create(dbSession, &c, log, time.Now)
 
 		Convey("When LogUserLogin is called with a valid user", func() {
 			user, userErr := appDb.CreateUser("psLastLogin", "psLastLogin@fwe.com", "cool2pass")

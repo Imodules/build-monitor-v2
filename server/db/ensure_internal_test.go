@@ -56,4 +56,30 @@ func TestEnsure_Ensure(t *testing.T) {
 		})
 
 	})
+
+	Convey("When ensureTeamCityId fails", t, func() {
+		origEnsure := ensureTeamCityId
+		ensureTeamCityId = badEnsure(0)
+		defer func() { ensureTeamCityId = origEnsure }()
+
+		Convey("It should successfully ensure the indexes on the database", func() {
+			err := Ensure(dbSession, log)
+			So(err, ShouldNotBeNil)
+			So(err.Error(), ShouldEqual, "Nope: 0 / 0!")
+		})
+
+	})
+
+	Convey("When ensureDeleted fails", t, func() {
+		origEnsure := ensureDeleted
+		ensureDeleted = badEnsure(0)
+		defer func() { ensureDeleted = origEnsure }()
+
+		Convey("It should successfully ensure the indexes on the database", func() {
+			err := Ensure(dbSession, log)
+			So(err, ShouldNotBeNil)
+			So(err.Error(), ShouldEqual, "Nope: 0 / 0!")
+		})
+
+	})
 }

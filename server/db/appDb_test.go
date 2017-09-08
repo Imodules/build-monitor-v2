@@ -10,6 +10,8 @@ import (
 
 	"fmt"
 
+	"time"
+
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
 	"gopkg.in/mgo.v2"
@@ -53,12 +55,45 @@ func TestCreate(t *testing.T) {
 		c := cfg.Config{PasswordSalt: "you know it!"}
 
 		Convey("Then Create should return an AppDb object", func() {
-			appDb := db.Create(dbSession, &c, log)
+			appDb := db.Create(dbSession, &c, log, time.Now)
 
 			So(appDb.Session, ShouldEqual, dbSession)
 			So(appDb.PasswordSalt, ShouldEqual, c.PasswordSalt)
 			So(appDb.Log, ShouldEqual, log)
 
+		})
+	})
+}
+
+func TestAppDb_Delete(t *testing.T) {
+	Convey("Given an AppDb with a record", t, func() {
+		c := cfg.Config{PasswordSalt: "something here"}
+		log := logrus.WithField("test", "TestAppDb_UpsertProject")
+
+		appDb := db.Create(dbSession, &c, log, time.Now)
+
+		project := db.Project{
+			Id:   "This is one I will delete",
+			Name: "Starting name that could change",
+		}
+
+		result, err := appDb.UpsertProject(project)
+		So(err, ShouldBeNil)
+		So(result, ShouldNotBeNil)
+
+		Convey("When the record is deleted", func() {
+			err := appDb.Delete(db.Projects(appDb.Session), result.Id)
+
+			Convey("It should not error", func() {
+				So(err, ShouldBeNil)
+
+				Convey("And I should not be able to find it", func() {
+					var dbProject db.Project
+					err := db.FindById(db.Projects(appDb.Session), result.Id, &dbProject)
+
+					So(err.Error(), ShouldEqual, "not found")
+				})
+			})
 		})
 	})
 }

@@ -69,7 +69,7 @@ func getSetupRequestHandler(s *Server) func(f echo.HandlerFunc) echo.HandlerFunc
 			session := s.DbSession.Copy()
 			defer session.Close()
 
-			Db := db.Create(session, s.Config, logger)
+			Db := db.Create(session, s.Config, logger, time.Now)
 			ctx.Set(dbKey, Db)
 
 			startTime := time.Now()

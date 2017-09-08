@@ -19,9 +19,9 @@ type User struct {
 	LastLoginAt time.Time `bson:"lastLoginAt" json:"lastLoginAt"`
 }
 
-var DuplicateUser = errors.New("A user already exists with this username or email")
-var MissingUserField = errors.New("The user is missing a required parameter")
-var UserNotFound = errors.New("A user matching those credentials could not be found")
+var DuplicateUser = errors.New("user already exists with this username or email")
+var MissingUserField = errors.New("user is missing a required parameter")
+var UserNotFound = errors.New("user matching those credentials could not be found")
 
 func Users(s *mgo.Session) *mgo.Collection {
 	return s.DB("").C("users")
@@ -43,7 +43,7 @@ func (appDb *AppDb) CreateUser(username, email, password string) (*User, error) 
 		Password: hashedPassword,
 	}
 
-	setCreated(&user.DbObject)
+	appDb.setCreated(&user.DbObject)
 	user.LastLoginAt = user.CreatedAt
 
 	err := Users(appDb.Session).Insert(user)
@@ -85,7 +85,7 @@ func (appDb *AppDb) FindUserById(id string) (*User, error) {
 }
 
 func (appDb *AppDb) LogUserLogin(user *User) {
-	err := Users(appDb.Session).UpdateId(user.Id, bson.M{"$set": bson.M{"lastLoginAt": getNow()}})
+	err := Users(appDb.Session).UpdateId(user.Id, bson.M{"$set": bson.M{"lastLoginAt": appDb.now()}})
 	if err != nil {
 		appDb.Log.Errorf("Failed to update LastLoginAt for userId: %s", user.Id.Hex())
 	}

@@ -44,3 +44,22 @@ func (appDb *AppDb) UpsertProject(r Project) (*Project, error) {
 
 	return &project, nil
 }
+
+func (appDb *AppDb) DeleteProject(id string) error {
+	return appDb.Delete(Projects(appDb.Session), id)
+}
+
+func (appDb *AppDb) ProjectList() ([]Project, error) {
+	var projectList []Project
+
+	if err := Projects(appDb.Session).Find(bson.M{"deleted": bson.M{"$exists": false}}).Select(bson.M{
+		"_id":             1,
+		"name":            1,
+		"description":     1,
+		"parentProjectId": 1,
+	}).All(&projectList); err != nil {
+		return nil, err
+	}
+
+	return projectList, nil
+}

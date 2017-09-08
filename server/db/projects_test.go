@@ -9,6 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func TestAppDb_UpsertProject(t *testing.T) {
@@ -66,6 +67,37 @@ func TestAppDb_UpsertProject(t *testing.T) {
 					So(dbProject.Id, ShouldEqual, result.Id)
 					So(dbProject.Name, ShouldEqual, result.Name)
 				})
+			})
+		})
+	})
+}
+
+func TestAppDb_ProjectList(t *testing.T) {
+	Convey("Given an appDb", t, func() {
+		c := cfg.Config{PasswordSalt: "something here"}
+		log := logrus.WithField("test", "TestAppDb_UpsertProject")
+
+		db.Projects(dbSession).RemoveAll(bson.M{})
+
+		appDb := db.Create(dbSession, &c, log, time.Now)
+
+		p1, _ := appDb.UpsertProject(db.Project{Id: "TestAppDb_ProjectList-p01"})
+		p2, _ := appDb.UpsertProject(db.Project{Id: "TestAppDb_ProjectList-p02"})
+		p3, _ := appDb.UpsertProject(db.Project{Id: "TestAppDb_ProjectList-p03"})
+		p4, _ := appDb.UpsertProject(db.Project{Id: "TestAppDb_ProjectList-p04"})
+
+		err := appDb.DeleteProject(p3.Id)
+		So(err, ShouldBeNil)
+
+		Convey("When ProjectList is called", func() {
+			projects, plErr := appDb.ProjectList()
+			So(plErr, ShouldBeNil)
+
+			Convey("It should return all non-deleted projects", func() {
+				So(len(projects), ShouldEqual, 3)
+				So(projects[0].Id, ShouldEqual, p1.Id)
+				So(projects[1].Id, ShouldEqual, p2.Id)
+				So(projects[2].Id, ShouldEqual, p4.Id)
 			})
 		})
 	})

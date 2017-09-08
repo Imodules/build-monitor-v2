@@ -1,7 +1,9 @@
 dist=dist
-exe=build-monitor-v2
+exe=buildMonitorServer
 
-default: setup server client
+default: build
+
+build: setup server client
 
 clean:
 	rm -rf $(dist); cd client; yarn run clean; cd ..
@@ -18,7 +20,9 @@ client: buildClient
 	 cp -R client/dist/* $(dist)/client
 
 buildClient: ensureClient
-	cd client; yarn run build; cd ..
+	cd client; \
+	rm -rf dist; \
+	yarn run build; cd ..
 
 buildLinux: ensureServer
 	GOOS=linux go build -o ./$(dist)/server/$(exe) ./server
@@ -28,5 +32,18 @@ ensureServer: FORCE
 
 ensureClient: FORCE
 	cd client; yarn install --silent; cd ..
+
+docker: clean buildClient
+	docker build -t build-monitor-v2:latest .; \
+	docker image prune --force
+
+dockerRun:
+	docker run \
+	--name build-monitor-v2 \
+	--hostname build-monitor-v2 \
+	-p 3030:3030 \
+	--network host \
+	--rm --detach \
+	build-monitor-v2
 
 FORCE:

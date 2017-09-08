@@ -1,0 +1,10 @@
+@import "../../node_modules/bulma/sass/utilities/initial-variables";
+@import "../../node_modules/bulma/sass/utilities/functions";
+
+$primary: $blue !default;
+$info: $turquoise !default;
+
+$primary-invert: findColorInvert($blue) !default;
+$info-invert: findColorInvert($turquoise) !default;
+
+@import "~bulma";

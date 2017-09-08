@@ -1,0 +1,33 @@
+{
+  "name": "world-backup-client",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Paul Stuart",
+  "license": "MIT",
+  "scripts": {
+    "build": "NODE_ENV=production webpack -p",
+    "clean": "rm -rf dist",
+    "client": "NODE_ENV=development webpack-dev-server --port 3000",
+    "server": "cd ../server && go run main.go",
+    "start": "nf start"
+  },
+  "dependencies": {
+    "bulma": "^0.5.1",
+    "css-loader": "^0.28.4",
+    "elm-webpack-loader": "^4.3.1",
+    "file-loader": "^0.11.1",
+    "font-awesome": "^4.7.0",
+    "foreman": "^2.0.0",
+    "html-webpack-plugin": "^2.28.0",
+    "style-loader": "^0.18.1",
+    "url-loader": "^0.5.8",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "devDependencies": {
+    "lobo": "^0.2.1",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.5",
+    "webpack-notifier": "^1.5.0"
+  }
+}

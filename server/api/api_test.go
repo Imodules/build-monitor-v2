@@ -10,6 +10,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/stretchr/testify/mock"
 	"gopkg.in/mgo.v2"
 )
 
@@ -66,5 +67,34 @@ func TestStart(t *testing.T) {
 			})
 		})
 
+	})
+}
+
+func TestServer_Shutdown(t *testing.T) {
+	Convey("Given a server", t, func() {
+		serverMock := new(IServerMock)
+		log := logrus.WithField("test", "TestServer_Shutdown")
+
+		server := api.Server{
+			Server: serverMock,
+			Config: &cfg.Config{Port: 10101},
+			Log:    log,
+		}
+
+		Convey("When shutdown is called successfully", func() {
+			serverMock.On("Shutdown", mock.AnythingOfType("*context.timerCtx")).Return(nil)
+
+			server.Shutdown()
+
+			Convey("It should not panic", func() {
+				serverMock.AssertExpectations(t)
+			})
+		})
+
+		Convey("When shutdown panics", func() {
+			serverMock.On("Shutdown", mock.AnythingOfType("*context.timerCtx")).Return(errors.New("panicking"))
+
+			So(func() { server.Shutdown() }, ShouldPanic)
+		})
 	})
 }

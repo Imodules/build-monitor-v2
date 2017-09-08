@@ -46,4 +46,8 @@ dockerRun:
 	--rm --detach \
 	build-monitor-v2
 
+# https://github.com/typicode/json-server
+jsonServer:
+	json-server --watch db.json --routes routes.json --port 3031
+
 FORCE:

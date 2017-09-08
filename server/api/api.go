@@ -8,6 +8,9 @@ import (
 
 	"net/http"
 
+	"context"
+	"time"
+
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
@@ -21,6 +24,7 @@ type IServer interface {
 	Routes() []*echo.Route
 	Group(prefix string, m ...echo.MiddlewareFunc) (g *echo.Group)
 	Start(address string) error
+	Shutdown(ctx context.Context) error
 
 	GET(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
 	POST(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
@@ -64,4 +68,16 @@ func Create(log *logrus.Entry, config *cfg.Config, session *mgo.Session) *Server
 
 func (s *Server) Start() error {
 	return s.Server.Start(fmt.Sprintf(":%d", s.Config.Port))
+}
+
+func (s *Server) Shutdown() {
+	s.Log.Info("Stopping")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := s.Server.Shutdown(ctx); err != nil {
+		s.Log.Panicf("Failed to shutdown api server: %v", err)
+	}
+
+	s.Log.Info("Stopped")
 }

@@ -1,0 +1,386 @@
+{
+  "projects": {
+    "count": 53,
+    "href": "/app/rest/projects",
+    "project": [{
+        "id": "_Root",
+        "name": "<Root project>",
+        "description": "Contains all other projects",
+        "href": "/guestAuth/app/rest/projects/id:_Root",
+        "webUrl": "http://<build-server-url>/project.html?projectId=_Root"
+      },
+      {
+        "id": "Administrative",
+        "name": "Administrative",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:Administrative",
+        "webUrl": "http://<build-server-url>/project.html?projectId=Administrative"
+      },
+      {
+        "id": "CheckInTriggeredBuilds",
+        "name": "Check In Triggered Builds",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds"
+      },
+      {
+        "id": "CheckInTriggeredBuilds_ClientApps",
+        "name": "Client Apps",
+        "parentProjectId": "CheckInTriggeredBuilds",
+        "description": "Javascript Apps",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_ClientApps",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_ClientApps"
+      },
+      {
+        "id": "CheckInTriggeredBuilds_CoreBuilds",
+        "name": "Core Builds",
+        "parentProjectId": "CheckInTriggeredBuilds",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_CoreBuilds",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_CoreBuilds"
+      },
+      {
+        "id": "CheckInTriggeredBuilds_EmailMarketing",
+        "name": "Email Marketing",
+        "parentProjectId": "CheckInTriggeredBuilds",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing"
+      },
+      {
+        "id": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+        "name": "Email Reporting",
+        "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting"
+      },
+      {
+        "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+        "name": "Template Builder",
+        "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder"
+      },
+      {
+        "id": "CheckInTriggeredBuilds_PivotalBuilds",
+        "name": "Pivotal Builds",
+        "parentProjectId": "CheckInTriggeredBuilds",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_PivotalBuilds",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_PivotalBuilds"
+      },
+      {
+        "id": "DeploymentBuilds_EncompassPreCompilation",
+        "name": "PreCompilation Builds",
+        "parentProjectId": "CheckInTriggeredBuilds",
+        "href": "/guestAuth/app/rest/projects/id:DeploymentBuilds_EncompassPreCompilation",
+        "webUrl": "http://<build-server-url>/project.html?projectId=DeploymentBuilds_EncompassPreCompilation"
+      },
+      {
+        "id": "DeploymentBuilds",
+        "name": "Deployment Builds",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:DeploymentBuilds",
+        "webUrl": "http://<build-server-url>/project.html?projectId=DeploymentBuilds"
+      },
+      {
+        "id": "LoadTestEnvironment",
+        "name": "Load Test Environment",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:LoadTestEnvironment",
+        "webUrl": "http://<build-server-url>/project.html?projectId=LoadTestEnvironment"
+      },
+      {
+        "id": "LocalEnvironment",
+        "name": "Local Environment",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:LocalEnvironment",
+        "webUrl": "http://<build-server-url>/project.html?projectId=LocalEnvironment"
+      },
+      {
+        "id": "OctopusDeploy",
+        "name": "Octopus Deploy",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:OctopusDeploy",
+        "webUrl": "http://<build-server-url>/project.html?projectId=OctopusDeploy"
+      },
+      {
+        "id": "OctopusDeploy_CodeBuilds",
+        "name": "Code Builds",
+        "parentProjectId": "OctopusDeploy",
+        "href": "/guestAuth/app/rest/projects/id:OctopusDeploy_CodeBuilds",
+        "webUrl": "http://<build-server-url>/project.html?projectId=OctopusDeploy_CodeBuilds"
+      },
+      {
+        "id": "OctopusDeploy_Maintenance",
+        "name": "Maintenance",
+        "parentProjectId": "OctopusDeploy",
+        "href": "/guestAuth/app/rest/projects/id:OctopusDeploy_Maintenance",
+        "webUrl": "http://<build-server-url>/project.html?projectId=OctopusDeploy_Maintenance"
+      },
+      {
+        "id": "ProductionEnvironment",
+        "name": "Production Environment",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment"
+      },
+      {
+        "id": "ProductionEnvironment_CreateOctopusDeployReleases",
+        "name": "Create Octopus Deploy Releases",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_CreateOctopusDeployReleases",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_CreateOctopusDeployReleases"
+      },
+      {
+        "id": "ProductionEnvironment_EmailMarketingApi",
+        "name": "Email Marketing API",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_EmailMarketingApi",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_EmailMarketingApi"
+      },
+      {
+        "id": "EncompassTools",
+        "name": "Encompass Tools",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:EncompassTools",
+        "webUrl": "http://<build-server-url>/project.html?projectId=EncompassTools"
+      },
+      {
+        "id": "ProductionEnvironment_EncompassWindowsServices",
+        "name": "Encompass Windows Services",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_EncompassWindowsServices",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_EncompassWindowsServices"
+      },
+      {
+        "id": "FileServerWebSBuilds",
+        "name": "File Server Builds",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds",
+        "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds"
+      },
+      {
+        "id": "FileServerWebSBuilds_SydProduction",
+        "name": "SYD Production",
+        "parentProjectId": "FileServerWebSBuilds",
+        "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_SydProduction",
+        "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_SydProduction"
+      },
+      {
+        "id": "FileServerWebSBuilds_TorProduction",
+        "name": "TOR Production",
+        "parentProjectId": "FileServerWebSBuilds",
+        "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_TorProduction",
+        "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_TorProduction"
+      },
+      {
+        "id": "FileServerWebSBuilds_UsProduction",
+        "name": "US Production",
+        "parentProjectId": "FileServerWebSBuilds",
+        "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_UsProduction",
+        "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_UsProduction"
+      },
+      {
+        "id": "FileServerWebSBuilds_UsProduction_LiveClientSIDs",
+        "name": "Live Client SIDs",
+        "parentProjectId": "FileServerWebSBuilds_UsProduction",
+        "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_UsProduction_LiveClientSIDs",
+        "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_UsProduction_LiveClientSIDs"
+      },
+      {
+        "id": "ProductionEnvironment_Pivotal",
+        "name": "Pivotal Web Services",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_Pivotal",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_Pivotal"
+      },
+      {
+        "id": "ProductionEnvironment_Utility",
+        "name": "Utility",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_Utility",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_Utility"
+      },
+      {
+        "id": "ProductionEnvironment_VirtualDirectoryApps",
+        "name": "Virtual Directory Apps",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_VirtualDirectoryApps",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_VirtualDirectoryApps"
+      },
+      {
+        "id": "ProductionEnvironment_WebserverWarmup",
+        "name": "Webserver Warmup",
+        "parentProjectId": "ProductionEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup"
+      },
+      {
+        "id": "ProductionEnvironment_WebserverWarmup_SydProduction",
+        "name": "SYD Production",
+        "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_SydProduction",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_SydProduction"
+      },
+      {
+        "id": "ProductionEnvironment_WebserverWarmup_TorProduction",
+        "name": "TOR Production",
+        "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_TorProduction",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_TorProduction"
+      },
+      {
+        "id": "ProductionEnvironment_WebserverWarmup_UsProduction",
+        "name": "US Production",
+        "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction"
+      },
+      {
+        "id": "ProductionEnvironment_WebserverWarmup_UsProduction_BotWebservers",
+        "name": "BOT Webservers",
+        "parentProjectId": "ProductionEnvironment_WebserverWarmup_UsProduction",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction_BotWebservers",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction_BotWebservers"
+      },
+      {
+        "id": "ProductionEnvironment_WebserverWarmup_UsProduction_TestRedesignWebservers",
+        "name": "TestRedesign Webservers",
+        "parentProjectId": "ProductionEnvironment_WebserverWarmup_UsProduction",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction_TestRedesignWebservers",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction_TestRedesignWebservers"
+      },
+      {
+        "id": "ProductionEnvironment_WebserverWarmup_UsProduction_UndWebservers",
+        "name": "UND Webservers",
+        "parentProjectId": "ProductionEnvironment_WebserverWarmup_UsProduction",
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction_UndWebservers",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction_UndWebservers"
+      },
+      {
+        "id": "QaEnvironment",
+        "name": "QA Environment",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:QaEnvironment",
+        "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment"
+      },
+      {
+        "id": "QaEnvironment_AutomatedTesting",
+        "name": "Automated Testing",
+        "parentProjectId": "QaEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:QaEnvironment_AutomatedTesting",
+        "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_AutomatedTesting"
+      },
+      {
+        "id": "QaEnvironment_AwsApps",
+        "name": "AWS Apps",
+        "parentProjectId": "QaEnvironment",
+        "description": "Apps on Amazon Web Services",
+        "href": "/guestAuth/app/rest/projects/id:QaEnvironment_AwsApps",
+        "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_AwsApps"
+      },
+      {
+        "id": "UpdateSite_Pivotal",
+        "name": "Pivotal Apps",
+        "parentProjectId": "QaEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:UpdateSite_Pivotal",
+        "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite_Pivotal"
+      },
+      {
+        "id": "QaEnvironment_VirtualDirectoryApps",
+        "name": "Virtual Directory Apps",
+        "parentProjectId": "QaEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:QaEnvironment_VirtualDirectoryApps",
+        "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_VirtualDirectoryApps"
+      },
+      {
+        "id": "QaEnvironment_Utility",
+        "name": "Utility",
+        "parentProjectId": "QaEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:QaEnvironment_Utility",
+        "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_Utility"
+      },
+      {
+        "id": "QaEnvironment_WarmupEncompass",
+        "name": "Warmup Encompass",
+        "parentProjectId": "QaEnvironment",
+        "href": "/guestAuth/app/rest/projects/id:QaEnvironment_WarmupEncompass",
+        "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_WarmupEncompass"
+      },
+      {
+        "id": "RaoulsBuildSandbox",
+        "name": "Raouls Build Sandbox",
+        "parentProjectId": "_Root",
+        "description": "Raouls Build Sandbox",
+        "href": "/guestAuth/app/rest/projects/id:RaoulsBuildSandbox",
+        "webUrl": "http://<build-server-url>/project.html?projectId=RaoulsBuildSandbox"
+      },
+      {
+        "id": "RaoulsBuildSandbox_CodeMetricsNightly",
+        "name": "CodeMetricsNightly",
+        "parentProjectId": "RaoulsBuildSandbox",
+        "href": "/guestAuth/app/rest/projects/id:RaoulsBuildSandbox_CodeMetricsNightly",
+        "webUrl": "http://<build-server-url>/project.html?projectId=RaoulsBuildSandbox_CodeMetricsNightly"
+      },
+      {
+        "id": "StagingEnvironment",
+        "name": "Staging Environment",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:StagingEnvironment",
+        "webUrl": "http://<build-server-url>/project.html?projectId=StagingEnvironment"
+      },
+      {
+        "id": "UpdateSite",
+        "name": "Update Site",
+        "parentProjectId": "_Root",
+        "href": "/guestAuth/app/rest/projects/id:UpdateSite",
+        "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite"
+      },
+      {
+        "id": "UpdateSite_AmazonWebServices",
+        "name": "AWS QA Encompass",
+        "parentProjectId": "UpdateSite",
+        "href": "/guestAuth/app/rest/projects/id:UpdateSite_AmazonWebServices",
+        "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite_AmazonWebServices"
+      },
+      {
+        "id": "UpdateSite_C",
+        "name": "Core Builds",
+        "parentProjectId": "UpdateSite",
+        "description": "Update Site builds that do not change",
+        "href": "/guestAuth/app/rest/projects/id:UpdateSite_C",
+        "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite_C"
+      },
+      {
+        "id": "ProductionEnvironment_UsWebservers_UrlWarmup",
+        "name": "URL Warmup",
+        "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+        "archived": true,
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_UsWebservers_UrlWarmup",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_UsWebservers_UrlWarmup"
+      },
+      {
+        "id": "ProductionEnvironment_2016dbMigration",
+        "name": "2016 DB Migration",
+        "parentProjectId": "ProductionEnvironment",
+        "archived": true,
+        "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_2016dbMigration",
+        "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_2016dbMigration"
+      },
+      {
+        "id": "RollPackage",
+        "name": "Roll Packages",
+        "parentProjectId": "_Root",
+        "archived": true,
+        "href": "/guestAuth/app/rest/projects/id:RollPackage",
+        "webUrl": "http://<build-server-url>/project.html?projectId=RollPackage"
+      },
+      {
+        "id": "RollPackage_Administration",
+        "name": "Administration",
+        "parentProjectId": "RollPackage",
+        "archived": true,
+        "href": "/guestAuth/app/rest/projects/id:RollPackage_Administration",
+        "webUrl": "http://<build-server-url>/project.html?projectId=RollPackage_Administration"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1462 @@
+{
+  "examples": [{
+      "url": "/guestAuth/app/rest/projects",
+      "result": {
+        "count": 53,
+        "href": "/guestAuth/app/rest/projects",
+        "project": [{
+            "id": "_Root",
+            "name": "<Root project>",
+            "description": "Contains all other projects",
+            "href": "/guestAuth/app/rest/projects/id:_Root",
+            "webUrl": "http://<build-server-url>/project.html?projectId=_Root"
+          },
+          {
+            "id": "Administrative",
+            "name": "Administrative",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:Administrative",
+            "webUrl": "http://<build-server-url>/project.html?projectId=Administrative"
+          },
+          {
+            "id": "CheckInTriggeredBuilds",
+            "name": "Check In Triggered Builds",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds",
+            "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds"
+          },
+          {
+            "id": "CheckInTriggeredBuilds_ClientApps",
+            "name": "Client Apps",
+            "parentProjectId": "CheckInTriggeredBuilds",
+            "description": "Javascript Apps",
+            "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_ClientApps",
+            "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_ClientApps"
+          },
+          {
+            "id": "CheckInTriggeredBuilds_CoreBuilds",
+            "name": "Core Builds",
+            "parentProjectId": "CheckInTriggeredBuilds",
+            "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_CoreBuilds",
+            "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_CoreBuilds"
+          },
+          {
+            "id": "CheckInTriggeredBuilds_EmailMarketing",
+            "name": "Email Marketing",
+            "parentProjectId": "CheckInTriggeredBuilds",
+            "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing",
+            "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing"
+          },
+          {
+            "id": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+            "name": "Email Reporting",
+            "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+            "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+            "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting"
+          },
+          {
+            "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+            "name": "Template Builder",
+            "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+            "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+            "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder"
+          },
+          {
+            "id": "CheckInTriggeredBuilds_PivotalBuilds",
+            "name": "Pivotal Builds",
+            "parentProjectId": "CheckInTriggeredBuilds",
+            "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_PivotalBuilds",
+            "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_PivotalBuilds"
+          },
+          {
+            "id": "DeploymentBuilds_EncompassPreCompilation",
+            "name": "PreCompilation Builds",
+            "parentProjectId": "CheckInTriggeredBuilds",
+            "href": "/guestAuth/app/rest/projects/id:DeploymentBuilds_EncompassPreCompilation",
+            "webUrl": "http://<build-server-url>/project.html?projectId=DeploymentBuilds_EncompassPreCompilation"
+          },
+          {
+            "id": "DeploymentBuilds",
+            "name": "Deployment Builds",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:DeploymentBuilds",
+            "webUrl": "http://<build-server-url>/project.html?projectId=DeploymentBuilds"
+          },
+          {
+            "id": "LoadTestEnvironment",
+            "name": "Load Test Environment",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:LoadTestEnvironment",
+            "webUrl": "http://<build-server-url>/project.html?projectId=LoadTestEnvironment"
+          },
+          {
+            "id": "LocalEnvironment",
+            "name": "Local Environment",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:LocalEnvironment",
+            "webUrl": "http://<build-server-url>/project.html?projectId=LocalEnvironment"
+          },
+          {
+            "id": "OctopusDeploy",
+            "name": "Octopus Deploy",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:OctopusDeploy",
+            "webUrl": "http://<build-server-url>/project.html?projectId=OctopusDeploy"
+          },
+          {
+            "id": "OctopusDeploy_CodeBuilds",
+            "name": "Code Builds",
+            "parentProjectId": "OctopusDeploy",
+            "href": "/guestAuth/app/rest/projects/id:OctopusDeploy_CodeBuilds",
+            "webUrl": "http://<build-server-url>/project.html?projectId=OctopusDeploy_CodeBuilds"
+          },
+          {
+            "id": "OctopusDeploy_Maintenance",
+            "name": "Maintenance",
+            "parentProjectId": "OctopusDeploy",
+            "href": "/guestAuth/app/rest/projects/id:OctopusDeploy_Maintenance",
+            "webUrl": "http://<build-server-url>/project.html?projectId=OctopusDeploy_Maintenance"
+          },
+          {
+            "id": "ProductionEnvironment",
+            "name": "Production Environment",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment"
+          },
+          {
+            "id": "ProductionEnvironment_CreateOctopusDeployReleases",
+            "name": "Create Octopus Deploy Releases",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_CreateOctopusDeployReleases",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_CreateOctopusDeployReleases"
+          },
+          {
+            "id": "ProductionEnvironment_EmailMarketingApi",
+            "name": "Email Marketing API",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_EmailMarketingApi",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_EmailMarketingApi"
+          },
+          {
+            "id": "EncompassTools",
+            "name": "Encompass Tools",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:EncompassTools",
+            "webUrl": "http://<build-server-url>/project.html?projectId=EncompassTools"
+          },
+          {
+            "id": "ProductionEnvironment_EncompassWindowsServices",
+            "name": "Encompass Windows Services",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_EncompassWindowsServices",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_EncompassWindowsServices"
+          },
+          {
+            "id": "FileServerWebSBuilds",
+            "name": "File Server Builds",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds",
+            "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds"
+          },
+          {
+            "id": "FileServerWebSBuilds_SydProduction",
+            "name": "SYD Production",
+            "parentProjectId": "FileServerWebSBuilds",
+            "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_SydProduction",
+            "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_SydProduction"
+          },
+          {
+            "id": "FileServerWebSBuilds_TorProduction",
+            "name": "TOR Production",
+            "parentProjectId": "FileServerWebSBuilds",
+            "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_TorProduction",
+            "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_TorProduction"
+          },
+          {
+            "id": "FileServerWebSBuilds_UsProduction",
+            "name": "US Production",
+            "parentProjectId": "FileServerWebSBuilds",
+            "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_UsProduction",
+            "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_UsProduction"
+          },
+          {
+            "id": "FileServerWebSBuilds_UsProduction_LiveClientSIDs",
+            "name": "Live Client SIDs",
+            "parentProjectId": "FileServerWebSBuilds_UsProduction",
+            "href": "/guestAuth/app/rest/projects/id:FileServerWebSBuilds_UsProduction_LiveClientSIDs",
+            "webUrl": "http://<build-server-url>/project.html?projectId=FileServerWebSBuilds_UsProduction_LiveClientSIDs"
+          },
+          {
+            "id": "ProductionEnvironment_Pivotal",
+            "name": "Pivotal Web Services",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_Pivotal",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_Pivotal"
+          },
+          {
+            "id": "ProductionEnvironment_Utility",
+            "name": "Utility",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_Utility",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_Utility"
+          },
+          {
+            "id": "ProductionEnvironment_VirtualDirectoryApps",
+            "name": "Virtual Directory Apps",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_VirtualDirectoryApps",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_VirtualDirectoryApps"
+          },
+          {
+            "id": "ProductionEnvironment_WebserverWarmup",
+            "name": "Webserver Warmup",
+            "parentProjectId": "ProductionEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup"
+          },
+          {
+            "id": "ProductionEnvironment_WebserverWarmup_SydProduction",
+            "name": "SYD Production",
+            "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_SydProduction",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_SydProduction"
+          },
+          {
+            "id": "ProductionEnvironment_WebserverWarmup_TorProduction",
+            "name": "TOR Production",
+            "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_TorProduction",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_TorProduction"
+          },
+          {
+            "id": "ProductionEnvironment_WebserverWarmup_UsProduction",
+            "name": "US Production",
+            "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction"
+          },
+          {
+            "id": "ProductionEnvironment_WebserverWarmup_UsProduction_BotWebservers",
+            "name": "BOT Webservers",
+            "parentProjectId": "ProductionEnvironment_WebserverWarmup_UsProduction",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction_BotWebservers",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction_BotWebservers"
+          },
+          {
+            "id": "ProductionEnvironment_WebserverWarmup_UsProduction_TestRedesignWebservers",
+            "name": "TestRedesign Webservers",
+            "parentProjectId": "ProductionEnvironment_WebserverWarmup_UsProduction",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction_TestRedesignWebservers",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction_TestRedesignWebservers"
+          },
+          {
+            "id": "ProductionEnvironment_WebserverWarmup_UsProduction_UndWebservers",
+            "name": "UND Webservers",
+            "parentProjectId": "ProductionEnvironment_WebserverWarmup_UsProduction",
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_WebserverWarmup_UsProduction_UndWebservers",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_WebserverWarmup_UsProduction_UndWebservers"
+          },
+          {
+            "id": "QaEnvironment",
+            "name": "QA Environment",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:QaEnvironment",
+            "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment"
+          },
+          {
+            "id": "QaEnvironment_AutomatedTesting",
+            "name": "Automated Testing",
+            "parentProjectId": "QaEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:QaEnvironment_AutomatedTesting",
+            "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_AutomatedTesting"
+          },
+          {
+            "id": "QaEnvironment_AwsApps",
+            "name": "AWS Apps",
+            "parentProjectId": "QaEnvironment",
+            "description": "Apps on Amazon Web Services",
+            "href": "/guestAuth/app/rest/projects/id:QaEnvironment_AwsApps",
+            "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_AwsApps"
+          },
+          {
+            "id": "UpdateSite_Pivotal",
+            "name": "Pivotal Apps",
+            "parentProjectId": "QaEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:UpdateSite_Pivotal",
+            "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite_Pivotal"
+          },
+          {
+            "id": "QaEnvironment_VirtualDirectoryApps",
+            "name": "Virtual Directory Apps",
+            "parentProjectId": "QaEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:QaEnvironment_VirtualDirectoryApps",
+            "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_VirtualDirectoryApps"
+          },
+          {
+            "id": "QaEnvironment_Utility",
+            "name": "Utility",
+            "parentProjectId": "QaEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:QaEnvironment_Utility",
+            "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_Utility"
+          },
+          {
+            "id": "QaEnvironment_WarmupEncompass",
+            "name": "Warmup Encompass",
+            "parentProjectId": "QaEnvironment",
+            "href": "/guestAuth/app/rest/projects/id:QaEnvironment_WarmupEncompass",
+            "webUrl": "http://<build-server-url>/project.html?projectId=QaEnvironment_WarmupEncompass"
+          },
+          {
+            "id": "RaoulsBuildSandbox",
+            "name": "Raouls Build Sandbox",
+            "parentProjectId": "_Root",
+            "description": "Raouls Build Sandbox",
+            "href": "/guestAuth/app/rest/projects/id:RaoulsBuildSandbox",
+            "webUrl": "http://<build-server-url>/project.html?projectId=RaoulsBuildSandbox"
+          },
+          {
+            "id": "RaoulsBuildSandbox_CodeMetricsNightly",
+            "name": "CodeMetricsNightly",
+            "parentProjectId": "RaoulsBuildSandbox",
+            "href": "/guestAuth/app/rest/projects/id:RaoulsBuildSandbox_CodeMetricsNightly",
+            "webUrl": "http://<build-server-url>/project.html?projectId=RaoulsBuildSandbox_CodeMetricsNightly"
+          },
+          {
+            "id": "StagingEnvironment",
+            "name": "Staging Environment",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:StagingEnvironment",
+            "webUrl": "http://<build-server-url>/project.html?projectId=StagingEnvironment"
+          },
+          {
+            "id": "UpdateSite",
+            "name": "Update Site",
+            "parentProjectId": "_Root",
+            "href": "/guestAuth/app/rest/projects/id:UpdateSite",
+            "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite"
+          },
+          {
+            "id": "UpdateSite_AmazonWebServices",
+            "name": "AWS QA Encompass",
+            "parentProjectId": "UpdateSite",
+            "href": "/guestAuth/app/rest/projects/id:UpdateSite_AmazonWebServices",
+            "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite_AmazonWebServices"
+          },
+          {
+            "id": "UpdateSite_C",
+            "name": "Core Builds",
+            "parentProjectId": "UpdateSite",
+            "description": "Update Site builds that do not change",
+            "href": "/guestAuth/app/rest/projects/id:UpdateSite_C",
+            "webUrl": "http://<build-server-url>/project.html?projectId=UpdateSite_C"
+          },
+          {
+            "id": "ProductionEnvironment_UsWebservers_UrlWarmup",
+            "name": "URL Warmup",
+            "parentProjectId": "ProductionEnvironment_WebserverWarmup",
+            "archived": true,
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_UsWebservers_UrlWarmup",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_UsWebservers_UrlWarmup"
+          },
+          {
+            "id": "ProductionEnvironment_2016dbMigration",
+            "name": "2016 DB Migration",
+            "parentProjectId": "ProductionEnvironment",
+            "archived": true,
+            "href": "/guestAuth/app/rest/projects/id:ProductionEnvironment_2016dbMigration",
+            "webUrl": "http://<build-server-url>/project.html?projectId=ProductionEnvironment_2016dbMigration"
+          },
+          {
+            "id": "RollPackage",
+            "name": "Roll Packages",
+            "parentProjectId": "_Root",
+            "archived": true,
+            "href": "/guestAuth/app/rest/projects/id:RollPackage",
+            "webUrl": "http://<build-server-url>/project.html?projectId=RollPackage"
+          },
+          {
+            "id": "RollPackage_Administration",
+            "name": "Administration",
+            "parentProjectId": "RollPackage",
+            "archived": true,
+            "href": "/guestAuth/app/rest/projects/id:RollPackage_Administration",
+            "webUrl": "http://<build-server-url>/project.html?projectId=RollPackage_Administration"
+          }
+        ]
+      }
+    },
+    {
+      "url": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing",
+      "result": {
+        "id": "CheckInTriggeredBuilds_EmailMarketing",
+        "name": "Email Marketing",
+        "parentProjectId": "CheckInTriggeredBuilds",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing",
+        "parentProject": {
+          "id": "CheckInTriggeredBuilds",
+          "name": "Check In Triggered Builds",
+          "parentProjectId": "_Root",
+          "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds",
+          "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds"
+        },
+        "buildTypes": {
+          "count": 0,
+          "buildType": []
+        },
+        "projects": {
+          "count": 2,
+          "project": [{
+              "id": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+              "name": "Email Reporting",
+              "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+              "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+              "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting"
+            },
+            {
+              "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+              "name": "Template Builder",
+              "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+              "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+              "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+      "result": {
+        "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+        "name": "Template Builder",
+        "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+        "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+        "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+        "parentProject": {
+          "id": "CheckInTriggeredBuilds_EmailMarketing",
+          "name": "Email Marketing",
+          "parentProjectId": "CheckInTriggeredBuilds",
+          "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing",
+          "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing"
+        },
+        "buildTypes": {
+          "count": 2,
+          "buildType": [{
+              "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+              "name": "Develop",
+              "projectName": "Check In Triggered Builds :: Email Marketing :: Template Builder",
+              "projectId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+              "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+              "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+            },
+            {
+              "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Build",
+              "name": "Production (master)",
+              "projectName": "Check In Triggered Builds :: Email Marketing :: Template Builder",
+              "projectId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+              "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Build",
+              "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Build"
+            }
+          ]
+        },
+        "projects": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "url": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+      "result": {
+        "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+        "name": "Develop",
+        "projectName": "Check In Triggered Builds :: Email Marketing :: Template Builder",
+        "projectId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+        "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+        "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+        "project": {
+          "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+          "name": "Template Builder",
+          "parentProjectId": "CheckInTriggeredBuilds_EmailMarketing",
+          "href": "/guestAuth/app/rest/projects/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+          "webUrl": "http://<build-server-url>/project.html?projectId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder"
+        },
+        "builds": {
+          "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop/builds/"
+        },
+        "investigations": {
+          "href": "/guestAuth/app/rest/investigations?locator=buildType:(id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop)"
+        },
+        "compatibleAgents": {
+          "href": "/guestAuth/app/rest/agents?locator=compatible:(buildType:(id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop))"
+        }
+      }
+    },
+    {
+      "url": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop/builds?locator=defaultFilter:false&count=10",
+      "result": {
+        "count": 10,
+        "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop/builds?locator=defaultFilter:false&count=10",
+        "nextHref": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop/builds?locator=defaultFilter:false,count:10,start:10",
+        "build": [{
+            "id": 312794,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-74",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:312794",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=312794&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 312642,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-73",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:312642",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=312642&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 311925,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-72",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:311925",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=311925&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 311924,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-71",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/DynamicContent",
+            "href": "/guestAuth/app/rest/builds/id:311924",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=311924&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 311911,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-70",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:311911",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=311911&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 311279,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-69",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:311279",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=311279&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 311271,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-68",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:311271",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=311271&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 311269,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-67",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:311269",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=311269&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 311268,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-66",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/RssFeeds",
+            "href": "/guestAuth/app/rest/builds/id:311268",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=311268&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          },
+          {
+            "id": 310482,
+            "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+            "number": "TB-D-65",
+            "status": "SUCCESS",
+            "state": "finished",
+            "branchName": "feature/DynamicContent",
+            "href": "/guestAuth/app/rest/builds/id:310482",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=310482&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+          }
+        ]
+      }
+    },
+    {
+      "desc": "Finished Successful Build",
+      "url": "/guestAuth/app/rest/builds/id:312794",
+      "result": {
+        "id": 312794,
+        "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+        "number": "TB-D-74",
+        "status": "SUCCESS",
+        "state": "finished",
+        "branchName": "feature/RssFeeds",
+        "href": "/guestAuth/app/rest/builds/id:312794",
+        "webUrl": "http://<build-server-url>/viewLog.html?buildId=312794&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+        "statusText": "Tests passed: 845",
+        "buildType": {
+          "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+          "name": "Develop",
+          "projectName": "Check In Triggered Builds :: Email Marketing :: Template Builder",
+          "projectId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+          "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+          "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+        },
+        "queuedDate": "20170906T104024-0500",
+        "startDate": "20170906T104026-0500",
+        "finishDate": "20170906T104231-0500",
+        "triggered": {
+          "type": "vcs",
+          "details": "jetbrains.git",
+          "date": "20170906T104024-0500"
+        },
+        "lastChanges": {
+          "count": 1,
+          "change": [{
+            "id": 421894,
+            "version": "a23145bcc62688f5a80fec1644915a08e6d6eed9",
+            "username": "team.justonebrian",
+            "date": "20170906T103953-0500",
+            "href": "/guestAuth/app/rest/changes/id:421894",
+            "webUrl": "http://<build-server-url>/viewModification.html?modId=421894&personal=false"
+          }]
+        },
+        "changes": {
+          "href": "/guestAuth/app/rest/changes?locator=build:(id:312794)"
+        },
+        "revisions": {
+          "count": 1,
+          "revision": [{
+            "version": "a23145bcc62688f5a80fec1644915a08e6d6eed9",
+            "vcsBranchName": "refs/heads/feature/RssFeeds",
+            "vcs-root-instance": {
+              "id": "1616",
+              "vcs-root-id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_HttpsImodincBitbucketOrg_3",
+              "name": "https://imodinc@bitbucket.org/imodules/template-builder.git (2)",
+              "href": "/guestAuth/app/rest/vcs-root-instances/id:1616"
+            }
+          }]
+        },
+        "agent": {
+          "id": 30,
+          "name": "LinuxBuildAgent1",
+          "typeId": 30,
+          "href": "/guestAuth/app/rest/agents/id:30"
+        },
+        "testOccurrences": {
+          "count": 845,
+          "href": "/guestAuth/app/rest/testOccurrences?locator=build:(id:312794)",
+          "default": false,
+          "passed": 845
+        },
+        "artifacts": {
+          "href": "/guestAuth/app/rest/builds/id:312794/artifacts/children/"
+        },
+        "relatedIssues": {
+          "href": "/guestAuth/app/rest/builds/id:312794/relatedIssues"
+        },
+        "properties": {
+          "count": 17,
+          "property": [{
+              "name": "env.buildserverpath",
+              "value": "%teamcity.build.workingDir%\\BuildServer",
+              "inherited": true
+            },
+            {
+              "name": "env.devDockerRepository",
+              "value": "dockerregistry.local.imodules.com:5000",
+              "inherited": true
+            },
+            {
+              "name": "env.EnableNuGetPackageRestore",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSAccessKeyID",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSS3BucketName",
+              "value": "teamcityartifacts",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSSecretAccessKey",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.BuildInRelease",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.buildSqlRollFiles",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeAll",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeMerges",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.MercurialCurrentBranch",
+              "value": "%env.TEAMCITY_BUILDCONF_NAME%",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSql",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSqlCatalogList",
+              "value": "c_carnegie_mellon_university;c_dartmouth_college;c_notre_dame_university;c_bishop_miege_em;c_university_virginia",
+              "inherited": true
+            },
+            {
+              "name": "system.SourceControlProvider",
+              "value": "mercurial",
+              "inherited": true
+            },
+            {
+              "name": "teamcity.ui.runButton.caption",
+              "value": "Build",
+              "inherited": true
+            },
+            {
+              "name": "template-builder-branch",
+              "value": "develop",
+              "inherited": true
+            },
+            {
+              "name": "webhook.body",
+              "value": "{\"username\": \"%env.TEAMCITY_PROJECT_NAME%\", \"text\": \"FAIL - %env.TEAMCITY_BUILDCONF_NAME% \\n http://buildserver.local.imodules.com:90/viewLog.html?buildId=%teamcity.build.id%\"}",
+              "inherited": true
+            }
+          ]
+        },
+        "statistics": {
+          "href": "/guestAuth/app/rest/builds/id:312794/statistics"
+        }
+      }
+    },
+    {
+      "desc": "Finished Failed Build",
+      "result": {
+        "id": 303578,
+        "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+        "number": "TB-D-51",
+        "status": "FAILURE",
+        "state": "finished",
+        "branchName": "develop",
+        "defaultBranch": true,
+        "href": "/guestAuth/app/rest/builds/id:303578",
+        "webUrl": "http://<build-server-url>/viewLog.html?buildId=303578&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+        "statusText": "Exit code 1 (new)",
+        "buildType": {
+          "id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+          "name": "Develop",
+          "projectName": "Check In Triggered Builds :: Email Marketing :: Template Builder",
+          "projectId": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder",
+          "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop",
+          "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_Develop"
+        },
+        "queuedDate": "20170718T124602-0500",
+        "startDate": "20170718T124603-0500",
+        "finishDate": "20170718T124618-0500",
+        "triggered": {
+          "type": "vcs",
+          "details": "jetbrains.git",
+          "date": "20170718T124602-0500"
+        },
+        "lastChanges": {
+          "count": 1,
+          "change": [{
+            "id": 413217,
+            "version": "d6c700a7568a7aad0fd018a875d5fcc1d377cc6d",
+            "username": "team.justonebrian",
+            "date": "20170718T124423-0500",
+            "href": "/guestAuth/app/rest/changes/id:413217",
+            "webUrl": "http://<build-server-url>/viewModification.html?modId=413217&personal=false"
+          }]
+        },
+        "changes": {
+          "href": "/guestAuth/app/rest/changes?locator=build:(id:303578)"
+        },
+        "revisions": {
+          "count": 1,
+          "revision": [{
+            "version": "d6c700a7568a7aad0fd018a875d5fcc1d377cc6d",
+            "vcsBranchName": "refs/heads/develop",
+            "vcs-root-instance": {
+              "id": "1616",
+              "vcs-root-id": "CheckInTriggeredBuilds_EmailMarketing_TemplateBuilder_HttpsImodincBitbucketOrg_3",
+              "name": "https://imodinc@bitbucket.org/imodules/template-builder.git (2)",
+              "href": "/guestAuth/app/rest/vcs-root-instances/id:1616"
+            }
+          }]
+        },
+        "agent": {
+          "id": 37,
+          "name": "DevBuildAgent2",
+          "typeId": 37,
+          "href": "/guestAuth/app/rest/agents/id:37"
+        },
+        "problemOccurrences": {
+          "count": 1,
+          "href": "/guestAuth/app/rest/problemOccurrences?locator=build:(id:303578)",
+          "default": false,
+          "newFailed": 1
+        },
+        "artifacts": {
+          "href": "/guestAuth/app/rest/builds/id:303578/artifacts/children/"
+        },
+        "relatedIssues": {
+          "href": "/guestAuth/app/rest/builds/id:303578/relatedIssues"
+        },
+        "properties": {
+          "count": 17,
+          "property": [{
+              "name": "env.buildserverpath",
+              "value": "%teamcity.build.workingDir%\\BuildServer",
+              "inherited": true
+            },
+            {
+              "name": "env.devDockerRepository",
+              "value": "dockerregistry.local.imodules.com:5000",
+              "inherited": true
+            },
+            {
+              "name": "env.EnableNuGetPackageRestore",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSAccessKeyID",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSS3BucketName",
+              "value": "teamcityartifacts",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSSecretAccessKey",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.BuildInRelease",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.buildSqlRollFiles",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeAll",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeMerges",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.MercurialCurrentBranch",
+              "value": "%env.TEAMCITY_BUILDCONF_NAME%",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSql",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSqlCatalogList",
+              "value": "c_carnegie_mellon_university;c_dartmouth_college;c_notre_dame_university;c_bishop_miege_em;c_university_virginia",
+              "inherited": true
+            },
+            {
+              "name": "system.SourceControlProvider",
+              "value": "mercurial",
+              "inherited": true
+            },
+            {
+              "name": "teamcity.ui.runButton.caption",
+              "value": "Build",
+              "inherited": true
+            },
+            {
+              "name": "template-builder-branch",
+              "value": "develop",
+              "inherited": true
+            },
+            {
+              "name": "webhook.body",
+              "value": "{\"username\": \"%env.TEAMCITY_PROJECT_NAME%\", \"text\": \"FAIL - %env.TEAMCITY_BUILDCONF_NAME% \\n http://buildserver.local.imodules.com:90/viewLog.html?buildId=%teamcity.build.id%\"}",
+              "inherited": true
+            }
+          ]
+        },
+        "statistics": {
+          "href": "/guestAuth/app/rest/builds/id:303578/statistics"
+        }
+      }
+    },
+    {
+      "desc": "Running Build",
+      "result": {
+        "id": 313019,
+        "buildTypeId": "CheckInTriggeredBuilds_Production",
+        "number": "PROD-2182",
+        "status": "SUCCESS",
+        "state": "running",
+        "running": true,
+        "percentageComplete": 74,
+        "href": "/guestAuth/app/rest/builds/id:313019",
+        "webUrl": "http://<build-server-url>/viewLog.html?buildId=313019&buildTypeId=CheckInTriggeredBuilds_Production",
+        "statusText": "Tests passed: 7257, ignored: 228; Generate dotCover HTML report",
+        "buildType": {
+          "id": "CheckInTriggeredBuilds_Production",
+          "name": "Production",
+          "projectName": "Check In Triggered Builds :: Core Builds",
+          "projectId": "CheckInTriggeredBuilds_CoreBuilds",
+          "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_Production",
+          "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_Production"
+        },
+        "running-info": {
+          "percentageComplete": 74,
+          "elapsedSeconds": 2521,
+          "estimatedTotalSeconds": 2580,
+          "currentStageText": "Generate dotCover HTML report: Generating dotCover HTML report...",
+          "outdated": false,
+          "probablyHanging": false
+        },
+        "queuedDate": "20170907T141552-0500",
+        "startDate": "20170907T141556-0500",
+        "triggered": {
+          "type": "vcs",
+          "details": "mercurial",
+          "date": "20170907T141552-0500"
+        },
+        "lastChanges": {
+          "count": 1,
+          "change": [{
+            "id": 422010,
+            "version": "d9aac82c0860",
+            "username": "local\\lfast",
+            "date": "20170907T141106-0500",
+            "href": "/guestAuth/app/rest/changes/id:422010",
+            "webUrl": "http://<build-server-url>/viewModification.html?modId=422010&personal=false"
+          }]
+        },
+        "changes": {
+          "href": "/guestAuth/app/rest/changes?locator=build:(id:313019)"
+        },
+        "revisions": {
+          "count": 1,
+          "revision": [{
+            "version": "d9aac82c0860",
+            "vcsBranchName": "production",
+            "vcs-root-instance": {
+              "id": "1251",
+              "vcs-root-id": "CheckInTriggeredBuilds_MercurialEncompassVcs",
+              "name": "Mercurial Encompass VCS",
+              "href": "/guestAuth/app/rest/vcs-root-instances/id:1251"
+            }
+          }]
+        },
+        "agent": {
+          "id": 37,
+          "name": "DevBuildAgent2",
+          "typeId": 37,
+          "href": "/guestAuth/app/rest/agents/id:37"
+        },
+        "testOccurrences": {
+          "count": 7485,
+          "href": "/guestAuth/app/rest/testOccurrences?locator=build:(id:313019)",
+          "default": false,
+          "passed": 7257,
+          "ignored": 228
+        },
+        "artifacts": {
+          "href": "/guestAuth/app/rest/builds/id:313019/artifacts/children/"
+        },
+        "relatedIssues": {
+          "href": "/guestAuth/app/rest/builds/id:313019/relatedIssues"
+        },
+        "properties": {
+          "count": 17,
+          "property": [{
+              "name": "env.buildserverpath",
+              "value": "%teamcity.build.workingDir%\\BuildServer",
+              "inherited": true
+            },
+            {
+              "name": "env.devDockerRepository",
+              "value": "dockerregistry.local.imodules.com:5000",
+              "inherited": true
+            },
+            {
+              "name": "env.EnableNuGetPackageRestore",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSAccessKeyID",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSS3BucketName",
+              "value": "teamcityartifacts",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSSecretAccessKey",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.BuildInRelease",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.buildSqlRollFiles",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeAll",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeMerges",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.MercurialCurrentBranch",
+              "value": "production",
+              "inherited": true
+            },
+            {
+              "name": "system.RevBaseStart",
+              "value": "76776244a985",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSql",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSqlCatalogList",
+              "value": "c_bishop_miege;c_carnegie_mellon_university;c_colgate_university;c_michigan_state_university;c_univ_of_minnesota;c_cardinal_newman",
+              "inherited": true
+            },
+            {
+              "name": "system.SourceControlProvider",
+              "value": "mercurial",
+              "inherited": true
+            },
+            {
+              "name": "teamcity.ui.runButton.caption",
+              "value": "Build",
+              "inherited": true
+            },
+            {
+              "name": "webhook.body",
+              "value": "{\"username\": \"%env.TEAMCITY_PROJECT_NAME%\", \"text\": \"FAIL - %env.TEAMCITY_BUILDCONF_NAME% \\n http://buildserver.local.imodules.com:90/viewLog.html?buildId=%teamcity.build.id%\"}",
+              "inherited": true
+            }
+          ]
+        },
+        "statistics": {
+          "href": "/guestAuth/app/rest/builds/id:313019/statistics"
+        },
+        "artifact-dependencies": {
+          "count": 1,
+          "build": [{
+            "id": 312876,
+            "buildTypeId": "Administrative_CreateBuildserverArtifacts",
+            "number": "896",
+            "status": "SUCCESS",
+            "state": "finished",
+            "href": "/guestAuth/app/rest/builds/id:312876",
+            "webUrl": "http://<build-server-url>/viewLog.html?buildId=312876&buildTypeId=Administrative_CreateBuildserverArtifacts"
+          }]
+        }
+      }
+    },
+    {
+      "desc": "User Triggered Running Build",
+      "result": {
+        "id": 313035,
+        "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+        "number": "EMR-D-7",
+        "status": "SUCCESS",
+        "state": "running",
+        "running": true,
+        "percentageComplete": 12,
+        "branchName": "develop",
+        "defaultBranch": true,
+        "href": "/guestAuth/app/rest/builds/id:313035",
+        "webUrl": "http://<build-server-url>/viewLog.html?buildId=313035&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+        "statusText": "Step 3/4",
+        "buildType": {
+          "id": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+          "name": "Develop",
+          "projectName": "Check In Triggered Builds :: Email Marketing :: Email Reporting",
+          "projectId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+          "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+          "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+        },
+        "running-info": {
+          "percentageComplete": 12,
+          "elapsedSeconds": 15,
+          "estimatedTotalSeconds": 149,
+          "currentStageText": "Step 3/4: $ cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text-summary mocha --compilers js:babel-register --require babel-polyfill src/utils/mockEnvironment.js 'src/app/**/*.unit.js' ",
+          "outdated": false,
+          "probablyHanging": false
+        },
+        "queuedDate": "20170907T150234-0500",
+        "startDate": "20170907T150235-0500",
+        "triggered": {
+          "type": "user",
+          "date": "20170907T150234-0500",
+          "user": {
+            "username": "pstuart",
+            "name": "Paul Stuart",
+            "id": 11,
+            "href": "/guestAuth/app/rest/users/id:11"
+          }
+        },
+        "lastChanges": {
+          "count": 1,
+          "change": [{
+            "id": 421990,
+            "version": "260c7b84acefdf62ebd91489be80aba873a8da42",
+            "username": "team.offbyone",
+            "date": "20170907T104428-0500",
+            "href": "/guestAuth/app/rest/changes/id:421990",
+            "webUrl": "http://<build-server-url>/viewModification.html?modId=421990&personal=false"
+          }]
+        },
+        "changes": {
+          "href": "/guestAuth/app/rest/changes?locator=build:(id:313035)"
+        },
+        "revisions": {
+          "count": 1,
+          "revision": [{
+            "version": "260c7b84acefdf62ebd91489be80aba873a8da42",
+            "vcsBranchName": "refs/heads/develop",
+            "vcs-root-instance": {
+              "id": "1622",
+              "vcs-root-id": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_HttpsImodincBitbucketOrgI_2",
+              "name": "https://imodinc@bitbucket.org/imodules/email-reporting.git (develop)",
+              "href": "/guestAuth/app/rest/vcs-root-instances/id:1622"
+            }
+          }]
+        },
+        "agent": {
+          "id": 30,
+          "name": "LinuxBuildAgent1",
+          "typeId": 30,
+          "href": "/guestAuth/app/rest/agents/id:30"
+        },
+        "artifacts": {
+          "href": "/guestAuth/app/rest/builds/id:313035/artifacts/children/"
+        },
+        "relatedIssues": {
+          "href": "/guestAuth/app/rest/builds/id:313035/relatedIssues"
+        },
+        "properties": {
+          "count": 16,
+          "property": [{
+              "name": "env.buildserverpath",
+              "value": "%teamcity.build.workingDir%\\BuildServer",
+              "inherited": true
+            },
+            {
+              "name": "env.devDockerRepository",
+              "value": "dockerregistry.local.imodules.com:5000",
+              "inherited": true
+            },
+            {
+              "name": "env.EnableNuGetPackageRestore",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSAccessKeyID",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSS3BucketName",
+              "value": "teamcityartifacts",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSSecretAccessKey",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.BuildInRelease",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.buildSqlRollFiles",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeAll",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeMerges",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.MercurialCurrentBranch",
+              "value": "%env.TEAMCITY_BUILDCONF_NAME%",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSql",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSqlCatalogList",
+              "value": "c_carnegie_mellon_university;c_dartmouth_college;c_notre_dame_university;c_bishop_miege_em;c_university_virginia",
+              "inherited": true
+            },
+            {
+              "name": "system.SourceControlProvider",
+              "value": "mercurial",
+              "inherited": true
+            },
+            {
+              "name": "teamcity.ui.runButton.caption",
+              "value": "Build",
+              "inherited": true
+            },
+            {
+              "name": "webhook.body",
+              "value": "{\"username\": \"%env.TEAMCITY_PROJECT_NAME%\", \"text\": \"FAIL - %env.TEAMCITY_BUILDCONF_NAME% \\n http://buildserver.local.imodules.com:90/viewLog.html?buildId=%teamcity.build.id%\"}",
+              "inherited": true
+            }
+          ]
+        },
+        "statistics": {
+          "href": "/guestAuth/app/rest/builds/id:313035/statistics"
+        }
+      }
+    },
+    {
+      "desc": "User Triggered Finished Build",
+      "result": {
+        "id": 313035,
+        "buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+        "number": "EMR-D-7",
+        "status": "SUCCESS",
+        "state": "finished",
+        "branchName": "develop",
+        "defaultBranch": true,
+        "href": "/guestAuth/app/rest/builds/id:313035",
+        "webUrl": "http://<build-server-url>/viewLog.html?buildId=313035&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+        "statusText": "Success",
+        "buildType": {
+          "id": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+          "name": "Develop",
+          "projectName": "Check In Triggered Builds :: Email Marketing :: Email Reporting",
+          "projectId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting",
+          "href": "/guestAuth/app/rest/buildTypes/id:CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+          "webUrl": "http://<build-server-url>/viewType.html?buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+        },
+        "queuedDate": "20170907T150234-0500",
+        "startDate": "20170907T150235-0500",
+        "finishDate": "20170907T150429-0500",
+        "triggered": {
+          "type": "user",
+          "date": "20170907T150234-0500",
+          "user": {
+            "username": "pstuart",
+            "name": "Paul Stuart",
+            "id": 11,
+            "href": "/guestAuth/app/rest/users/id:11"
+          }
+        },
+        "lastChanges": {
+          "count": 1,
+          "change": [{
+            "id": 421990,
+            "version": "260c7b84acefdf62ebd91489be80aba873a8da42",
+            "username": "team.offbyone",
+            "date": "20170907T104428-0500",
+            "href": "/guestAuth/app/rest/changes/id:421990",
+            "webUrl": "http://<build-server-url>/viewModification.html?modId=421990&personal=false"
+          }]
+        },
+        "changes": {
+          "href": "/guestAuth/app/rest/changes?locator=build:(id:313035)"
+        },
+        "revisions": {
+          "count": 1,
+          "revision": [{
+            "version": "260c7b84acefdf62ebd91489be80aba873a8da42",
+            "vcsBranchName": "refs/heads/develop",
+            "vcs-root-instance": {
+              "id": "1622",
+              "vcs-root-id": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_HttpsImodincBitbucketOrgI_2",
+              "name": "https://imodinc@bitbucket.org/imodules/email-reporting.git (develop)",
+              "href": "/guestAuth/app/rest/vcs-root-instances/id:1622"
+            }
+          }]
+        },
+        "agent": {
+          "id": 30,
+          "name": "LinuxBuildAgent1",
+          "typeId": 30,
+          "href": "/guestAuth/app/rest/agents/id:30"
+        },
+        "artifacts": {
+          "href": "/guestAuth/app/rest/builds/id:313035/artifacts/children/"
+        },
+        "relatedIssues": {
+          "href": "/guestAuth/app/rest/builds/id:313035/relatedIssues"
+        },
+        "properties": {
+          "count": 16,
+          "property": [{
+              "name": "env.buildserverpath",
+              "value": "%teamcity.build.workingDir%\\BuildServer",
+              "inherited": true
+            },
+            {
+              "name": "env.devDockerRepository",
+              "value": "dockerregistry.local.imodules.com:5000",
+              "inherited": true
+            },
+            {
+              "name": "env.EnableNuGetPackageRestore",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSAccessKeyID",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSS3BucketName",
+              "value": "teamcityartifacts",
+              "inherited": true
+            },
+            {
+              "name": "system.AWSSecretAccessKey",
+              "value": "******",
+              "inherited": true
+            },
+            {
+              "name": "system.BuildInRelease",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.buildSqlRollFiles",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeAll",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.IncludeMerges",
+              "value": "false",
+              "inherited": true
+            },
+            {
+              "name": "system.MercurialCurrentBranch",
+              "value": "%env.TEAMCITY_BUILDCONF_NAME%",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSql",
+              "value": "true",
+              "inherited": true
+            },
+            {
+              "name": "system.RunSqlCatalogList",
+              "value": "c_carnegie_mellon_university;c_dartmouth_college;c_notre_dame_university;c_bishop_miege_em;c_university_virginia",
+              "inherited": true
+            },
+            {
+              "name": "system.SourceControlProvider",
+              "value": "mercurial",
+              "inherited": true
+            },
+            {
+              "name": "teamcity.ui.runButton.caption",
+              "value": "Build",
+              "inherited": true
+            },
+            {
+              "name": "webhook.body",
+              "value": "{\"username\": \"%env.TEAMCITY_PROJECT_NAME%\", \"text\": \"FAIL - %env.TEAMCITY_BUILDCONF_NAME% \\n http://buildserver.local.imodules.com:90/viewLog.html?buildId=%teamcity.build.id%\"}",
+              "inherited": true
+            }
+          ]
+        },
+        "statistics": {
+          "href": "/guestAuth/app/rest/builds/id:313035/statistics"
+        }
+      }
+    }
+  ]
+}

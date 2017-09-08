@@ -11,6 +11,8 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"context"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/mock"
@@ -113,6 +115,11 @@ func (em *IServerMock) Group(prefix string, m ...echo.MiddlewareFunc) (g *echo.G
 
 func (em *IServerMock) Start(address string) error {
 	args := em.Called(address)
+	return args.Error(0)
+}
+
+func (em *IServerMock) Shutdown(ctx context.Context) error {
+	args := em.Called(ctx)
 	return args.Error(0)
 }
 

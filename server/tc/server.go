@@ -17,6 +17,7 @@ type ITcClient interface {
 
 type IDb interface {
 	UpsertProject(r db.Project) (*db.Project, error)
+	ProjectList() ([]db.Project, error)
 }
 
 type Server struct {

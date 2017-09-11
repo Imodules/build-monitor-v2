@@ -2,6 +2,7 @@ package tc_test
 
 import (
 	"build-monitor-v2/server/db"
+
 	"github.com/kapitanov/go-teamcity"
 	"github.com/stretchr/testify/mock"
 )
@@ -28,4 +29,14 @@ func (m *IDbMock) UpsertProject(r db.Project) (*db.Project, error) {
 	}
 
 	return args.Get(0).(*db.Project), args.Error(1)
+}
+
+func (m *IDbMock) ProjectList() ([]db.Project, error) {
+	args := m.Called()
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]db.Project), args.Error(1)
 }

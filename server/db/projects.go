@@ -27,6 +27,7 @@ func (appDb *AppDb) UpsertProject(r Project) (*Project, error) {
 				"description":     r.Description,
 				"parentProjectId": r.ParentProjectID,
 			},
+			"$unset":       bson.M{"deleted": ""},
 			"$setOnInsert": bson.M{"createdAt": now},
 		},
 		Upsert:    true,

@@ -69,6 +69,32 @@ func TestAppDb_UpsertProject(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When project is deleted in the db", func() {
+			delErr := appDb.DeleteProject(project.Id)
+			So(delErr, ShouldBeNil)
+
+			project.Name = "again!"
+
+			result, err := appDb.UpsertProject(project)
+
+			Convey("It should not error and return the updated object", func() {
+				So(err, ShouldBeNil)
+				So(result, ShouldNotBeNil)
+
+				So(result.Id, ShouldEqual, project.Id)
+				So(result.Name, ShouldEqual, project.Name)
+
+				Convey("And it should remove the deleted flag and be able to be found in the db", func() {
+					var dbProject db.Project
+					err := db.FindById(db.Projects(appDb.Session), result.Id, &dbProject)
+
+					So(err, ShouldBeNil)
+					So(dbProject.Id, ShouldEqual, result.Id)
+					So(dbProject.Name, ShouldEqual, result.Name)
+				})
+			})
+		})
 	})
 }
 

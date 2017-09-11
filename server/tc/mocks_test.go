@@ -14,6 +14,10 @@ type ITcClientMock struct {
 func (m *ITcClientMock) GetProjects() ([]teamcity.Project, error) {
 	args := m.Called()
 
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
 	return args.Get(0).([]teamcity.Project), args.Error(1)
 }
 
@@ -39,4 +43,10 @@ func (m *IDbMock) ProjectList() ([]db.Project, error) {
 	}
 
 	return args.Get(0).([]db.Project), args.Error(1)
+}
+
+func (m *IDbMock) DeleteProject(id string) error {
+	args := m.Called(id)
+
+	return args.Error(0)
 }

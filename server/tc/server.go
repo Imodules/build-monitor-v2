@@ -18,6 +18,7 @@ type ITcClient interface {
 type IDb interface {
 	UpsertProject(r db.Project) (*db.Project, error)
 	ProjectList() ([]db.Project, error)
+	DeleteProject(id string) error
 }
 
 type Server struct {
@@ -44,7 +45,7 @@ func NewServer(log *logrus.Entry, c *cfg.Config, appDb IDb) Server {
 
 func (c *Server) Start() error {
 	// Refresh projects on start to ensure we are able to connect and read from the server
-	if err := c.RefreshProjects(); err != nil {
+	if err := RefreshProjects(c); err != nil {
 		return err
 	}
 
@@ -91,7 +92,7 @@ func monitor(c *Server) {
 			c.Log.Info("Stopping")
 			break
 		case <-time.After(c.ProjectPollInterval):
-			c.RefreshProjects()
+			RefreshProjects(c)
 		}
 	}
 

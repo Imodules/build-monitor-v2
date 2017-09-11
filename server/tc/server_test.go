@@ -11,7 +11,6 @@ import (
 
 	"errors"
 
-	"github.com/kapitanov/go-teamcity"
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -68,41 +67,48 @@ func TestServer_Start_Shutdown(t *testing.T) {
 			ProjectPollInterval: time.Millisecond * 500,
 		}
 
-		projects := []teamcity.Project{}
-
 		Convey("When we successfully start the monitor", func() {
-			Convey("It should call GetProjects at startup", func() {
+			oldRefreshProjects := tc.RefreshProjects
+			refreshProjectsCallCount := 0
+			tc.RefreshProjects = func(tcs *tc.Server) error {
+				refreshProjectsCallCount++
+				return nil
+			}
+			defer func() { tc.RefreshProjects = oldRefreshProjects }()
 
-				serverMock.On("GetProjects").Times(2).Return(projects, nil)
+			Convey("It should call GetProjects at startup", func() {
 
 				err := c.Start()
 				So(err, ShouldBeNil)
-				So(len(serverMock.Calls), ShouldEqual, 1)
+				So(refreshProjectsCallCount, ShouldEqual, 1)
 
 				Convey("And call again after the timeout", func() {
 					<-time.After(time.Millisecond * 750)
 
-					So(len(serverMock.Calls), ShouldEqual, 2)
+					So(refreshProjectsCallCount, ShouldEqual, 2)
 
 					c.Shutdown()
-
-					serverMock.AssertExpectations(t)
 				})
 
 			})
 		})
 
 		Convey("When we fail to start the monitor", func() {
-			Convey("It should call GetProjects at startup", func() {
+			expectedError := errors.New("there was something wrong")
 
-				expectedError := errors.New("there was something wrong")
-				serverMock.On("GetProjects").Times(1).Return(projects, expectedError)
+			oldRefreshProjects := tc.RefreshProjects
+			refreshProjectsCallCount := 0
+			tc.RefreshProjects = func(tcs *tc.Server) error {
+				refreshProjectsCallCount++
+				return expectedError
+			}
+			defer func() { tc.RefreshProjects = oldRefreshProjects }()
+
+			Convey("It should call RefreshProjects at startup", func() {
 
 				err := c.Start()
 				So(err, ShouldEqual, expectedError)
-
-				serverMock.AssertExpectations(t)
-
+				So(refreshProjectsCallCount, ShouldEqual, 1)
 			})
 		})
 	})

@@ -6,16 +6,20 @@ import (
 	"github.com/kapitanov/go-teamcity"
 )
 
-func (c *Server) RefreshProjects() error {
+var RefreshProjects = func(c *Server) error {
 	projects, err := c.Tc.GetProjects()
 	if err != nil {
 		c.Log.Errorf("Failed to get projects from Team city: %v", err)
 		return err
 	}
 
-	// TODO: Get project map, remove them as we process them
+	dbProjectMap, pmErr := projectMap(c.Db)
+	if pmErr != nil {
+		c.Log.Errorf("Failed to get projects from Team city: %v", err)
+		return pmErr
+	}
 
-	c.Log.Infof("List of projects:\n")
+	c.Log.Infof("List of projects:")
 	for _, project := range projects {
 		if project.ID != "_Root" {
 			dbProject := ProjectToDb(project)
@@ -24,10 +28,14 @@ func (c *Server) RefreshProjects() error {
 			if dbErr != nil {
 				c.Log.Errorf("Failed to upsert project. Id: %s, Name: %s", dbProject.Id, dbProject.Name)
 			}
+
+			delete(dbProjectMap, dbProject.Id)
 		}
 	}
 
-	// TODO: Delete from the db any projects left in the map
+	for _, project := range dbProjectMap {
+		c.Db.DeleteProject(project.Id)
+	}
 
 	return nil
 }

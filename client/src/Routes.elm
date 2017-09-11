@@ -31,4 +31,4 @@ profile =
 
 settings : String
 settings =
-    "/user/settings"
+    "/settings"

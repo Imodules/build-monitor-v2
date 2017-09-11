@@ -4,18 +4,21 @@ div.elm-overlay {
   z-index: 2;
 }
 
-.navbar {
-  //border-bottom: solid 1px #000;
-  background-color: $light;
-  z-index: 10;
+div#dashboard {
+  background-color: #000;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
 
-  .navbar-item {
+  #configLink {
+	position: absolute;
+	top: 0;
+	right: 0;
 
-      .container, .column {
-        &> .icon {
-          margin-right: 5px;
-        }
-      }
-
+	a {
+	  text-decoration: none;
+	}
   }
 }

@@ -1,4 +1,4 @@
-module Pages.Profile exposing (..)
+module Pages.Settings exposing (..)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
@@ -8,4 +8,4 @@ import Msgs exposing (Msg)
 
 view : Model -> Html Msg
 view model =
-    text "Pages.Profile.elm"
+    text "Pages.Settings.elm"

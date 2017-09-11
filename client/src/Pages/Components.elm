@@ -14,6 +14,11 @@ link aClass route aText =
     a [ class aClass, href (toPath route), onLinkClick (Msgs.ChangeLocation route) ] [ text aText ]
 
 
+iconLink : String -> Route -> Icon -> Html Msg
+iconLink aClass route icon =
+    a [ class aClass, href (toPath route), onLinkClick (Msgs.ChangeLocation route) ] [ i [ class icon ] [] ]
+
+
 iconTextLink : String -> Route -> Icon -> String -> Html Msg
 iconTextLink aClass route icon aText =
     a [ class aClass, href (toPath route), onLinkClick (Msgs.ChangeLocation route) ] [ i [ class icon ] [], text aText ]

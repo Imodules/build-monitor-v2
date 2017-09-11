@@ -34,7 +34,8 @@ type Server struct {
 
 func NewServer(log *logrus.Entry, c *cfg.Config, appDb IDb) Server {
 	return Server{
-		Tc:                       teamcity.NewClient(c.TcUrl, teamcity.GuestAuth()),
+		//Tc:                       teamcity.NewClient(c.TcUrl, teamcity.GuestAuth()),
+		Tc:                       teamcity.NewClient(c.TcUrl, teamcity.BasicAuth("pstuart2", "Ask8Star!")),
 		Db:                       appDb,
 		Log:                      log,
 		ProjectPollInterval:      getIntervalDuration(log, "TcProjectPollInterval", c.TcProjectPollInterval),

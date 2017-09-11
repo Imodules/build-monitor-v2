@@ -33,7 +33,7 @@ func getDefaults() Config {
 		ClientPath:    "../client/dist",
 		AllowedOrigin: "*",
 		JwtSecret:     "you-really-need-to-change-this-one-also",
-		TcUrl:         "http://localhost:3031",
+		TcUrl:         "http://pstuart.no-ip.org:8111",
 		TcProjectPollInterval:      "20m",
 		TcBuildPollInterval:        "20s",
 		TcRunningBuildPollInterval: "5s",

@@ -17,7 +17,7 @@ matchers =
         [ map DashboardRoute top
         , map SignUpRoute (s "signup")
         , map LoginRoute (s "login")
-        , map SettingsRoute (s "user" </> s "settings")
+        , map SettingsRoute (s "settings")
         ]
 
 

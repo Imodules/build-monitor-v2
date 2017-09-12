@@ -52,7 +52,4 @@ noAccess model =
 
 contentWrapper : Html Msg -> Html Msg
 contentWrapper content_ =
-    div []
-        [ section [ class "section" ]
-            [ content_ ]
-        ]
+    div [ class "container is-fluid wrapper" ] [ content_ ]

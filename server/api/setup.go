@@ -44,6 +44,7 @@ func setupRoutes(s *Server) {
 	secureGroup := s.Server.Group("/api", requireClaims)
 	secureGroup.GET("/authenticate", s.ReAuthenticate)
 
+	secureGroup.GET("/projects", s.Projects)
 }
 
 func logRoutes(s *Server) {

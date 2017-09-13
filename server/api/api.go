@@ -44,6 +44,8 @@ type IAppDb interface {
 	FindUserByLogin(usernameOrEmail string, password string) (*db.User, error)
 	FindUserById(id string) (*db.User, error)
 	LogUserLogin(user *db.User)
+
+	ProjectList() ([]db.Project, error)
 }
 
 type Server struct {

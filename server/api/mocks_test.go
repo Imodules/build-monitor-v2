@@ -180,4 +180,14 @@ func (m *IAppDbMock) LogUserLogin(user *db.User) {
 	m.Called(user)
 }
 
+func (m *IAppDbMock) ProjectList() ([]db.Project, error) {
+	args := m.Called()
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]db.Project), args.Error(1)
+}
+
 //endregion

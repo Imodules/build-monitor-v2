@@ -44,8 +44,6 @@ toPath route =
 getLocationCommand : Model -> Route -> Cmd Msg
 getLocationCommand model route =
     let
-        -- TODO: Check to see if command requires auth and we are authed
-        -- TODO: Then once authed, execute location command again.
         token =
             case model.user of
                 Just user ->

@@ -95,7 +95,7 @@ handleReAuth model result =
             ( newModel
             , Cmd.batch
                 [ setTokenStorage user_.token
-                , Lib.createCommand (RefreshPageData Time.millisecond)
+                , Lib.createCommand (RefreshPageData 0)
                 ]
             )
 

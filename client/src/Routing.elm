@@ -1,5 +1,6 @@
 module Routing exposing (..)
 
+import Api
 import Html exposing (Attribute)
 import Html.Events exposing (onWithOptions)
 import Json.Decode as Decode
@@ -42,7 +43,21 @@ toPath route =
 
 getLocationCommand : Model -> Route -> Cmd Msg
 getLocationCommand model route =
+    let
+        -- TODO: Check to see if command requires auth and we are authed
+        -- TODO: Then once authed, execute location command again.
+        token =
+            case model.user of
+                Just user ->
+                    user.token
+
+                _ ->
+                    ""
+    in
     case route of
+        SettingsRoute ->
+            Api.fetchProjects model.flags.apiUrl token
+
         _ ->
             Cmd.none
 

@@ -1,6 +1,7 @@
 module Models exposing (..)
 
 import Auth.Models as Auth
+import RemoteData exposing (WebData)
 import Routes exposing (Route)
 import Time.DateTime as DateTime exposing (DateTime)
 import Types exposing (..)
@@ -12,6 +13,7 @@ initialModel flags route =
     , route = route
     , user = Nothing
     , auth = Auth.initialModel
+    , projects = RemoteData.Loading
     }
 
 
@@ -25,6 +27,7 @@ type alias Model =
     , route : Route
     , user : Maybe User
     , auth : Auth.Model
+    , projects : WebData (List Project)
     }
 
 
@@ -36,4 +39,12 @@ type alias User =
     , email : Email
     , token : Token
     , lastLoginAt : DateTime
+    }
+
+
+type alias Project =
+    { id : Id
+    , name : String
+    , description : String
+    , parentObjectId : Id
     }

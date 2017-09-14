@@ -14,3 +14,8 @@ login baseApiUrl =
 reAuthenticate : String -> String
 reAuthenticate baseApiUrl =
     baseApiUrl ++ "/authenticate"
+
+
+projects : String -> String
+projects baseApiUrl =
+    baseApiUrl ++ "/projects"

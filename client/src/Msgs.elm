@@ -1,8 +1,9 @@
 module Msgs exposing (..)
 
 import Http
-import Models exposing (User)
+import Models exposing (Project, User)
 import Navigation exposing (Location)
+import RemoteData exposing (WebData)
 import Routes exposing (Route)
 import Time exposing (Time)
 import Types exposing (..)
@@ -21,6 +22,7 @@ type Msg
     | OnLogin (Result Http.Error User)
     | OnReAuth (Result Http.Error User)
     | Logout
+    | OnFetchProjects (WebData (List Project))
 
 
 type AuthMsg

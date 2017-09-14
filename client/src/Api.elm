@@ -1,8 +1,12 @@
 module Api exposing (..)
 
+import Decoders exposing (projectsDecoder)
 import Http
 import Json.Decode as Decode exposing (Decoder)
+import Msgs exposing (Msg)
+import RemoteData
 import Types exposing (..)
+import Urls
 
 
 authHeader : Token -> Http.Header
@@ -60,3 +64,10 @@ patch url body =
         , timeout = Nothing
         , withCredentials = False
         }
+
+
+fetchProjects : String -> String -> Cmd Msg
+fetchProjects baseApiUrl token =
+    authGet (Urls.projects baseApiUrl) token projectsDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map Msgs.OnFetchProjects

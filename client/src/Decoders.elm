@@ -2,7 +2,8 @@ module Decoders exposing (..)
 
 import Json.Decode as Decode exposing (Decoder, andThen, fail, string, succeed)
 import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
-import Models exposing (User)
+import Models exposing (Project, User)
+import RemoteData
 import Time.DateTime as DateTime exposing (DateTime)
 
 
@@ -18,7 +19,7 @@ dateTimeDecoder =
                 Err error ->
                     fail error
     in
-        string |> andThen convert
+    string |> andThen convert
 
 
 profileDecoder : Decode.Decoder User
@@ -31,3 +32,17 @@ profileDecoder =
         |> required "email" Decode.string
         |> required "token" Decode.string
         |> required "lastLoginAt" dateTimeDecoder
+
+
+projectsDecoder : Decode.Decoder (List Project)
+projectsDecoder =
+    Decode.list projectDecoder
+
+
+projectDecoder : Decode.Decoder Project
+projectDecoder =
+    decode Project
+        |> required "id" Decode.string
+        |> required "name" Decode.string
+        |> required "description" Decode.string
+        |> required "parentProjectId" Decode.string

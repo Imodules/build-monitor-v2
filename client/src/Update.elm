@@ -60,6 +60,9 @@ update msg model =
         OnReAuth result ->
             handleReAuth model result
 
+        OnFetchProjects response ->
+            ( { model | projects = response }, Cmd.none )
+
 
 handleAuth : Model -> Result Http.Error User -> ( Model, Cmd Msg )
 handleAuth model result =

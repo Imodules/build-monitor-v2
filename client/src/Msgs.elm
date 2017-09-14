@@ -14,7 +14,6 @@ type Msg
     | ChangeLocation Route
     | OnLocationChange Location
     | GoBack
-    | Poll Time
     | SetTokenStorage Token
     | GotTokenFromStorage Token
     | AuthMsg AuthMsg
@@ -22,6 +21,7 @@ type Msg
     | OnLogin (Result Http.Error User)
     | OnReAuth (Result Http.Error User)
     | Logout
+    | RefreshPageData Time
     | OnFetchProjects (WebData (List Project))
 
 

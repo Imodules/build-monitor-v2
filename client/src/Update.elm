@@ -12,6 +12,7 @@ import Navigation exposing (back, newUrl)
 import Ports exposing (logout, setTokenStorage)
 import Routes exposing (Route(DashboardRoute))
 import Routing exposing (getLocationCommand, parseLocation, toPath)
+import Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -36,9 +37,6 @@ update msg model =
             in
             ( { model | route = newRoute }, newCommand )
 
-        Poll _ ->
-            ( model, getLocationCommand model model.route )
-
         SetTokenStorage token ->
             ( model, setTokenStorage token )
 
@@ -59,6 +57,9 @@ update msg model =
 
         OnReAuth result ->
             handleReAuth model result
+
+        RefreshPageData _ ->
+            ( model, getLocationCommand model model.route )
 
         OnFetchProjects response ->
             ( { model | projects = response }, Cmd.none )
@@ -87,7 +88,16 @@ handleReAuth : Model -> Result Http.Error User -> ( Model, Cmd Msg )
 handleReAuth model result =
     case result of
         Ok user_ ->
-            ( { model | user = Just user_ }, setTokenStorage user_.token )
+            let
+                newModel =
+                    { model | user = Just user_ }
+            in
+            ( newModel
+            , Cmd.batch
+                [ setTokenStorage user_.token
+                , Lib.createCommand (RefreshPageData Time.millisecond)
+                ]
+            )
 
         Err r ->
             let

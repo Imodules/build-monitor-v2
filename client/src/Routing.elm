@@ -54,12 +54,15 @@ getLocationCommand model route =
                 _ ->
                     ""
     in
-    case route of
-        SettingsRoute ->
-            Api.fetchProjects model.flags.apiUrl token
+    if needsToLogin model route then
+        Cmd.none
+    else
+        case route of
+            SettingsRoute ->
+                Api.fetchProjects model.flags.apiUrl token
 
-        _ ->
-            Cmd.none
+            _ ->
+                Cmd.none
 
 
 authRoutes : List Route

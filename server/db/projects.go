@@ -53,12 +53,15 @@ func (appDb *AppDb) DeleteProject(id string) error {
 func (appDb *AppDb) ProjectList() ([]Project, error) {
 	var projectList []Project
 
-	if err := Projects(appDb.Session).Find(bson.M{"deleted": bson.M{"$exists": false}}).Select(bson.M{
-		"_id":             1,
-		"name":            1,
-		"description":     1,
-		"parentProjectId": 1,
-	}).All(&projectList); err != nil {
+	if err := Projects(appDb.Session).
+		Find(bson.M{"deleted": bson.M{"$exists": false}}).
+		Sort("name").
+		Select(bson.M{
+			"_id":             1,
+			"name":            1,
+			"description":     1,
+			"parentProjectId": 1,
+		}).All(&projectList); err != nil {
 		return nil, err
 	}
 

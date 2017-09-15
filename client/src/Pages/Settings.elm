@@ -1,7 +1,7 @@
 module Pages.Settings exposing (..)
 
 import Html exposing (Html, div, li, text, ul)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, id)
 import Models exposing (Model, Project)
 import Msgs exposing (Msg)
 import Pages.Components exposing (iconLinkButton)
@@ -11,9 +11,9 @@ import Routes exposing (Route(DashboardRoute))
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ div [] [ dashboardButton ]
-        , div [] [ maybeProjects model model.projects ]
+    div [ id "settings" ]
+        [ div [ class "button-area" ] [ dashboardButton ]
+        , div [ class "project-area" ] [ maybeProjects model model.projects ]
         ]
 
 
@@ -41,22 +41,29 @@ maybeProjects model response =
 projectTree : Model -> List Project -> Html Msg
 projectTree model projects =
     let
-        -- TODO: Sort by name
         content =
-            List.indexedMap projectRow (topProjects projects)
+            List.map (\p -> topProjectRow p projects) (topProjects projects)
     in
-    ul [] content
+    div [] content
 
 
-projectRow : Int -> Project -> Html Msg
-projectRow id project =
-    li [] [ text (toString id ++ " " ++ project.name) ]
+topProjectRow : Project -> List Project -> Html Msg
+topProjectRow project projects =
+    let
+        content =
+            List.map (\p -> topProjectRow p projects) (projectsByParent project.id projects)
+    in
+    div [ class "box" ]
+        [ text project.name
+        , div [ class "box" ] content
+        ]
 
 
 topProjects : List Project -> List Project
-topProjects projects =
-    let
-        hasRootParent n =
-            n.parentObjectId == "_Root"
-    in
-    List.filter hasRootParent projects
+topProjects =
+    projectsByParent "_Root"
+
+
+projectsByParent : String -> List Project -> List Project
+projectsByParent parent projects =
+    List.filter (\n -> n.parentObjectId == parent) projects

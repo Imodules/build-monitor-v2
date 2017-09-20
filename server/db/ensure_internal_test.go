@@ -57,10 +57,10 @@ func TestEnsure_Ensure(t *testing.T) {
 
 	})
 
-	Convey("When ensureTeamCityId fails", t, func() {
-		origEnsure := ensureTeamCityId
-		ensureTeamCityId = badEnsure(0)
-		defer func() { ensureTeamCityId = origEnsure }()
+	Convey("When ensureProjectId fails", t, func() {
+		origEnsure := ensureProjectId
+		ensureProjectId = badEnsure(0)
+		defer func() { ensureProjectId = origEnsure }()
 
 		Convey("It should successfully ensure the indexes on the database", func() {
 			err := Ensure(dbSession, log)

@@ -14,6 +14,10 @@ func Ensure(session *mgo.Session, log *logrus.Entry) error {
 		return err
 	}
 
+	if err := ensureBuildTypeCollection(BuildTypes(session), log); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -32,13 +36,17 @@ func ensureUserCollection(c *mgo.Collection, log *logrus.Entry) error {
 }
 
 func ensureProjectCollection(c *mgo.Collection, log *logrus.Entry) error {
-	if err := ensureTeamCityId(c); err != nil {
-		log.Error("Failed calling ensureTeamCityId: ", err)
+	if err := ensureDeleted(c); err != nil {
+		log.Error("Failed calling ensureDeleted: ", err)
 		return err
 	}
 
-	if err := ensureDeleted(c); err != nil {
-		log.Error("Failed calling ensureDeleted: ", err)
+	return nil
+}
+
+func ensureBuildTypeCollection(c *mgo.Collection, log *logrus.Entry) error {
+	if err := ensureProjectId(c); err != nil {
+		log.Error("Failed calling ensureProjectId: ", err)
 		return err
 	}
 
@@ -67,17 +75,6 @@ var ensureEmail = func(c *mgo.Collection) error {
 	return c.EnsureIndex(index)
 }
 
-var ensureTeamCityId = func(c *mgo.Collection) error {
-	index := mgo.Index{
-		Key:        []string{"teamCityId"},
-		Unique:     true,
-		DropDups:   true,
-		Background: true,
-		Sparse:     true,
-	}
-	return c.EnsureIndex(index)
-}
-
 var ensureDeleted = func(c *mgo.Collection) error {
 	index := mgo.Index{
 		Key:         []string{"deleted"},
@@ -86,6 +83,17 @@ var ensureDeleted = func(c *mgo.Collection) error {
 		Background:  true,
 		Sparse:      true,
 		ExpireAfter: 60 * 60 * 24 * 7, // 1 week
+	}
+	return c.EnsureIndex(index)
+}
+
+var ensureProjectId = func(c *mgo.Collection) error {
+	index := mgo.Index{
+		Key:        []string{"projectId"},
+		Unique:     false,
+		DropDups:   false,
+		Background: true,
+		Sparse:     true,
 	}
 	return c.EnsureIndex(index)
 }

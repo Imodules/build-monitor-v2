@@ -1,6 +1,6 @@
 module Pages.Settings exposing (..)
 
-import Html exposing (Html, div, li, text, ul)
+import Html exposing (Html, div, h4, li, text, ul)
 import Html.Attributes exposing (class, id)
 import Models exposing (Model, Project)
 import Msgs exposing (Msg)
@@ -54,7 +54,7 @@ topProjectRow project projects =
             List.map (\p -> topProjectRow p projects) (projectsByParent project.id projects)
     in
     div [ class "box" ]
-        [ text project.name
+        [ h4 [ class "title is-4" ] [ text project.name ]
         , div [ class "box" ] content
         ]
 

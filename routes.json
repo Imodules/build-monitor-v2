@@ -1,4 +1,5 @@
 {
   "/guestAuth/app/rest/*": "/$1",
-  "/projects/id\\::pid": "/projects?id=:pid"
+  "/projects/id\\::pid": "/projects?id=:pid",
+  "/buildTypes/id\\::pid": "/buildTypes?id=:pid"
 }

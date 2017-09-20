@@ -76,16 +76,26 @@ func TestServer_Start_Shutdown(t *testing.T) {
 			}
 			defer func() { tc.RefreshProjects = oldRefreshProjects }()
 
+			oldRefreshBuildTypes := tc.RefreshBuildTypes
+			refreshBuildTypesCallCount := 0
+			tc.RefreshBuildTypes = func(tcs *tc.Server) error {
+				refreshBuildTypesCallCount++
+				return nil
+			}
+			defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
+
 			Convey("It should call GetProjects at startup", func() {
 
 				err := c.Start()
 				So(err, ShouldBeNil)
 				So(refreshProjectsCallCount, ShouldEqual, 1)
+				So(refreshBuildTypesCallCount, ShouldEqual, 1)
 
 				Convey("And call again after the timeout", func() {
 					<-time.After(time.Millisecond * 750)
 
 					So(refreshProjectsCallCount, ShouldEqual, 2)
+					So(refreshBuildTypesCallCount, ShouldEqual, 2)
 
 					c.Shutdown()
 				})
@@ -93,7 +103,7 @@ func TestServer_Start_Shutdown(t *testing.T) {
 			})
 		})
 
-		Convey("When we fail to start the monitor", func() {
+		Convey("When we fail to start the monitor because RefreshProjects fails", func() {
 			expectedError := errors.New("there was something wrong")
 
 			oldRefreshProjects := tc.RefreshProjects
@@ -104,11 +114,48 @@ func TestServer_Start_Shutdown(t *testing.T) {
 			}
 			defer func() { tc.RefreshProjects = oldRefreshProjects }()
 
+			oldRefreshBuildTypes := tc.RefreshBuildTypes
+			refreshBuildTypesCallCount := 0
+			tc.RefreshBuildTypes = func(tcs *tc.Server) error {
+				refreshBuildTypesCallCount++
+				return nil
+			}
+			defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
+
 			Convey("It should call RefreshProjects at startup", func() {
 
 				err := c.Start()
 				So(err, ShouldEqual, expectedError)
 				So(refreshProjectsCallCount, ShouldEqual, 1)
+				So(refreshBuildTypesCallCount, ShouldEqual, 0)
+			})
+		})
+
+		Convey("When we fail to start the monitor because RefreshBuildTypes fails", func() {
+			expectedError := errors.New("there was something wrong")
+
+			oldRefreshProjects := tc.RefreshProjects
+			refreshProjectsCallCount := 0
+			tc.RefreshProjects = func(tcs *tc.Server) error {
+				refreshProjectsCallCount++
+				return nil
+			}
+			defer func() { tc.RefreshProjects = oldRefreshProjects }()
+
+			oldRefreshBuildTypes := tc.RefreshBuildTypes
+			refreshBuildTypesCallCount := 0
+			tc.RefreshBuildTypes = func(tcs *tc.Server) error {
+				refreshBuildTypesCallCount++
+				return expectedError
+			}
+			defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
+
+			Convey("It should call RefreshProjects at startup", func() {
+
+				err := c.Start()
+				So(err, ShouldEqual, expectedError)
+				So(refreshProjectsCallCount, ShouldEqual, 1)
+				So(refreshBuildTypesCallCount, ShouldEqual, 1)
 			})
 		})
 	})

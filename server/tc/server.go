@@ -13,12 +13,17 @@ import (
 
 type ITcClient interface {
 	GetProjects() ([]teamcity.Project, error)
+	GetBuildTypes() ([]teamcity.BuildType, error)
 }
 
 type IDb interface {
 	UpsertProject(r db.Project) (*db.Project, error)
 	ProjectList() ([]db.Project, error)
 	DeleteProject(id string) error
+
+	UpsertBuildType(r db.BuildType) (*db.BuildType, error)
+	BuildTypeList() ([]db.BuildType, error)
+	DeleteBuildType(id string) error
 }
 
 type Server struct {
@@ -45,7 +50,7 @@ func NewServer(log *logrus.Entry, c *cfg.Config, appDb IDb) Server {
 
 func (c *Server) Start() error {
 	// Refresh projects on start to ensure we are able to connect and read from the server
-	if err := RefreshProjects(c); err != nil {
+	if err := refresh(c); err != nil {
 		return err
 	}
 
@@ -92,9 +97,21 @@ func monitor(c *Server) {
 			c.Log.Info("Stopping")
 			break
 		case <-time.After(c.ProjectPollInterval):
-			RefreshProjects(c)
+			refresh(c)
 		}
 	}
 
 	c.stopped <- true
+}
+
+func refresh(c *Server) error {
+	if err := RefreshProjects(c); err != nil {
+		return err
+	}
+
+	if err := RefreshBuildTypes(c); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -9,6 +9,7 @@ import (
 
 	"build-monitor-v2/server/db"
 	"errors"
+
 	"github.com/kapitanov/go-teamcity"
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
@@ -28,9 +29,42 @@ func TestServer_RefreshBuildTypes(t *testing.T) {
 		}
 
 		Convey("When there are no projects", func() {
-			projects := []teamcity.BuildType{}
+			projects := []db.Project{}
 
-			serverMock.On("GetBuildTypes").Times(1).Return(projects, nil)
+			dbMock.On("ProjectList").Return(projects, nil)
+
+			Convey("It should not query team city or update the db", func() {
+				tc.RefreshBuildTypes(&c)
+
+				serverMock.AssertExpectations(t)
+				dbMock.AssertExpectations(t)
+			})
+		})
+
+		Convey("When we fail to get the project map", func() {
+			expectedError := errors.New("this was expected")
+			dbMock.On("ProjectList").Return(nil, expectedError)
+
+			Convey("It should not query team city or update the db and return the error", func() {
+				err := tc.RefreshBuildTypes(&c)
+
+				serverMock.AssertExpectations(t)
+				dbMock.AssertExpectations(t)
+
+				So(err, ShouldEqual, expectedError)
+			})
+		})
+
+		Convey("When there are no build types", func() {
+			projects := []db.Project{
+				{Id: "something neat 1"},
+			}
+
+			dbMock.On("ProjectList").Return(projects, nil)
+
+			buildTypes := []teamcity.BuildType{}
+
+			serverMock.On("GetBuildTypes").Times(1).Return(buildTypes, nil)
 
 			dbBuildTypes := []db.BuildType{}
 			dbMock.On("BuildTypeList").Return(dbBuildTypes, nil)
@@ -43,25 +77,33 @@ func TestServer_RefreshBuildTypes(t *testing.T) {
 			})
 		})
 
-		Convey("When there are projects", func() {
-			projects := []teamcity.BuildType{
-				{ID: "_Root", Name: "Root BuildType", Description: "I am _Root"},
-				{ID: "p1", Name: "1 BuildType", Description: "Something here _", ProjectID: "_Root"},
-				{ID: "p2", Name: "2 BuildType", Description: "Something here 1", ProjectID: "_Root"},
-				{ID: "p3", Name: "3 BuildType", Description: "Something here 2", ProjectID: "p1"},
-				{ID: "p4", Name: "4 BuildType", Description: "Something here 3", ProjectID: "p3"},
+		Convey("When there are buildTypes and projects", func() {
+			projects := []db.Project{
+				{Id: "p1"},
+				{Id: "p3"},
 			}
 
-			serverMock.On("GetBuildTypes").Times(1).Return(projects, nil)
+			dbMock.On("ProjectList").Return(projects, nil)
+
+			buildTypes := []teamcity.BuildType{
+				{ID: "bt1", Name: "1 BuildType", Description: "Something here _", ProjectID: "p1"},
+				{ID: "bt2", Name: "2 BuildType", Description: "Something here 1", ProjectID: "p3"},
+				{ID: "bt3", Name: "3 BuildType", Description: "Something here 2", ProjectID: "p1"},
+				{ID: "bt4", Name: "4 BuildType", Description: "Something here 3", ProjectID: "p3"},
+				{ID: "bt5", Name: "5 BuildType", Description: "Something here 3", ProjectID: "not-used"},
+			}
+
+			serverMock.On("GetBuildTypes").Times(1).Return(buildTypes, nil)
 
 			Convey("And the get BuildTypeList is successful", func() {
 				dbBuildTypes := []db.BuildType{}
 				dbMock.On("BuildTypeList").Return(dbBuildTypes, nil)
 
-				db1 := tc.BuildTypeToDb(projects[1])
-				db2 := tc.BuildTypeToDb(projects[2])
-				db3 := tc.BuildTypeToDb(projects[3])
-				db4 := tc.BuildTypeToDb(projects[4])
+				db1 := tc.BuildTypeToDb(buildTypes[0])
+				db2 := tc.BuildTypeToDb(buildTypes[1])
+				db3 := tc.BuildTypeToDb(buildTypes[2])
+				db4 := tc.BuildTypeToDb(buildTypes[3])
+				//db5 := tc.BuildTypeToDb(buildTypes[4])
 
 				Convey("And the upsert is successful", func() {
 					dbMock.On("UpsertBuildType", db1).Return(&db1, nil)
@@ -106,21 +148,27 @@ func TestServer_RefreshBuildTypes(t *testing.T) {
 			})
 		})
 
-		Convey("When there are projects in the database that are no longer in Tc", func() {
-			projects := []teamcity.BuildType{
-				{ID: "_Root", Name: "Root BuildType", Description: "I am _Root"},
-				{ID: "p1", Name: "1 BuildType", Description: "Something here _", ProjectID: "_Root"},
-				{ID: "p2", Name: "2 BuildType", Description: "Something here 1", ProjectID: "_Root"},
-				{ID: "p3", Name: "3 BuildType", Description: "Something here 2", ProjectID: "p1"},
-				{ID: "p4", Name: "4 BuildType", Description: "Something here 3", ProjectID: "p3"},
+		Convey("When there are buildTypes in the database that are no longer in Tc", func() {
+			projects := []db.Project{
+				{Id: "p1"},
+				{Id: "p3"},
 			}
 
-			serverMock.On("GetBuildTypes").Times(1).Return(projects, nil)
+			dbMock.On("ProjectList").Return(projects, nil)
 
-			db1 := tc.BuildTypeToDb(projects[1])
-			db2 := tc.BuildTypeToDb(projects[2])
-			db3 := tc.BuildTypeToDb(projects[3])
-			db4 := tc.BuildTypeToDb(projects[4])
+			buildTypes := []teamcity.BuildType{
+				{ID: "bt1", Name: "1 BuildType", Description: "Something here _", ProjectID: "p1"},
+				{ID: "bt2", Name: "2 BuildType", Description: "Something here 1", ProjectID: "p3"},
+				{ID: "bt3", Name: "3 BuildType", Description: "Something here 2", ProjectID: "p1"},
+				{ID: "bt4", Name: "4 BuildType", Description: "Something here 3", ProjectID: "p3"},
+			}
+
+			serverMock.On("GetBuildTypes").Times(1).Return(buildTypes, nil)
+
+			db1 := tc.BuildTypeToDb(buildTypes[0])
+			db2 := tc.BuildTypeToDb(buildTypes[1])
+			db3 := tc.BuildTypeToDb(buildTypes[2])
+			db4 := tc.BuildTypeToDb(buildTypes[3])
 			db5 := tc.BuildTypeToDb(teamcity.BuildType{ID: "p5", Name: "5 BuildType", Description: "Something here 5", ProjectID: "p1"})
 			db6 := tc.BuildTypeToDb(teamcity.BuildType{ID: "p6", Name: "6 BuildType", Description: "Something here 6", ProjectID: "p3"})
 
@@ -134,7 +182,7 @@ func TestServer_RefreshBuildTypes(t *testing.T) {
 			dbMock.On("UpsertBuildType", db3).Return(&db3, nil)
 			dbMock.On("UpsertBuildType", db4).Return(&db4, nil)
 
-			Convey("It should call the db for each project that is not _Root", func() {
+			Convey("It should call the db for each buildType", func() {
 				tc.RefreshBuildTypes(&c)
 
 				serverMock.AssertExpectations(t)
@@ -142,7 +190,14 @@ func TestServer_RefreshBuildTypes(t *testing.T) {
 			})
 		})
 
-		Convey("When we fail to get the tc projects", func() {
+		Convey("When we fail to get the tc buildTypes", func() {
+			projects := []db.Project{
+				{Id: "p1"},
+				{Id: "p3"},
+			}
+
+			dbMock.On("ProjectList").Return(projects, nil)
+
 			expectedErr := errors.New("this was expected")
 			serverMock.On("GetBuildTypes").Times(1).Return(nil, expectedErr)
 

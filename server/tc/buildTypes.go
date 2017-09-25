@@ -6,8 +6,17 @@ import (
 	"github.com/kapitanov/go-teamcity"
 )
 
-// TODO: This should only refresh build types for projects we have.
 var RefreshBuildTypes = func(c *Server) error {
+	projectMap, projErr := projectMap(c.Db)
+	if projErr != nil {
+		c.Log.Errorf("Failed to get project list from database: %v", projErr)
+		return projErr
+	}
+
+	if len(projectMap) == 0 {
+		return nil
+	}
+
 	buildTypes, err := c.Tc.GetBuildTypes()
 	if err != nil {
 		c.Log.Errorf("Failed to get buildTypes from Team city: %v", err)
@@ -22,7 +31,7 @@ var RefreshBuildTypes = func(c *Server) error {
 
 	c.Log.Infof("List of buildTypes:")
 	for _, buildType := range buildTypes {
-		if buildType.ID != "_Root" {
+		if _, ok := projectMap[buildType.ProjectID]; ok {
 			dbBuildType := BuildTypeToDb(buildType)
 
 			_, dbErr := c.Db.UpsertBuildType(dbBuildType)
@@ -34,8 +43,8 @@ var RefreshBuildTypes = func(c *Server) error {
 		}
 	}
 
-	for _, project := range dbBuildTypeMap {
-		c.Db.DeleteBuildType(project.Id)
+	for _, buildType := range dbBuildTypeMap {
+		c.Db.DeleteBuildType(buildType.Id)
 	}
 
 	return nil

@@ -12,7 +12,6 @@ import Navigation exposing (back, newUrl)
 import Ports exposing (logout, setTokenStorage)
 import Routes exposing (Route(DashboardRoute))
 import Routing exposing (getLocationCommand, parseLocation, toPath)
-import Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -63,6 +62,9 @@ update msg model =
 
         OnFetchProjects response ->
             ( { model | projects = response }, Cmd.none )
+
+        OnFetchBuildTypes response ->
+            ( { model | buildTypes = response }, Cmd.none )
 
 
 handleAuth : Model -> Result Http.Error User -> ( Model, Cmd Msg )

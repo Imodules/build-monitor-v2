@@ -46,6 +46,7 @@ type IAppDb interface {
 	LogUserLogin(user *db.User)
 
 	ProjectList() ([]db.Project, error)
+	BuildTypeList() ([]db.BuildType, error)
 }
 
 type Server struct {

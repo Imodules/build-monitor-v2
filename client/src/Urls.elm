@@ -19,3 +19,8 @@ reAuthenticate baseApiUrl =
 projects : String -> String
 projects baseApiUrl =
     baseApiUrl ++ "/projects"
+
+
+buildTypes : String -> String
+buildTypes baseApiUrl =
+    baseApiUrl ++ "/buildTypes"

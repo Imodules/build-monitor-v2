@@ -57,7 +57,10 @@ getLocationCommand model route =
     else
         case route of
             SettingsRoute ->
-                Api.fetchProjects model.flags.apiUrl token
+                Cmd.batch
+                    [ Api.fetchProjects model.flags.apiUrl token
+                    , Api.fetchBuildTypes model.flags.apiUrl token
+                    ]
 
             _ ->
                 Cmd.none

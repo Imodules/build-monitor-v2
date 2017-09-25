@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-// TODO: Will be tested with integration tests
+// This is tested with integration tests
 func (s *Server) Setup() error {
 
 	setupMiddleware(s)
@@ -45,6 +45,7 @@ func setupRoutes(s *Server) {
 	secureGroup.GET("/authenticate", s.ReAuthenticate)
 
 	secureGroup.GET("/projects", s.Projects)
+	secureGroup.GET("/buildTypes", s.BuildTypes)
 }
 
 func logRoutes(s *Server) {

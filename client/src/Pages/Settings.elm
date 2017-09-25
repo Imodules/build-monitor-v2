@@ -66,4 +66,4 @@ topProjects =
 
 projectsByParent : String -> List Project -> List Project
 projectsByParent parent projects =
-    List.filter (\n -> n.parentObjectId == parent) projects
+    List.filter (\n -> n.parentProjectId == parent) projects

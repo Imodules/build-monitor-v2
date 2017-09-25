@@ -2,8 +2,7 @@ module Decoders exposing (..)
 
 import Json.Decode as Decode exposing (Decoder, andThen, fail, string, succeed)
 import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
-import Models exposing (Project, User)
-import RemoteData
+import Models exposing (BuildType, Project, User)
 import Time.DateTime as DateTime exposing (DateTime)
 
 
@@ -46,3 +45,17 @@ projectDecoder =
         |> required "name" Decode.string
         |> required "description" Decode.string
         |> required "parentProjectId" Decode.string
+
+
+buildTypesDecoder : Decode.Decoder (List BuildType)
+buildTypesDecoder =
+    Decode.list buildTypeDecoder
+
+
+buildTypeDecoder : Decode.Decoder BuildType
+buildTypeDecoder =
+    decode BuildType
+        |> required "id" Decode.string
+        |> required "name" Decode.string
+        |> required "description" Decode.string
+        |> required "projectId" Decode.string

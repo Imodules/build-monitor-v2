@@ -1,6 +1,6 @@
 module Api exposing (..)
 
-import Decoders exposing (projectsDecoder)
+import Decoders exposing (buildTypesDecoder, projectsDecoder)
 import Http
 import Json.Decode as Decode exposing (Decoder)
 import Msgs exposing (Msg)
@@ -71,3 +71,10 @@ fetchProjects baseApiUrl token =
     authGet (Urls.projects baseApiUrl) token projectsDecoder
         |> RemoteData.sendRequest
         |> Cmd.map Msgs.OnFetchProjects
+
+
+fetchBuildTypes : String -> String -> Cmd Msg
+fetchBuildTypes baseApiUrl token =
+    authGet (Urls.buildTypes baseApiUrl) token buildTypesDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map Msgs.OnFetchBuildTypes

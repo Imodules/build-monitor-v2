@@ -14,6 +14,7 @@ initialModel flags route =
     , user = Nothing
     , auth = Auth.initialModel
     , projects = RemoteData.Loading
+    , buildTypes = RemoteData.Loading
     }
 
 
@@ -28,6 +29,7 @@ type alias Model =
     , user : Maybe User
     , auth : Auth.Model
     , projects : WebData (List Project)
+    , buildTypes : WebData (List BuildType)
     }
 
 
@@ -46,5 +48,13 @@ type alias Project =
     { id : Id
     , name : String
     , description : String
-    , parentObjectId : Id
+    , parentProjectId : Id
+    }
+
+
+type alias BuildType =
+    { id : Id
+    , name : String
+    , description : String
+    , projectId : Id
     }

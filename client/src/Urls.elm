@@ -24,3 +24,8 @@ projects baseApiUrl =
 buildTypes : String -> String
 buildTypes baseApiUrl =
     baseApiUrl ++ "/buildTypes"
+
+
+dashboards : String -> String
+dashboards baseApiUrl =
+    baseApiUrl ++ "/dashboards"

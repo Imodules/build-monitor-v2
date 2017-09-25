@@ -84,6 +84,26 @@ func createTestPostRequest(path string, body []byte) (echo.Context, *httptest.Re
 	return c, rec
 }
 
+func createTestPutRequest(path string, body []byte) (echo.Context, *httptest.ResponseRecorder) {
+	e := echo.New()
+	req, _ := http.NewRequest(echo.PUT, path, strings.NewReader(string(body)))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	return c, rec
+}
+
+func createTestDeleteRequest(path string) (echo.Context, *httptest.ResponseRecorder) {
+	e := echo.New()
+	req, _ := http.NewRequest(echo.DELETE, path, strings.NewReader(""))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	return c, rec
+}
+
 //endregion
 
 //region IServerMock Mock
@@ -198,6 +218,41 @@ func (m *IAppDbMock) BuildTypeList() ([]db.BuildType, error) {
 	}
 
 	return args.Get(0).([]db.BuildType), args.Error(1)
+}
+
+func (m *IAppDbMock) DashboardList(ownerId string) ([]db.Dashboard, error) {
+	args := m.Called(ownerId)
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]db.Dashboard), args.Error(1)
+}
+
+func (m *IAppDbMock) UpsertDashboard(dashboard db.Dashboard) (*db.Dashboard, error) {
+	args := m.Called(dashboard)
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).(*db.Dashboard), args.Error(1)
+}
+
+func (m *IAppDbMock) DeleteDashboard(id string) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+func (m *IAppDbMock) FindDashboardById(id string) (*db.Dashboard, error) {
+	args := m.Called(id)
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).(*db.Dashboard), args.Error(1)
 }
 
 //endregion

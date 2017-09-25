@@ -6,7 +6,7 @@ import Models exposing (BuildType, Model, Project)
 import Msgs exposing (Msg)
 import Pages.Components exposing (iconLinkButton)
 import RemoteData
-import Routes exposing (Route(DashboardRoute))
+import Routes exposing (Route(DashboardRoute, DashboardsRoute))
 import Types exposing (Id)
 
 
@@ -20,7 +20,7 @@ view model =
 
 dashboardButton : Html Msg
 dashboardButton =
-    iconLinkButton "is-primary" DashboardRoute "fa-tachometer" "Dashboard"
+    iconLinkButton "is-primary" DashboardsRoute "fa-tachometer" "Dashboard"
 
 
 maybeProjects : Model -> RemoteData.WebData (List Project) -> Html Msg

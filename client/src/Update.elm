@@ -10,7 +10,7 @@ import Models exposing (..)
 import Msgs exposing (Msg(..))
 import Navigation exposing (back, newUrl)
 import Ports exposing (logout, setTokenStorage)
-import Routes exposing (Route(DashboardRoute))
+import Routes exposing (Route(DashboardRoute, DashboardsRoute))
 import Routing exposing (getLocationCommand, parseLocation, toPath)
 
 
@@ -66,6 +66,9 @@ update msg model =
         OnFetchBuildTypes response ->
             ( { model | buildTypes = response }, Cmd.none )
 
+        OnFetchDashboards response ->
+            ( { model | dashboards = response }, Cmd.none )
+
 
 handleAuth : Model -> Result Http.Error User -> ( Model, Cmd Msg )
 handleAuth model result =
@@ -74,7 +77,7 @@ handleAuth model result =
             ( { model | user = Just user_, auth = Auth.Models.initialModel }
             , Cmd.batch
                 [ setTokenStorage user_.token
-                , Lib.createCommand (ChangeLocation DashboardRoute)
+                , Lib.createCommand (ChangeLocation DashboardsRoute)
                 ]
             )
 

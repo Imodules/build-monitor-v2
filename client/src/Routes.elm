@@ -1,17 +1,31 @@
 module Routes exposing (..)
 
+import Types exposing (Id)
+
 
 type Route
     = NotFoundRoute
     | SignUpRoute
     | LoginRoute
-    | DashboardRoute
+    | DashboardRoute Id
+    | NewDashboardRoute
+    | DashboardsRoute
     | SettingsRoute
 
 
-dashboard : String
-dashboard =
+dashboards : String
+dashboards =
     "/"
+
+
+dashboard : Id -> String
+dashboard id =
+    "/dashboards/" ++ id
+
+
+newDashboard : String
+newDashboard =
+    "/dashboards/new"
 
 
 signUp : String
@@ -27,8 +41,3 @@ login =
 profile : String
 profile =
     "/user"
-
-
-settings : String
-settings =
-    "/settings"

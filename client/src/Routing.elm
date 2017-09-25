@@ -15,7 +15,9 @@ import UrlParser exposing (..)
 matchers : Parser (Route -> a) a
 matchers =
     oneOf
-        [ map DashboardRoute top
+        [ map DashboardsRoute top
+        , map NewDashboardRoute (s "dashboards" </> s "new")
+        , map DashboardRoute (s "dashboards" </> string)
         , map SignUpRoute (s "signup")
         , map LoginRoute (s "login")
         , map SettingsRoute (s "settings")
@@ -31,11 +33,14 @@ toPath route =
         LoginRoute ->
             login
 
-        DashboardRoute ->
-            dashboard
+        DashboardRoute id ->
+            dashboard id
 
-        SettingsRoute ->
-            settings
+        DashboardsRoute ->
+            dashboards
+
+        NewDashboardRoute ->
+            newDashboard
 
         _ ->
             "not found"
@@ -62,13 +67,16 @@ getLocationCommand model route =
                     , Api.fetchBuildTypes model.flags.apiUrl token
                     ]
 
+            DashboardsRoute ->
+                Api.fetchDashboards model.flags.apiUrl token
+
             _ ->
                 Cmd.none
 
 
 authRoutes : List Route
 authRoutes =
-    [ DashboardRoute
+    [ DashboardsRoute
     , SettingsRoute
     ]
 

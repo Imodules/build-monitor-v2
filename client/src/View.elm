@@ -8,6 +8,7 @@ import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (smallIconLinkButton)
 import Pages.Dashboard as Dashboard
+import Pages.Dashboards as Dashboards
 import Pages.Settings as Settings
 import Routes exposing (Route(..))
 import Routing exposing (needsToLogin)
@@ -25,8 +26,14 @@ view model =
             LoginRoute ->
                 Login.view model |> contentWrapper
 
-            DashboardRoute ->
+            DashboardRoute id ->
                 Dashboard.view model
+
+            NewDashboardRoute ->
+                Dashboard.view model
+
+            DashboardsRoute ->
+                Dashboards.view model
 
             SettingsRoute ->
                 Settings.view model |> contentWrapper

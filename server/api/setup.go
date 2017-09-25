@@ -46,6 +46,11 @@ func setupRoutes(s *Server) {
 
 	secureGroup.GET("/projects", s.Projects)
 	secureGroup.GET("/buildTypes", s.BuildTypes)
+
+	secureGroup.GET("/dashboards", s.Dashboards)
+	secureGroup.POST("/dashboards", s.CreateDashboard)
+	secureGroup.PUT("/dashboards/:id", s.UpdateDashboard)
+	secureGroup.DELETE("/dashboards/:id", s.DeleteDashboard)
 }
 
 func logRoutes(s *Server) {

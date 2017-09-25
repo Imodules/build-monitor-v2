@@ -1,7 +1,7 @@
 module Msgs exposing (..)
 
 import Http
-import Models exposing (BuildType, Project, User)
+import Models exposing (BuildType, Dashboard, Project, User)
 import Navigation exposing (Location)
 import RemoteData exposing (WebData)
 import Routes exposing (Route)
@@ -24,6 +24,7 @@ type Msg
     | RefreshPageData Time
     | OnFetchProjects (WebData (List Project))
     | OnFetchBuildTypes (WebData (List BuildType))
+    | OnFetchDashboards (WebData (List Dashboard))
 
 
 type AuthMsg

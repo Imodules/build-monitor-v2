@@ -18,6 +18,7 @@ matchers : Parser (Route -> a) a
 matchers =
     oneOf
         [ map DashboardsRoute top
+        , map DashboardsRoute (s "dashboards")
         , map NewDashboardRoute (s "dashboards" </> s "new")
         , map DashboardRoute (s "dashboards" </> string)
         , map SignUpRoute (s "signup")

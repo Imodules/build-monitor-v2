@@ -8,14 +8,14 @@ import Models exposing (BuildType, Model, Project)
 import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
 import Pages.Components exposing (icon, iconLinkButton, textField)
 import RemoteData
-import Routes exposing (Route(DashboardRoute, DashboardsRoute))
+import Routes exposing (Route(DashboardsRoute))
 import Types exposing (Id)
 
 
 view : Model -> Html Msg
 view model =
     div [ id "settings" ]
-        [ div [ class "button-area" ] [ saveButton model.dashboards ]
+        [ div [ class "button-area" ] [ saveButton model.dashboards, cancelButton ]
         , div [] [ textField model.dashboards.dashboardForm.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" (ChangeDashboardName >> DashboardMsg) ]
         , hr [] []
         , h6 [ class "title is-6" ] [ text "Choose Builds" ]
@@ -33,6 +33,11 @@ saveButton model =
         [ icon "fa fa-check-square-o"
         , span [] [ text "Save" ]
         ]
+
+
+cancelButton : Html Msg
+cancelButton =
+    iconLinkButton "" DashboardsRoute "fa-times-circle-o" "Cancel"
 
 
 isFormValid : DashboardsModel.Model -> Bool

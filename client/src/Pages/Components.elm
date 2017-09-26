@@ -15,27 +15,27 @@ link aClass route aText =
 
 
 iconLink : String -> Route -> Icon -> Html Msg
-iconLink aClass route icon =
-    a [ class aClass, href (toPath route), onLinkClick (Msgs.ChangeLocation route) ] [ i [ class icon ] [] ]
+iconLink aClass route icon_ =
+    a [ class aClass, href (toPath route), onLinkClick (Msgs.ChangeLocation route) ] [ icon icon_ ]
 
 
 iconTextLink : String -> Route -> Icon -> String -> Html Msg
-iconTextLink aClass route icon aText =
-    a [ class aClass, href (toPath route), onLinkClick (Msgs.ChangeLocation route) ] [ i [ class icon ] [], text aText ]
+iconTextLink aClass route icon_ aText =
+    a [ class aClass, href (toPath route), onLinkClick (Msgs.ChangeLocation route) ] [ icon icon_, text aText ]
 
 
 iconLinkButton : String -> Route -> Icon -> String -> Html Msg
-iconLinkButton aClasses route icon aText =
+iconLinkButton aClasses route icon_ aText =
     a [ class ("button " ++ aClasses), href (toPath route), onLinkClick (Msgs.ChangeLocation route) ]
-        [ span [ class "icon" ] [ i [ class ("fa " ++ icon) ] [] ]
+        [ span [ class "icon" ] [ icon ("fa " ++ icon_) ]
         , span [] [ text aText ]
         ]
 
 
 smallIconLinkButton : String -> Route -> Icon -> String -> Html Msg
-smallIconLinkButton aClasses route icon aText =
+smallIconLinkButton aClasses route icon_ aText =
     a [ class ("button is-small " ++ aClasses), href (toPath route), onLinkClick (Msgs.ChangeLocation route) ]
-        [ span [ class "icon is-small" ] [ i [ class ("fa " ++ icon) ] [] ]
+        [ span [ class "icon is-small" ] [ icon ("fa " ++ icon_) ]
         , span [] [ text aText ]
         ]
 

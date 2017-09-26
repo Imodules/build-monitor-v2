@@ -7,7 +7,7 @@ import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (icon, iconLinkButton)
 import RemoteData
-import Routes exposing (Route(EditDashboardRoute, NewDashboardRoute))
+import Routes exposing (Route(ConfigureDashboardRoute, EditDashboardRoute, NewDashboardRoute))
 import Types exposing (Id)
 
 
@@ -77,4 +77,4 @@ editButton id =
 
 configureButton : Id -> Html Msg
 configureButton id =
-    div [ class "level-item" ] [ iconLinkButton "" NewDashboardRoute "fa-cog" "Configure" ]
+    div [ class "level-item" ] [ iconLinkButton "" (ConfigureDashboardRoute id) "fa-cog" "Configure" ]

@@ -2,10 +2,12 @@ module Dashboards.Update exposing (..)
 
 import Dashboards.Api as Api
 import Dashboards.Models as Dashboards
+import Lib exposing (createCommand)
 import List.Extra exposing (find)
 import Models exposing (Model)
-import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
+import Msgs exposing (DashboardMsg(..), Msg(ChangeLocation, DashboardMsg))
 import RemoteData
+import Routes exposing (Route(ConfigureDashboardRoute))
 import Routing exposing (getToken)
 import Types exposing (TextField, Token, initTextFieldValue)
 
@@ -82,7 +84,16 @@ update_ baseUrl token msg model =
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
         OnCreateDashboard result ->
-            ( model, Cmd.none )
+            case result of
+                Ok dashboard ->
+                    ( model, createCommand (ChangeLocation (ConfigureDashboardRoute dashboard.id)) )
+
+                Err dashboard ->
+                    let
+                        x =
+                            Debug.log "error saving dashboard" dashboard
+                    in
+                    ( model, Cmd.none )
 
 
 updateDashboardName : String -> TextField

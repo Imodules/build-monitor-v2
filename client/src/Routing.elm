@@ -23,6 +23,7 @@ matchers =
         , map NewDashboardRoute (s "dashboards" </> s "new")
         , map DashboardRoute (s "dashboards" </> string)
         , map EditDashboardRoute (s "dashboards" </> string </> s "edit")
+        , map ConfigureDashboardRoute (s "dashboards" </> string </> s "configure")
         , map SignUpRoute (s "signup")
         , map LoginRoute (s "login")
         ]
@@ -42,6 +43,9 @@ toPath route =
 
         EditDashboardRoute id ->
             editDashboard id
+
+        ConfigureDashboardRoute id ->
+            configureDashboard id
 
         DashboardsRoute ->
             dashboards
@@ -80,6 +84,14 @@ getLocationCommand model route =
                     ]
 
             EditDashboardRoute id ->
+                Cmd.batch
+                    [ createCommand (DashboardMsg (StartEditDashboard id))
+                    , DashboardsApi.fetchDashboards model.flags.apiUrl token
+                    , Api.fetchProjects model.flags.apiUrl token
+                    , Api.fetchBuildTypes model.flags.apiUrl token
+                    ]
+
+            ConfigureDashboardRoute id ->
                 Cmd.batch
                     [ createCommand (DashboardMsg (StartEditDashboard id))
                     , DashboardsApi.fetchDashboards model.flags.apiUrl token

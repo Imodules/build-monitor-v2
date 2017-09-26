@@ -28,6 +28,19 @@ update_ baseUrl msg model =
             in
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
+        ClickBuildType id ->
+            let
+                updatedList old =
+                    if List.member id old then
+                        List.filter (\i -> i /= id) old
+                    else
+                        id :: old
+
+                newDashboardForm old =
+                    { old | buildTypeIds = updatedList old.buildTypeIds }
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
 
 updateDashboardName : String -> TextField
 updateDashboardName value =

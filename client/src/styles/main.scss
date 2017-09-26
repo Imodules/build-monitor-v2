@@ -34,7 +34,19 @@ div#settings {
 }
 
 .title {
-  > i {
+  > .icon {
 	margin-right: 10px;
+  }
+}
+
+.buildType {
+  cursor: pointer;
+
+  &:hover {
+	background-color: $light;
+  }
+
+  &.selected {
+	background-color: $green;
   }
 }

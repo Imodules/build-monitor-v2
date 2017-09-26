@@ -40,6 +40,11 @@ smallIconLinkButton aClasses route icon aText =
         ]
 
 
+icon : String -> Html Msg
+icon v =
+    span [ class "icon" ] [ i [ class v ] [] ]
+
+
 textField : TextField -> String -> String -> String -> Icon -> (String -> Msg) -> Html Msg
 textField field fieldType id_ labelText icon msg_ =
     let

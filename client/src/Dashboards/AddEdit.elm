@@ -2,9 +2,10 @@ module Dashboards.AddEdit exposing (..)
 
 import Html exposing (Html, div, h4, h5, h6, hr, i, li, text, ul)
 import Html.Attributes exposing (class, id)
+import Html.Events exposing (onClick)
 import Models exposing (BuildType, Model, Project)
 import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
-import Pages.Components exposing (iconLinkButton, textField)
+import Pages.Components exposing (icon, iconLinkButton, textField)
 import RemoteData
 import Routes exposing (Route(DashboardRoute, DashboardsRoute))
 import Types exposing (Id)
@@ -77,17 +78,30 @@ topProjectRow model project projects buildTypes =
             if List.length childProjects > 0 then
                 List.map (\p -> topProjectRow model p projects buildTypes) childProjects
             else
-                List.map (\bt -> buildTypeRow bt) (buildTypesByProject project.id buildTypes)
+                List.map (\bt -> buildTypeRow model bt) (buildTypesByProject project.id buildTypes)
     in
     div [ class "box" ]
-        [ h4 [ class "title is-4" ] [ i [ class "fa fa-cubes fa-fw" ] [], text project.name ]
+        [ h4 [ class "title is-4" ] [ icon "fa fa-cubes fa-fw", text project.name ]
         , div [ class "box" ] content
         ]
 
 
-buildTypeRow : BuildType -> Html Msg
-buildTypeRow buildType =
-    div [ class "box" ] [ h5 [ class "title is-5" ] [ i [ class "fa fa-cube fa-fw" ] [], text buildType.name ] ]
+buildTypeRow : Model -> BuildType -> Html Msg
+buildTypeRow model buildType =
+    let
+        handleClick =
+            buildType.id |> (ClickBuildType >> DashboardMsg)
+
+        isSelected =
+            List.member buildType.id model.dashboards.dashboardForm.buildTypeIds
+
+        rowClass =
+            if isSelected then
+                "box buildType selected"
+            else
+                "box buildType"
+    in
+    div [ class rowClass, onClick handleClick ] [ h5 [ class "title is-5" ] [ icon "fa fa-cube fa-fw", text buildType.name ] ]
 
 
 topProjects : List Project -> List Project

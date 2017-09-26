@@ -40,3 +40,4 @@ type AuthMsg
 type DashboardMsg
     = ChangeDashboardName String
     | OnFetchDashboards (WebData (List Dashboard))
+    | ClickBuildType Id

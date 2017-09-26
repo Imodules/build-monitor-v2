@@ -1,6 +1,6 @@
-module Dashboards.AddEdit exposing (..)
+module Dashboards.AddEdit exposing (add, edit)
 
-import Dashboards.Models as DashboardsModel
+import Dashboards.Models as DashboardsModel exposing (DashboardForm)
 import Html exposing (Html, button, div, h4, h5, h6, hr, i, li, span, text, ul)
 import Html.Attributes exposing (class, disabled, id)
 import Html.Events exposing (onClick)
@@ -12,24 +12,42 @@ import Routes exposing (Route(DashboardsRoute))
 import Types exposing (Id)
 
 
-view : Model -> Html Msg
-view model =
+edit : Model -> Id -> Html Msg
+edit model id =
+    let
+        dashForm =
+            model.dashboards.dashboardForm
+    in
+    view model dashForm (DashboardMsg EditDashboard)
+
+
+add : Model -> Html Msg
+add model =
+    let
+        dashForm =
+            model.dashboards.dashboardForm
+    in
+    view model dashForm (DashboardMsg CreateDashboard)
+
+
+view : Model -> DashboardForm -> Msg -> Html Msg
+view model dashForm saveMsg =
     div [ id "settings" ]
-        [ div [ class "button-area" ] [ saveButton model.dashboards, cancelButton ]
-        , div [] [ textField model.dashboards.dashboardForm.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" (ChangeDashboardName >> DashboardMsg) ]
+        [ div [ class "button-area" ] [ saveButton model.dashboards saveMsg, cancelButton ]
+        , div [] [ textField dashForm.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" (ChangeDashboardName >> DashboardMsg) ]
         , hr [] []
         , h6 [ class "title is-6" ] [ text "Choose Builds" ]
         , div [ class "project-area" ] [ maybeProjects model model.projects ]
         ]
 
 
-saveButton : DashboardsModel.Model -> Html Msg
-saveButton model =
+saveButton : DashboardsModel.Model -> Msg -> Html Msg
+saveButton model saveMsg =
     let
         disableButton =
             not (isFormValid model)
     in
-    button [ class "button is-success", disabled disableButton, onClick (DashboardMsg CreateDashboard) ]
+    button [ class "button is-success", disabled disableButton, onClick saveMsg ]
         [ icon "fa fa-check-square-o"
         , span [] [ text "Save" ]
         ]
@@ -42,7 +60,7 @@ cancelButton =
 
 isFormValid : DashboardsModel.Model -> Bool
 isFormValid model =
-    model.dashboardForm.name.isValid
+    model.dashboardForm.isDirty && model.dashboardForm.name.isValid
 
 
 maybeProjects : Model -> RemoteData.WebData (List Project) -> Html Msg

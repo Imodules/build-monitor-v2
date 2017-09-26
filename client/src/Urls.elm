@@ -1,5 +1,7 @@
 module Urls exposing (..)
 
+import Types exposing (Id)
+
 
 signUp : String -> String
 signUp baseApiUrl =
@@ -29,3 +31,8 @@ buildTypes baseApiUrl =
 dashboards : String -> String
 dashboards baseApiUrl =
     baseApiUrl ++ "/dashboards"
+
+
+dashboard : String -> Id -> String
+dashboard baseApiUrl id =
+    baseApiUrl ++ "/dashboards/" ++ id

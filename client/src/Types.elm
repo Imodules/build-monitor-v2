@@ -36,3 +36,12 @@ initTextField =
     , isDirty = False
     , error = ""
     }
+
+
+initTextFieldValue : String -> TextField
+initTextFieldValue value =
+    { value = value
+    , isValid = True
+    , isDirty = False
+    , error = ""
+    }

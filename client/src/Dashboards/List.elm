@@ -5,9 +5,10 @@ import Html exposing (Html, div, h4, h5, i, li, text, ul)
 import Html.Attributes exposing (class, id)
 import Models exposing (Model)
 import Msgs exposing (Msg)
-import Pages.Components exposing (iconLinkButton)
+import Pages.Components exposing (icon, iconLinkButton)
 import RemoteData
-import Routes exposing (Route(NewDashboardRoute))
+import Routes exposing (Route(EditDashboardRoute, NewDashboardRoute))
+import Types exposing (Id)
 
 
 view : Model -> Html Msg
@@ -41,4 +42,39 @@ maybeDashboards model response =
 
 dashboardList : Model -> List Dashboard -> Html Msg
 dashboardList model dashboards =
-    div [] [ text "Dashboards" ]
+    let
+        content =
+            List.map (\d -> dashboardListItem model d) dashboards
+    in
+    div [] content
+
+
+dashboardListItem : Model -> Dashboard -> Html Msg
+dashboardListItem model dashboard =
+    div [ class "box" ]
+        [ div [ class "level" ]
+            [ div [ class "level-left" ]
+                [ div [ class "level-item" ] [ h4 [ class "title is-4" ] [ icon "fa fa-tachometer fa-fw", text dashboard.name ] ]
+                ]
+            , div [ class "level-right" ]
+                [ viewButton dashboard.id
+                , editButton dashboard.id
+                , configureButton dashboard.id
+                ]
+            ]
+        ]
+
+
+viewButton : Id -> Html Msg
+viewButton id =
+    div [ class "level-item" ] [ iconLinkButton "is-primary" NewDashboardRoute "fa-eye" "View" ]
+
+
+editButton : Id -> Html Msg
+editButton id =
+    div [ class "level-item" ] [ iconLinkButton "is-info" (EditDashboardRoute id) "fa-edit" "Edit" ]
+
+
+configureButton : Id -> Html Msg
+configureButton id =
+    div [ class "level-item" ] [ iconLinkButton "" NewDashboardRoute "fa-cog" "Configure" ]

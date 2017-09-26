@@ -13,11 +13,16 @@ type alias Model =
 initialModel : Model
 initialModel =
     { dashboards = RemoteData.NotAsked
-    , dashboardForm =
-        { id = ""
-        , name = initTextField
-        , buildTypeIds = []
-        }
+    , dashboardForm = initialFormModel
+    }
+
+
+initialFormModel : DashboardForm
+initialFormModel =
+    { id = ""
+    , name = initTextField
+    , buildTypeIds = []
+    , isDirty = False
     }
 
 
@@ -33,4 +38,5 @@ type alias DashboardForm =
     { id : Id
     , name : TextField
     , buildTypeIds : List Id
+    , isDirty : Bool
     }

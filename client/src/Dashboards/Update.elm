@@ -2,10 +2,12 @@ module Dashboards.Update exposing (..)
 
 import Dashboards.Api as Api
 import Dashboards.Models as Dashboards
+import List.Extra exposing (find)
 import Models exposing (Model)
 import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
+import RemoteData
 import Routing exposing (getToken)
-import Types exposing (TextField, Token)
+import Types exposing (TextField, Token, initTextFieldValue)
 
 
 update : DashboardMsg -> Model -> ( Model, Cmd Msg )
@@ -26,7 +28,7 @@ update_ baseUrl token msg model =
         ChangeDashboardName value ->
             let
                 newDashboardForm old =
-                    { old | name = updateDashboardName value }
+                    { old | name = updateDashboardName value, isDirty = True }
             in
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
@@ -39,12 +41,45 @@ update_ baseUrl token msg model =
                         id :: old
 
                 newDashboardForm old =
-                    { old | buildTypeIds = updatedList old.buildTypeIds }
+                    { old | buildTypeIds = updatedList old.buildTypeIds, isDirty = True }
             in
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
         CreateDashboard ->
             ( model, Api.createDashboard baseUrl token model )
+
+        EditDashboard ->
+            ( model, Api.editDashboard baseUrl token model )
+
+        StartEditDashboard id ->
+            let
+                dashboards =
+                    case model.dashboards of
+                        RemoteData.Success dashboards ->
+                            dashboards
+
+                        _ ->
+                            []
+
+                maybeDashboardToEdit =
+                    find (\i -> i.id == id) dashboards
+
+                newDashboardForm old =
+                    case maybeDashboardToEdit of
+                        Just dashboard ->
+                            if String.isEmpty old.id || old.id /= id then
+                                { id = dashboard.id
+                                , name = initTextFieldValue dashboard.name
+                                , buildTypeIds = dashboard.buildTypeIds
+                                , isDirty = False
+                                }
+                            else
+                                old
+
+                        _ ->
+                            Dashboards.initialFormModel
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
         OnCreateDashboard result ->
             ( model, Cmd.none )

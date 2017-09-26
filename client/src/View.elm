@@ -29,8 +29,11 @@ view model =
             DashboardRoute id ->
                 DashboardView.view model
 
+            EditDashboardRoute id ->
+                DashboardAddEdit.edit model id |> contentWrapper
+
             NewDashboardRoute ->
-                DashboardAddEdit.view model |> contentWrapper
+                DashboardAddEdit.add model |> contentWrapper
 
             DashboardsRoute ->
                 DashboardList.view model |> contentWrapper

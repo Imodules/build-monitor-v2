@@ -5,9 +5,10 @@ import Dashboards.Api as DashboardsApi
 import Html exposing (Attribute)
 import Html.Events exposing (onWithOptions)
 import Json.Decode as Decode
+import Lib exposing (createCommand)
 import List
 import Models exposing (Model)
-import Msgs exposing (Msg)
+import Msgs exposing (DashboardMsg(StartEditDashboard), Msg(DashboardMsg))
 import Navigation exposing (Location)
 import Routes exposing (..)
 import Types exposing (Token)
@@ -21,6 +22,7 @@ matchers =
         , map DashboardsRoute (s "dashboards")
         , map NewDashboardRoute (s "dashboards" </> s "new")
         , map DashboardRoute (s "dashboards" </> string)
+        , map EditDashboardRoute (s "dashboards" </> string </> s "edit")
         , map SignUpRoute (s "signup")
         , map LoginRoute (s "login")
         ]
@@ -37,6 +39,9 @@ toPath route =
 
         DashboardRoute id ->
             dashboard id
+
+        EditDashboardRoute id ->
+            editDashboard id
 
         DashboardsRoute ->
             dashboards
@@ -71,6 +76,14 @@ getLocationCommand model route =
             NewDashboardRoute ->
                 Cmd.batch
                     [ Api.fetchProjects model.flags.apiUrl token
+                    , Api.fetchBuildTypes model.flags.apiUrl token
+                    ]
+
+            EditDashboardRoute id ->
+                Cmd.batch
+                    [ createCommand (DashboardMsg (StartEditDashboard id))
+                    , DashboardsApi.fetchDashboards model.flags.apiUrl token
+                    , Api.fetchProjects model.flags.apiUrl token
                     , Api.fetchBuildTypes model.flags.apiUrl token
                     ]
 

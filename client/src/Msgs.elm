@@ -42,4 +42,6 @@ type DashboardMsg
     | OnFetchDashboards (WebData (List Dashboard))
     | ClickBuildType Id
     | CreateDashboard
+    | StartEditDashboard Id
+    | EditDashboard
     | OnCreateDashboard (Result Http.Error Dashboard)

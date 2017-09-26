@@ -9,6 +9,7 @@ type Route
     | LoginRoute
     | DashboardRoute Id
     | NewDashboardRoute
+    | EditDashboardRoute Id
     | DashboardsRoute
 
 
@@ -20,6 +21,11 @@ dashboards =
 dashboard : Id -> String
 dashboard id =
     "/dashboards/" ++ id
+
+
+editDashboard : Id -> String
+editDashboard id =
+    "/dashboards/" ++ id ++ "/edit"
 
 
 newDashboard : String

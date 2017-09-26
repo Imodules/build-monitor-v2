@@ -66,6 +66,19 @@ authPost url token body decoder =
         }
 
 
+authPut : String -> Token -> Http.Body -> Decode.Decoder a -> Http.Request a
+authPut url token body decoder =
+    Http.request
+        { method = "PUT"
+        , headers = [ authHeader token ]
+        , url = url
+        , body = body
+        , expect = Http.expectJson decoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
 patch : String -> Http.Body -> Http.Request ()
 patch url body =
     Http.request

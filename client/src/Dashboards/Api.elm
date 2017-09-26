@@ -1,6 +1,6 @@
 module Dashboards.Api exposing (..)
 
-import Api exposing (authGet, authPost, post)
+import Api exposing (authGet, authPost, authPut, post)
 import Dashboards.Decoders exposing (dashboardDecoder, dashboardsDecoder, updateDashboardEncoder)
 import Dashboards.Models as Dashboards
 import Http
@@ -26,5 +26,18 @@ createDashboard baseApiUrl token model =
 
         request =
             authPost (Urls.dashboards baseApiUrl) token requestBody dashboardDecoder
+    in
+    Http.send (OnCreateDashboard >> Msgs.DashboardMsg) request
+
+
+editDashboard : String -> Token -> Dashboards.Model -> Cmd Msg
+editDashboard baseApiUrl token model =
+    let
+        requestBody =
+            updateDashboardEncoder model
+                |> Http.jsonBody
+
+        request =
+            authPut (Urls.dashboard baseApiUrl model.dashboardForm.id) token requestBody dashboardDecoder
     in
     Http.send (OnCreateDashboard >> Msgs.DashboardMsg) request

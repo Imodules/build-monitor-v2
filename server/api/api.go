@@ -48,7 +48,7 @@ type IAppDb interface {
 	ProjectList() ([]db.Project, error)
 	BuildTypeList() ([]db.BuildType, error)
 
-	DashboardList(ownerId string) ([]db.Dashboard, error)
+	DashboardList() ([]db.Dashboard, error)
 	FindDashboardById(id string) (*db.Dashboard, error)
 	UpsertDashboard(dashboard db.Dashboard) (*db.Dashboard, error)
 	DeleteDashboard(id string) error

@@ -20,10 +20,14 @@ func TestAppDb_UpsertDashboard(t *testing.T) {
 		appDb := db.Create(dbSession, &c, log, time.Now)
 
 		dashboard := db.Dashboard{
-			Id:           "Some random id -01",
-			Name:         "Starting name that could change",
-			OwnerId:      "this is an owner",
-			BuildTypeIds: []string{"a1", "b2", "c3"},
+			Id:    "Some random id -01",
+			Name:  "Starting name that could change",
+			Owner: db.Owner{Id: bson.NewObjectId(), Username: "cool me"},
+			BuildConfigs: []db.BuildConfig{
+				{Id: "a1", Abbreviation: "cool 1"},
+				{Id: "b2", Abbreviation: "cool 2"},
+				{Id: "c3", Abbreviation: "cool 3"},
+			},
 		}
 
 		Convey("When a new dashboard is inserted into the db", func() {
@@ -35,7 +39,9 @@ func TestAppDb_UpsertDashboard(t *testing.T) {
 
 				So(result.Id, ShouldEqual, dashboard.Id)
 				So(result.Name, ShouldEqual, dashboard.Name)
-				So(result.OwnerId, ShouldEqual, dashboard.OwnerId)
+				So(result.Owner.Id.Hex(), ShouldEqual, dashboard.Owner.Id.Hex())
+				So(result.Owner.Username, ShouldEqual, dashboard.Owner.Username)
+				So(len(result.BuildConfigs), ShouldEqual, 3)
 
 				Convey("And it should be able to be found in the db", func() {
 					var dbDashboard db.Dashboard
@@ -44,16 +50,20 @@ func TestAppDb_UpsertDashboard(t *testing.T) {
 					So(err, ShouldBeNil)
 					So(dbDashboard.Id, ShouldEqual, result.Id)
 					So(dbDashboard.Name, ShouldEqual, result.Name)
-					So(dbDashboard.OwnerId, ShouldEqual, result.OwnerId)
+					So(dbDashboard.Owner.Id.Hex(), ShouldEqual, result.Owner.Id.Hex())
+					So(dbDashboard.Owner.Username, ShouldEqual, result.Owner.Username)
 
-					So(len(dbDashboard.BuildTypeIds), ShouldEqual, 3)
+					So(len(dbDashboard.BuildConfigs), ShouldEqual, 3)
+					So(dbDashboard.BuildConfigs[1].Id, ShouldEqual, "b2")
+					So(dbDashboard.BuildConfigs[1].Abbreviation, ShouldEqual, "cool 2")
 				})
 			})
 		})
 
 		Convey("When a dashboard already exists in the db", func() {
 			dashboard.Name = "This is a new one!"
-			dashboard.OwnerId = "This is where I belong"
+			dashboard.BuildConfigs[0].Id = "new 1"
+			dashboard.BuildConfigs[1].Abbreviation = "Changing it"
 
 			result, err := appDb.UpsertDashboard(dashboard)
 
@@ -63,7 +73,6 @@ func TestAppDb_UpsertDashboard(t *testing.T) {
 
 				So(result.Id, ShouldEqual, dashboard.Id)
 				So(result.Name, ShouldEqual, dashboard.Name)
-				So(result.OwnerId, ShouldEqual, dashboard.OwnerId)
 
 				Convey("And it should be able to be found in the db", func() {
 					var dbDashboard db.Dashboard
@@ -72,7 +81,9 @@ func TestAppDb_UpsertDashboard(t *testing.T) {
 					So(err, ShouldBeNil)
 					So(dbDashboard.Id, ShouldEqual, result.Id)
 					So(dbDashboard.Name, ShouldEqual, result.Name)
-					So(dbDashboard.OwnerId, ShouldEqual, result.OwnerId)
+					So(len(dashboard.BuildConfigs), ShouldEqual, 3)
+					So(dbDashboard.BuildConfigs[0].Id, ShouldEqual, "new 1")
+					So(dbDashboard.BuildConfigs[1].Abbreviation, ShouldEqual, "Changing it")
 				})
 			})
 		})
@@ -114,22 +125,23 @@ func TestAppDb_DashboardList(t *testing.T) {
 
 		appDb := db.Create(dbSession, &c, log, time.Now)
 
-		p1, _ := appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p01", Name: "Ze End", OwnerId: "ab1"})
-		appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p02", Name: "The End", OwnerId: "ab2"})
-		p3, _ := appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p03", Name: "Deleted", OwnerId: "ab1"})
-		p4, _ := appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p04", Name: "A good one", OwnerId: "ab1"})
+		p1, _ := appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p01", Name: "Ze End"})
+		p2, _ := appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p02", Name: "The End"})
+		p3, _ := appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p03", Name: "Deleted"})
+		p4, _ := appDb.UpsertDashboard(db.Dashboard{Id: "TestAppDb_DashboardList-p04", Name: "A good one"})
 
 		err := appDb.DeleteDashboard(p3.Id)
 		So(err, ShouldBeNil)
 
 		Convey("When DashboardList is called", func() {
-			dashboards, plErr := appDb.DashboardList("ab1")
+			dashboards, plErr := appDb.DashboardList()
 			So(plErr, ShouldBeNil)
 
 			Convey("It should return all non-deleted dashboards", func() {
-				So(len(dashboards), ShouldEqual, 2)
+				So(len(dashboards), ShouldEqual, 3)
 				So(dashboards[0].Id, ShouldEqual, p4.Id)
-				So(dashboards[1].Id, ShouldEqual, p1.Id)
+				So(dashboards[1].Id, ShouldEqual, p2.Id)
+				So(dashboards[2].Id, ShouldEqual, p1.Id)
 			})
 		})
 	})

@@ -1,5 +1,6 @@
 module Dashboards.AddEdit exposing (add, edit)
 
+import Dashboards.Lib exposing (configInList)
 import Dashboards.Models as DashboardsModel exposing (DashboardForm)
 import Html exposing (Html, button, div, h4, h5, h6, hr, i, li, span, text, ul)
 import Html.Attributes exposing (class, disabled, id)
@@ -129,7 +130,7 @@ buildTypeRow model buildType =
             buildType.id |> (ClickBuildType >> DashboardMsg)
 
         isSelected =
-            List.member buildType.id model.dashboards.dashboardForm.buildTypeIds
+            configInList buildType.id model.dashboards.dashboardForm.buildConfigs
 
         rowClass =
             if isSelected then

@@ -6,10 +6,15 @@ import (
 )
 
 type Dashboard struct {
-	Id           string   `bson:"_id" json:"id"`
-	Name         string   `bson:"name" json:"name"`
-	OwnerId      string   `bson:"ownerId" json:"ownerId"`
-	BuildTypeIds []string `bson:"buildTypeIds" json:"buildTypeIds"`
+	Id           string        `bson:"_id" json:"id"`
+	Name         string        `bson:"name" json:"name"`
+	Owner        Owner         `bson:"owner" json:"owner"`
+	BuildConfigs []BuildConfig `bson:"buildConfigs" json:"buildConfigs"`
+}
+
+type BuildConfig struct {
+	Id           string `bson:"_id" json:"id"`
+	Abbreviation string `bson:"abbreviation" json:"abbreviation"`
 }
 
 func Dashboards(s *mgo.Session) *mgo.Collection {
@@ -24,8 +29,8 @@ func (appDb *AppDb) UpsertDashboard(r Dashboard) (*Dashboard, error) {
 			"$set": bson.M{
 				"modifiedAt":   now,
 				"name":         r.Name,
-				"ownerId":      r.OwnerId,
-				"buildTypeIds": r.BuildTypeIds,
+				"owner":        r.Owner,
+				"buildConfigs": r.BuildConfigs,
 			},
 			"$unset":       bson.M{"deleted": ""},
 			"$setOnInsert": bson.M{"createdAt": now},
@@ -59,17 +64,17 @@ func (appDb *AppDb) FindDashboardById(id string) (*Dashboard, error) {
 	return &dashboard, nil
 }
 
-func (appDb *AppDb) DashboardList(ownerId string) ([]Dashboard, error) {
+func (appDb *AppDb) DashboardList() ([]Dashboard, error) {
 	dashboardList := []Dashboard{}
 
 	if err := Dashboards(appDb.Session).
-		Find(bson.M{"deleted": bson.M{"$exists": false}, "ownerId": ownerId}).
+		Find(bson.M{"deleted": bson.M{"$exists": false}}).
 		Sort("name").
 		Select(bson.M{
 			"_id":          1,
 			"name":         1,
-			"ownerId":      1,
-			"buildTypeIds": 1,
+			"owner":        1,
+			"buildConfigs": 1,
 		}).All(&dashboardList); err != nil {
 		return nil, err
 	}

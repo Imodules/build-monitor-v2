@@ -41,13 +41,14 @@ func setupRoutes(s *Server) {
 		SigningKey:    []byte(s.Config.JwtSecret),
 	})
 
+	openApi := s.Server.Group("/api")
+	openApi.GET("/projects", s.Projects)
+	openApi.GET("/buildTypes", s.BuildTypes)
+	openApi.GET("/dashboards", s.Dashboards)
+
 	secureGroup := s.Server.Group("/api", requireClaims)
 	secureGroup.GET("/authenticate", s.ReAuthenticate)
 
-	secureGroup.GET("/projects", s.Projects)
-	secureGroup.GET("/buildTypes", s.BuildTypes)
-
-	secureGroup.GET("/dashboards", s.Dashboards)
 	secureGroup.POST("/dashboards", s.CreateDashboard)
 	secureGroup.PUT("/dashboards/:id", s.UpdateDashboard)
 	secureGroup.DELETE("/dashboards/:id", s.DeleteDashboard)

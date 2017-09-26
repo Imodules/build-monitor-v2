@@ -92,15 +92,15 @@ patch url body =
         }
 
 
-fetchProjects : String -> String -> Cmd Msg
-fetchProjects baseApiUrl token =
-    authGet (Urls.projects baseApiUrl) token projectsDecoder
+fetchProjects : String -> Cmd Msg
+fetchProjects baseApiUrl =
+    Http.get (Urls.projects baseApiUrl) projectsDecoder
         |> RemoteData.sendRequest
         |> Cmd.map Msgs.OnFetchProjects
 
 
-fetchBuildTypes : String -> String -> Cmd Msg
-fetchBuildTypes baseApiUrl token =
-    authGet (Urls.buildTypes baseApiUrl) token buildTypesDecoder
+fetchBuildTypes : String -> Cmd Msg
+fetchBuildTypes baseApiUrl =
+    Http.get (Urls.buildTypes baseApiUrl) buildTypesDecoder
         |> RemoteData.sendRequest
         |> Cmd.map Msgs.OnFetchBuildTypes

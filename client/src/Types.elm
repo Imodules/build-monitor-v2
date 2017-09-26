@@ -29,6 +29,12 @@ type alias TextField =
     }
 
 
+type alias Owner =
+    { id : Id
+    , username : String
+    }
+
+
 initTextField : TextField
 initTextField =
     { value = ""

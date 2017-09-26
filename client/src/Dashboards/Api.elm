@@ -10,9 +10,9 @@ import Types exposing (Token)
 import Urls
 
 
-fetchDashboards : String -> String -> Cmd Msg
-fetchDashboards baseApiUrl token =
-    authGet (Urls.dashboards baseApiUrl) token dashboardsDecoder
+fetchDashboards : String -> Cmd Msg
+fetchDashboards baseApiUrl =
+    Http.get (Urls.dashboards baseApiUrl) dashboardsDecoder
         |> RemoteData.sendRequest
         |> Cmd.map (OnFetchDashboards >> Msgs.DashboardMsg)
 

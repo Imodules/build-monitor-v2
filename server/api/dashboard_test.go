@@ -36,17 +36,35 @@ func TestServer_Dashboards(t *testing.T) {
 			Password: "hashed password",
 		}
 
-		setClaims(c, dbUser)
-
 		Convey("When there are dashboards", func() {
 			dashboards := []db.Dashboard{
-				{Id: "Dashboard_01", Name: "Dashboard 01", OwnerId: dbUser.Id.Hex(), BuildTypeIds: []string{"a1", "b1", "c1"}},
-				{Id: "Dashboard_02", Name: "Dashboard 02", OwnerId: dbUser.Id.Hex(), BuildTypeIds: []string{"a2", "b2", "c2"}},
-				{Id: "Dashboard_03", Name: "Dashboard 03", OwnerId: dbUser.Id.Hex(), BuildTypeIds: []string{"a3", "b3", "c3"}},
-				{Id: "Dashboard_04", Name: "Dashboard 04", OwnerId: dbUser.Id.Hex(), BuildTypeIds: []string{"a4", "b4", "c4"}},
+				{Id: "Dashboard_01", Name: "Dashboard 01", Owner: db.Owner{Id: dbUser.Id, Username: "just me"},
+					BuildConfigs: []db.BuildConfig{
+						{Id: "a1", Abbreviation: "oh ah a1"},
+						{Id: "b1", Abbreviation: "oh ah b1"},
+						{Id: "c1", Abbreviation: "oh ah c1"},
+					}},
+				{Id: "Dashboard_02", Name: "Dashboard 02", Owner: db.Owner{Id: dbUser.Id, Username: "just me"},
+					BuildConfigs: []db.BuildConfig{
+						{Id: "a2", Abbreviation: "oh ah a2"},
+						{Id: "b2", Abbreviation: "oh ah b2"},
+						{Id: "c2", Abbreviation: "oh ah c2"},
+					}},
+				{Id: "Dashboard_03", Name: "Dashboard 03", Owner: db.Owner{Id: dbUser.Id, Username: "just me"},
+					BuildConfigs: []db.BuildConfig{
+						{Id: "a3", Abbreviation: "oh ah a3"},
+						{Id: "b3", Abbreviation: "oh ah b3"},
+						{Id: "c3", Abbreviation: "oh ah c3"},
+					}},
+				{Id: "Dashboard_04", Name: "Dashboard 04", Owner: db.Owner{Id: dbUser.Id, Username: "just me"},
+					BuildConfigs: []db.BuildConfig{
+						{Id: "a4", Abbreviation: "oh ah a4"},
+						{Id: "b4", Abbreviation: "oh ah b4"},
+						{Id: "c4", Abbreviation: "oh ah c4"},
+					}},
 			}
 
-			mockDb.On("DashboardList", dbUser.Id.Hex()).Return(dashboards, nil)
+			mockDb.On("DashboardList").Return(dashboards, nil)
 
 			resultErr := s.Dashboards(c)
 			So(resultErr, ShouldBeNil)
@@ -67,17 +85,20 @@ func TestServer_Dashboards(t *testing.T) {
 					So(result[2].Id, ShouldEqual, "Dashboard_03")
 					So(result[3].Id, ShouldEqual, "Dashboard_04")
 
-					So(len(result[0].BuildTypeIds), ShouldEqual, 3)
-					So(len(result[1].BuildTypeIds), ShouldEqual, 3)
-					So(len(result[2].BuildTypeIds), ShouldEqual, 3)
-					So(len(result[3].BuildTypeIds), ShouldEqual, 3)
+					So(len(result[0].BuildConfigs), ShouldEqual, 3)
+					So(len(result[1].BuildConfigs), ShouldEqual, 3)
+					So(len(result[2].BuildConfigs), ShouldEqual, 3)
+					So(len(result[3].BuildConfigs), ShouldEqual, 3)
+
+					So(result[1].BuildConfigs[1].Id, ShouldEqual, "b2")
+					So(result[1].BuildConfigs[1].Abbreviation, ShouldEqual, "oh ah b2")
 				})
 			})
 		})
 
 		Convey("When the database errors", func() {
 			expectedError := errors.New("this is some bad mojo")
-			mockDb.On("DashboardList", dbUser.Id.Hex()).Return(nil, expectedError)
+			mockDb.On("DashboardList").Return(nil, expectedError)
 
 			resultErr := s.Dashboards(c)
 			So(resultErr, ShouldBeNil)
@@ -114,8 +135,10 @@ func TestServer_CreateDashboard(t *testing.T) {
 
 		Convey("With a valid request", func() {
 			request := api.UpdateDashboardRequest{
-				Name:         "This is me new dashboard",
-				BuildTypeIds: []string{"db1", "db2"},
+				Name: "This is me new dashboard",
+				BuildConfigs: []db.BuildConfig{
+					{Id: "db1"}, {Id: "db2"},
+				},
 			}
 
 			requestJson, _ := json.Marshal(request)
@@ -136,9 +159,9 @@ func TestServer_CreateDashboard(t *testing.T) {
 
 			dbDashboard := db.Dashboard{
 				Id:           "from db",
-				OwnerId:      dbUser.Id.Hex(),
+				Owner:        db.Owner{Id: dbUser.Id},
 				Name:         request.Name,
-				BuildTypeIds: request.BuildTypeIds,
+				BuildConfigs: request.BuildConfigs,
 			}
 
 			Convey("When the create succeeds", func() {
@@ -155,10 +178,10 @@ func TestServer_CreateDashboard(t *testing.T) {
 					dashboardToDb := mockDb.Calls[0].Arguments[0].(db.Dashboard)
 
 					So(dashboardToDb.Id, ShouldNotBeEmpty)
-					So(dashboardToDb.OwnerId, ShouldEqual, dbUser.Id.Hex())
+					So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 					So(dashboardToDb.Name, ShouldEqual, request.Name)
-					So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[0])
-					So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[1])
+					So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
+					So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
 
 					Convey("And return http.StatusCreated", func() {
 
@@ -192,10 +215,10 @@ func TestServer_CreateDashboard(t *testing.T) {
 					dashboardToDb := mockDb.Calls[0].Arguments[0].(db.Dashboard)
 
 					So(dashboardToDb.Id, ShouldNotBeEmpty)
-					So(dashboardToDb.OwnerId, ShouldEqual, dbUser.Id.Hex())
+					So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 					So(dashboardToDb.Name, ShouldEqual, request.Name)
-					So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[0])
-					So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[1])
+					So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
+					So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
 
 					Convey("And return http.StatusInternalServerError", func() {
 						So(rec.Code, ShouldEqual, http.StatusInternalServerError)
@@ -237,8 +260,8 @@ func TestServer_DeleteDashboard(t *testing.T) {
 
 		Convey("When the user owns the dashboard", func() {
 			dashboard := db.Dashboard{
-				Id:      "some id here",
-				OwnerId: dbUser.Id.Hex(),
+				Id:    "some id here",
+				Owner: db.Owner{Id: dbUser.Id},
 			}
 
 			mockDb.On("FindDashboardById", id).Return(&dashboard, nil)
@@ -282,8 +305,8 @@ func TestServer_DeleteDashboard(t *testing.T) {
 
 		Convey("When the user does not own the dashboard", func() {
 			dashboard := db.Dashboard{
-				Id:      "some id here",
-				OwnerId: "not this user",
+				Id:    "some id here",
+				Owner: db.Owner{Id: "not this user"},
 			}
 
 			mockDb.On("FindDashboardById", id).Return(&dashboard, nil)
@@ -326,8 +349,10 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 		Convey("With a valid request", func() {
 			request := api.UpdateDashboardRequest{
-				Name:         "This is me new dashboard",
-				BuildTypeIds: []string{"db1", "db2"},
+				Name: "This is me new dashboard",
+				BuildConfigs: []db.BuildConfig{
+					{Id: "db1"}, {Id: "db2"},
+				},
 			}
 
 			requestJson, _ := json.Marshal(request)
@@ -352,9 +377,9 @@ func TestServer_UpdateDashboard(t *testing.T) {
 			Convey("When we are the owher", func() {
 				dbDashboard := db.Dashboard{
 					Id:           "from db",
-					OwnerId:      dbUser.Id.Hex(),
+					Owner:        db.Owner{Id: dbUser.Id},
 					Name:         request.Name,
-					BuildTypeIds: request.BuildTypeIds,
+					BuildConfigs: request.BuildConfigs,
 				}
 
 				Convey("And the update succeeds", func() {
@@ -372,10 +397,10 @@ func TestServer_UpdateDashboard(t *testing.T) {
 						dashboardToDb := mockDb.Calls[1].Arguments[0].(db.Dashboard)
 
 						So(dashboardToDb.Id, ShouldEqual, id)
-						So(dashboardToDb.OwnerId, ShouldEqual, dbUser.Id.Hex())
+						So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 						So(dashboardToDb.Name, ShouldEqual, request.Name)
-						So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[0])
-						So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[1])
+						So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
+						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
 
 						Convey("And return http.StatusOK", func() {
 
@@ -410,10 +435,10 @@ func TestServer_UpdateDashboard(t *testing.T) {
 						dashboardToDb := mockDb.Calls[1].Arguments[0].(db.Dashboard)
 
 						So(dashboardToDb.Id, ShouldNotBeEmpty)
-						So(dashboardToDb.OwnerId, ShouldEqual, dbUser.Id.Hex())
+						So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 						So(dashboardToDb.Name, ShouldEqual, request.Name)
-						So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[0])
-						So(dashboardToDb.BuildTypeIds, ShouldContain, request.BuildTypeIds[1])
+						So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
+						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
 
 						Convey("And return http.StatusInternalServerError", func() {
 							So(rec.Code, ShouldEqual, http.StatusInternalServerError)
@@ -430,10 +455,12 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 			Convey("When we are not the owner", func() {
 				dbDashboard := db.Dashboard{
-					Id:           "from db",
-					OwnerId:      "some one else",
-					Name:         request.Name,
-					BuildTypeIds: request.BuildTypeIds,
+					Id:    "from db",
+					Owner: db.Owner{Id: bson.NewObjectId()},
+					Name:  request.Name,
+					BuildConfigs: []db.BuildConfig{
+						{Id: "db1"}, {Id: "db2"},
+					},
 				}
 
 				mockDb.On("FindDashboardById", id).Return(&dbDashboard, nil)

@@ -79,28 +79,28 @@ getLocationCommand model route =
         case route of
             NewDashboardRoute ->
                 Cmd.batch
-                    [ Api.fetchProjects model.flags.apiUrl token
-                    , Api.fetchBuildTypes model.flags.apiUrl token
+                    [ Api.fetchProjects model.flags.apiUrl
+                    , Api.fetchBuildTypes model.flags.apiUrl
                     ]
 
             EditDashboardRoute id ->
                 Cmd.batch
                     [ createCommand (DashboardMsg (StartEditDashboard id))
-                    , DashboardsApi.fetchDashboards model.flags.apiUrl token
-                    , Api.fetchProjects model.flags.apiUrl token
-                    , Api.fetchBuildTypes model.flags.apiUrl token
+                    , DashboardsApi.fetchDashboards model.flags.apiUrl
+                    , Api.fetchProjects model.flags.apiUrl
+                    , Api.fetchBuildTypes model.flags.apiUrl
                     ]
 
             ConfigureDashboardRoute id ->
                 Cmd.batch
                     [ createCommand (DashboardMsg (StartEditDashboard id))
-                    , DashboardsApi.fetchDashboards model.flags.apiUrl token
-                    , Api.fetchProjects model.flags.apiUrl token
-                    , Api.fetchBuildTypes model.flags.apiUrl token
+                    , DashboardsApi.fetchDashboards model.flags.apiUrl
+                    , Api.fetchProjects model.flags.apiUrl
+                    , Api.fetchBuildTypes model.flags.apiUrl
                     ]
 
             DashboardsRoute ->
-                DashboardsApi.fetchDashboards model.flags.apiUrl token
+                DashboardsApi.fetchDashboards model.flags.apiUrl
 
             _ ->
                 Cmd.none

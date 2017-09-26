@@ -12,9 +12,7 @@ import (
 func (s *Server) Dashboards(ctx echo.Context) error {
 	appDb := getAppDb(ctx)
 
-	claims := getClaims(ctx)
-
-	dashboards, err := appDb.DashboardList(claims.UserId)
+	dashboards, err := appDb.DashboardList()
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
@@ -23,8 +21,8 @@ func (s *Server) Dashboards(ctx echo.Context) error {
 }
 
 type UpdateDashboardRequest struct {
-	Name         string   `json:"name"`
-	BuildTypeIds []string `json:"buildTypeIds"`
+	Name         string           `json:"name"`
+	BuildConfigs []db.BuildConfig `json:"buildConfigs"`
 }
 
 func (s *Server) CreateDashboard(ctx echo.Context) error {
@@ -40,8 +38,8 @@ func (s *Server) CreateDashboard(ctx echo.Context) error {
 	dashboard := db.Dashboard{
 		Id:           bson.NewObjectId().Hex(),
 		Name:         r.Name,
-		OwnerId:      claims.UserId,
-		BuildTypeIds: r.BuildTypeIds,
+		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
+		BuildConfigs: r.BuildConfigs,
 	}
 
 	dbDashboard, err := appDb.UpsertDashboard(dashboard)
@@ -61,7 +59,7 @@ func (s *Server) DeleteDashboard(ctx echo.Context) error {
 	id := ctx.Param("id")
 
 	dashboard, _ := appDb.FindDashboardById(id)
-	if dashboard.OwnerId != claims.UserId {
+	if dashboard.Owner.Id.Hex() != claims.UserId {
 		return ctx.JSON(http.StatusUnauthorized, ErrorResponse{Message: "You are not the owner"})
 	}
 
@@ -86,15 +84,15 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 	id := ctx.Param("id")
 
 	dbCheck, _ := appDb.FindDashboardById(id)
-	if dbCheck.OwnerId != claims.UserId {
+	if dbCheck.Owner.Id.Hex() != claims.UserId {
 		return ctx.JSON(http.StatusUnauthorized, ErrorResponse{Message: "You are not the owner"})
 	}
 
 	dashboard := db.Dashboard{
 		Id:           id,
 		Name:         r.Name,
-		OwnerId:      claims.UserId,
-		BuildTypeIds: r.BuildTypeIds,
+		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
+		BuildConfigs: r.BuildConfigs,
 	}
 
 	dbDashboard, err := appDb.UpsertDashboard(dashboard)

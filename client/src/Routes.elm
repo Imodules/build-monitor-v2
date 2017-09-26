@@ -10,7 +10,6 @@ type Route
     | DashboardRoute Id
     | NewDashboardRoute
     | DashboardsRoute
-    | SettingsRoute
 
 
 dashboards : String

@@ -25,6 +25,7 @@ type Msg
     | OnFetchProjects (WebData (List Project))
     | OnFetchBuildTypes (WebData (List BuildType))
     | OnFetchDashboards (WebData (List Dashboard))
+    | ChangeDashboardName String
 
 
 type AuthMsg

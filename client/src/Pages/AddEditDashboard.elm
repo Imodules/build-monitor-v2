@@ -1,10 +1,10 @@
-module Pages.Settings exposing (..)
+module Pages.AddEditDashboard exposing (..)
 
-import Html exposing (Html, div, h4, h5, i, li, text, ul)
+import Html exposing (Html, div, h4, h5, h6, hr, i, li, text, ul)
 import Html.Attributes exposing (class, id)
 import Models exposing (BuildType, Model, Project)
-import Msgs exposing (Msg)
-import Pages.Components exposing (iconLinkButton)
+import Msgs exposing (Msg(ChangeDashboardName))
+import Pages.Components exposing (iconLinkButton, textField)
 import RemoteData
 import Routes exposing (Route(DashboardRoute, DashboardsRoute))
 import Types exposing (Id)
@@ -13,14 +13,17 @@ import Types exposing (Id)
 view : Model -> Html Msg
 view model =
     div [ id "settings" ]
-        [ div [ class "button-area" ] [ dashboardButton ]
+        [ div [ class "button-area" ] [ saveButton ]
+        , div [] [ textField model.dashboardAddEdit.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" ChangeDashboardName ]
+        , hr [] []
+        , h6 [ class "title is-6" ] [ text "Choose Builds" ]
         , div [ class "project-area" ] [ maybeProjects model model.projects ]
         ]
 
 
-dashboardButton : Html Msg
-dashboardButton =
-    iconLinkButton "is-primary" DashboardsRoute "fa-tachometer" "Dashboard"
+saveButton : Html Msg
+saveButton =
+    iconLinkButton "is-success" DashboardsRoute "fa-save" "Save"
 
 
 maybeProjects : Model -> RemoteData.WebData (List Project) -> Html Msg

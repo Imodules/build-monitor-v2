@@ -20,7 +20,6 @@ matchers =
         , map DashboardRoute (s "dashboards" </> string)
         , map SignUpRoute (s "signup")
         , map LoginRoute (s "login")
-        , map SettingsRoute (s "settings")
         ]
 
 
@@ -61,7 +60,7 @@ getLocationCommand model route =
         Cmd.none
     else
         case route of
-            SettingsRoute ->
+            NewDashboardRoute ->
                 Cmd.batch
                     [ Api.fetchProjects model.flags.apiUrl token
                     , Api.fetchBuildTypes model.flags.apiUrl token
@@ -77,7 +76,7 @@ getLocationCommand model route =
 authRoutes : List Route
 authRoutes =
     [ DashboardsRoute
-    , SettingsRoute
+    , NewDashboardRoute
     ]
 
 

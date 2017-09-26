@@ -69,6 +69,9 @@ update msg model =
         OnFetchDashboards response ->
             ( { model | dashboards = response }, Cmd.none )
 
+        ChangeDashboardName name ->
+            ( model, Cmd.none )
+
 
 handleAuth : Model -> Result Http.Error User -> ( Model, Cmd Msg )
 handleAuth model result =

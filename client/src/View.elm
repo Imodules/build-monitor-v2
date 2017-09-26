@@ -6,10 +6,10 @@ import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models exposing (Model)
 import Msgs exposing (Msg)
+import Pages.AddEditDashboard as AddEditDashboard
 import Pages.Components exposing (smallIconLinkButton)
 import Pages.Dashboard as Dashboard
 import Pages.Dashboards as Dashboards
-import Pages.Settings as Settings
 import Routes exposing (Route(..))
 import Routing exposing (needsToLogin)
 
@@ -30,13 +30,10 @@ view model =
                 Dashboard.view model
 
             NewDashboardRoute ->
-                Dashboard.view model
+                AddEditDashboard.view model |> contentWrapper
 
             DashboardsRoute ->
-                Dashboards.view model
-
-            SettingsRoute ->
-                Settings.view model |> contentWrapper
+                Dashboards.view model |> contentWrapper
 
             NotFoundRoute ->
                 notFoundView model |> contentWrapper

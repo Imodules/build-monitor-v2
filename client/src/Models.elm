@@ -16,6 +16,11 @@ initialModel flags route =
     , projects = RemoteData.NotAsked
     , buildTypes = RemoteData.NotAsked
     , dashboards = RemoteData.NotAsked
+    , dashboardAddEdit =
+        { id = ""
+        , name = initTextField
+        , buildTypeIds = []
+        }
     }
 
 
@@ -32,6 +37,7 @@ type alias Model =
     , projects : WebData (List Project)
     , buildTypes : WebData (List BuildType)
     , dashboards : WebData (List Dashboard)
+    , dashboardAddEdit : DashboardEdit
     }
 
 
@@ -66,5 +72,12 @@ type alias Dashboard =
     { id : Id
     , name : String
     , ownerId : Id
+    , buildTypeIds : List Id
+    }
+
+
+type alias DashboardEdit =
+    { id : Id
+    , name : TextField
     , buildTypeIds : List Id
     }

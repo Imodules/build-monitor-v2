@@ -5,7 +5,7 @@ import Html.Attributes exposing (class, href, id)
 import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (iconLink)
-import Routes exposing (Route(SettingsRoute))
+import Routes exposing (Route(DashboardsRoute))
 
 
 view : Model -> Html Msg
@@ -15,4 +15,4 @@ view model =
 
 configLink : Html Msg
 configLink =
-    div [ id "configLink" ] [ iconLink "button is-link" SettingsRoute "fa fa-cogs" ]
+    div [ id "configLink" ] [ iconLink "button is-link" DashboardsRoute "fa fa-cogs" ]

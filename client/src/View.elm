@@ -2,14 +2,14 @@ module View exposing (..)
 
 import Auth.Login as Login
 import Auth.SignUp as SignUp
+import Dashboards.AddEdit as DashboardAddEdit
+import Dashboards.List as DashboardList
+import Dashboards.View as DashboardView
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models exposing (Model)
 import Msgs exposing (Msg)
-import Pages.AddEditDashboard as AddEditDashboard
 import Pages.Components exposing (smallIconLinkButton)
-import Pages.Dashboard as Dashboard
-import Pages.Dashboards as Dashboards
 import Routes exposing (Route(..))
 import Routing exposing (needsToLogin)
 
@@ -27,13 +27,13 @@ view model =
                 Login.view model |> contentWrapper
 
             DashboardRoute id ->
-                Dashboard.view model
+                DashboardView.view model
 
             NewDashboardRoute ->
-                AddEditDashboard.view model |> contentWrapper
+                DashboardAddEdit.view model |> contentWrapper
 
             DashboardsRoute ->
-                Dashboards.view model |> contentWrapper
+                DashboardList.view model |> contentWrapper
 
             NotFoundRoute ->
                 notFoundView model |> contentWrapper

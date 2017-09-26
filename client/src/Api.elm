@@ -84,4 +84,4 @@ fetchDashboards : String -> String -> Cmd Msg
 fetchDashboards baseApiUrl token =
     authGet (Urls.dashboards baseApiUrl) token dashboardsDecoder
         |> RemoteData.sendRequest
-        |> Cmd.map Msgs.OnFetchDashboards
+        |> Cmd.map (Msgs.OnFetchDashboards >> Msgs.DashboardMsg)

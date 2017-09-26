@@ -1,6 +1,7 @@
 module Models exposing (..)
 
 import Auth.Models as Auth
+import Dashboards.Models as Dashboards
 import RemoteData exposing (WebData)
 import Routes exposing (Route)
 import Time.DateTime as DateTime exposing (DateTime)
@@ -13,14 +14,9 @@ initialModel flags route =
     , route = route
     , user = Nothing
     , auth = Auth.initialModel
+    , dashboards = Dashboards.initialModel
     , projects = RemoteData.NotAsked
     , buildTypes = RemoteData.NotAsked
-    , dashboards = RemoteData.NotAsked
-    , dashboardAddEdit =
-        { id = ""
-        , name = initTextField
-        , buildTypeIds = []
-        }
     }
 
 
@@ -34,10 +30,9 @@ type alias Model =
     , route : Route
     , user : Maybe User
     , auth : Auth.Model
+    , dashboards : Dashboards.Model
     , projects : WebData (List Project)
     , buildTypes : WebData (List BuildType)
-    , dashboards : WebData (List Dashboard)
-    , dashboardAddEdit : DashboardEdit
     }
 
 
@@ -65,19 +60,4 @@ type alias BuildType =
     , name : String
     , description : String
     , projectId : Id
-    }
-
-
-type alias Dashboard =
-    { id : Id
-    , name : String
-    , ownerId : Id
-    , buildTypeIds : List Id
-    }
-
-
-type alias DashboardEdit =
-    { id : Id
-    , name : TextField
-    , buildTypeIds : List Id
     }

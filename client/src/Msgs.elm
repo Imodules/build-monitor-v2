@@ -1,7 +1,8 @@
 module Msgs exposing (..)
 
+import Dashboards.Models exposing (Dashboard)
 import Http
-import Models exposing (BuildType, Dashboard, Project, User)
+import Models exposing (BuildType, Project, User)
 import Navigation exposing (Location)
 import RemoteData exposing (WebData)
 import Routes exposing (Route)
@@ -17,6 +18,7 @@ type Msg
     | SetTokenStorage Token
     | GotTokenFromStorage Token
     | AuthMsg AuthMsg
+    | DashboardMsg DashboardMsg
     | OnSignUp (Result Http.Error User)
     | OnLogin (Result Http.Error User)
     | OnReAuth (Result Http.Error User)
@@ -24,8 +26,6 @@ type Msg
     | RefreshPageData Time
     | OnFetchProjects (WebData (List Project))
     | OnFetchBuildTypes (WebData (List BuildType))
-    | OnFetchDashboards (WebData (List Dashboard))
-    | ChangeDashboardName String
 
 
 type AuthMsg
@@ -35,3 +35,8 @@ type AuthMsg
     | ChangeConfirm String
     | OnSubmitSignUp
     | OnSubmitLogin
+
+
+type DashboardMsg
+    = ChangeDashboardName String
+    | OnFetchDashboards (WebData (List Dashboard))

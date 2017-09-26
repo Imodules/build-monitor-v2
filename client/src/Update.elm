@@ -3,6 +3,7 @@ module Update exposing (..)
 import Auth.Api exposing (reAuthenticate)
 import Auth.Models
 import Auth.Update as Auth
+import Dashboards.Update as Dashboards
 import Debug exposing (log)
 import Http
 import Lib
@@ -48,6 +49,9 @@ update msg model =
         AuthMsg msg_ ->
             Auth.update msg_ model
 
+        DashboardMsg msg_ ->
+            Dashboards.update msg_ model
+
         OnSignUp result ->
             handleAuth model result
 
@@ -65,12 +69,6 @@ update msg model =
 
         OnFetchBuildTypes response ->
             ( { model | buildTypes = response }, Cmd.none )
-
-        OnFetchDashboards response ->
-            ( { model | dashboards = response }, Cmd.none )
-
-        ChangeDashboardName name ->
-            ( model, Cmd.none )
 
 
 handleAuth : Model -> Result Http.Error User -> ( Model, Cmd Msg )

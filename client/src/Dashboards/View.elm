@@ -1,4 +1,4 @@
-module Pages.Dashboard exposing (..)
+module Dashboards.View exposing (..)
 
 import Html exposing (Html, a, div, i, section, text)
 import Html.Attributes exposing (class, href, id)

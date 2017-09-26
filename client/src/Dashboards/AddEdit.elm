@@ -1,9 +1,9 @@
-module Pages.AddEditDashboard exposing (..)
+module Dashboards.AddEdit exposing (..)
 
 import Html exposing (Html, div, h4, h5, h6, hr, i, li, text, ul)
 import Html.Attributes exposing (class, id)
 import Models exposing (BuildType, Model, Project)
-import Msgs exposing (Msg(ChangeDashboardName))
+import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
 import Pages.Components exposing (iconLinkButton, textField)
 import RemoteData
 import Routes exposing (Route(DashboardRoute, DashboardsRoute))
@@ -14,7 +14,7 @@ view : Model -> Html Msg
 view model =
     div [ id "settings" ]
         [ div [ class "button-area" ] [ saveButton ]
-        , div [] [ textField model.dashboardAddEdit.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" ChangeDashboardName ]
+        , div [] [ textField model.dashboards.dashboardForm.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" (ChangeDashboardName >> DashboardMsg) ]
         , hr [] []
         , h6 [ class "title is-6" ] [ text "Choose Builds" ]
         , div [ class "project-area" ] [ maybeProjects model model.projects ]

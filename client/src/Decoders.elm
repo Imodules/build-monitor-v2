@@ -1,8 +1,9 @@
 module Decoders exposing (..)
 
+import Dashboards.Models exposing (Dashboard)
 import Json.Decode as Decode exposing (Decoder, andThen, fail, string, succeed)
 import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
-import Models exposing (BuildType, Dashboard, Project, User)
+import Models exposing (BuildType, Project, User)
 import Time.DateTime as DateTime exposing (DateTime)
 
 

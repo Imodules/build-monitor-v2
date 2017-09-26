@@ -1,6 +1,6 @@
 module Api exposing (..)
 
-import Decoders exposing (buildTypesDecoder, dashboardsDecoder, projectsDecoder)
+import Decoders exposing (buildTypesDecoder, projectsDecoder)
 import Http
 import Json.Decode as Decode exposing (Decoder)
 import Msgs exposing (Msg)
@@ -53,6 +53,19 @@ post url body decoder =
         }
 
 
+authPost : String -> Token -> Http.Body -> Decode.Decoder a -> Http.Request a
+authPost url token body decoder =
+    Http.request
+        { method = "POST"
+        , headers = [ authHeader token ]
+        , url = url
+        , body = body
+        , expect = Http.expectJson decoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
 patch : String -> Http.Body -> Http.Request ()
 patch url body =
     Http.request
@@ -78,10 +91,3 @@ fetchBuildTypes baseApiUrl token =
     authGet (Urls.buildTypes baseApiUrl) token buildTypesDecoder
         |> RemoteData.sendRequest
         |> Cmd.map Msgs.OnFetchBuildTypes
-
-
-fetchDashboards : String -> String -> Cmd Msg
-fetchDashboards baseApiUrl token =
-    authGet (Urls.dashboards baseApiUrl) token dashboardsDecoder
-        |> RemoteData.sendRequest
-        |> Cmd.map (Msgs.OnFetchDashboards >> Msgs.DashboardMsg)

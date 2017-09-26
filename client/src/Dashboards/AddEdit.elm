@@ -1,7 +1,8 @@
 module Dashboards.AddEdit exposing (..)
 
-import Html exposing (Html, div, h4, h5, h6, hr, i, li, text, ul)
-import Html.Attributes exposing (class, id)
+import Dashboards.Models as DashboardsModel
+import Html exposing (Html, button, div, h4, h5, h6, hr, i, li, span, text, ul)
+import Html.Attributes exposing (class, disabled, id)
 import Html.Events exposing (onClick)
 import Models exposing (BuildType, Model, Project)
 import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
@@ -14,7 +15,7 @@ import Types exposing (Id)
 view : Model -> Html Msg
 view model =
     div [ id "settings" ]
-        [ div [ class "button-area" ] [ saveButton ]
+        [ div [ class "button-area" ] [ saveButton model.dashboards ]
         , div [] [ textField model.dashboards.dashboardForm.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" (ChangeDashboardName >> DashboardMsg) ]
         , hr [] []
         , h6 [ class "title is-6" ] [ text "Choose Builds" ]
@@ -22,9 +23,21 @@ view model =
         ]
 
 
-saveButton : Html Msg
-saveButton =
-    iconLinkButton "is-success" DashboardsRoute "fa-save" "Save"
+saveButton : DashboardsModel.Model -> Html Msg
+saveButton model =
+    let
+        disableButton =
+            not (isFormValid model)
+    in
+    button [ class "button is-success", disabled disableButton, onClick (DashboardMsg CreateDashboard) ]
+        [ icon "fa fa-check-square-o"
+        , span [] [ text "Save" ]
+        ]
+
+
+isFormValid : DashboardsModel.Model -> Bool
+isFormValid model =
+    model.dashboardForm.name.isValid
 
 
 maybeProjects : Model -> RemoteData.WebData (List Project) -> Html Msg

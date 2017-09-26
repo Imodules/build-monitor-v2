@@ -41,3 +41,5 @@ type DashboardMsg
     = ChangeDashboardName String
     | OnFetchDashboards (WebData (List Dashboard))
     | ClickBuildType Id
+    | CreateDashboard
+    | OnCreateDashboard (Result Http.Error Dashboard)

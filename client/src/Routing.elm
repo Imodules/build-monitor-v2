@@ -1,6 +1,7 @@
 module Routing exposing (..)
 
 import Api
+import Dashboards.Api as DashboardsApi
 import Html exposing (Attribute)
 import Html.Events exposing (onWithOptions)
 import Json.Decode as Decode
@@ -9,6 +10,7 @@ import Models exposing (Model)
 import Msgs exposing (Msg)
 import Navigation exposing (Location)
 import Routes exposing (..)
+import Types exposing (Token)
 import UrlParser exposing (..)
 
 
@@ -45,16 +47,21 @@ toPath route =
             "not found"
 
 
+getToken : Model -> Token
+getToken model =
+    case model.user of
+        Just user ->
+            user.token
+
+        _ ->
+            ""
+
+
 getLocationCommand : Model -> Route -> Cmd Msg
 getLocationCommand model route =
     let
         token =
-            case model.user of
-                Just user ->
-                    user.token
-
-                _ ->
-                    ""
+            getToken model
     in
     if needsToLogin model route then
         Cmd.none
@@ -67,7 +74,7 @@ getLocationCommand model route =
                     ]
 
             DashboardsRoute ->
-                Api.fetchDashboards model.flags.apiUrl token
+                DashboardsApi.fetchDashboards model.flags.apiUrl token
 
             _ ->
                 Cmd.none

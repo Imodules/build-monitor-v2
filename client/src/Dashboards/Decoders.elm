@@ -39,12 +39,12 @@ updateDashboardEncoder model =
     Encode.object attributes
 
 
-buildConfigEncoder : Dashboards.BuildConfig -> Encode.Value
+buildConfigEncoder : Dashboards.BuildConfigForm -> Encode.Value
 buildConfigEncoder config =
     let
         attributes =
             [ ( "id", Encode.string config.id )
-            , ( "abbriviation", Encode.string config.abbreviation )
+            , ( "abbriviation", Encode.string config.abbreviation.value )
             ]
     in
     Encode.object attributes

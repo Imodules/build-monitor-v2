@@ -1,7 +1,7 @@
 module Dashboards.Models exposing (..)
 
 import RemoteData exposing (WebData)
-import Types exposing (Id, Owner, TextField, initTextField)
+import Types exposing (Id, Owner, TextField, initTextField, initTextFieldValue)
 
 
 type alias Model =
@@ -26,10 +26,10 @@ initialFormModel =
     }
 
 
-initialBuildConfig : Id -> String -> BuildConfig
-initialBuildConfig id abbr =
+initialBuildConfigForm : Id -> String -> BuildConfigForm
+initialBuildConfigForm id abbr =
     { id = id
-    , abbreviation = abbr
+    , abbreviation = initTextFieldValue abbr
     }
 
 
@@ -47,9 +47,22 @@ type alias BuildConfig =
     }
 
 
+type alias BuildConfigForm =
+    { id : Id
+    , abbreviation : TextField
+    }
+
+
 type alias DashboardForm =
     { id : Id
     , name : TextField
-    , buildConfigs : List BuildConfig
+    , buildConfigs : List BuildConfigForm
     , isDirty : Bool
+    }
+
+
+buildConfigToForm : BuildConfig -> BuildConfigForm
+buildConfigToForm bc =
+    { id = bc.id
+    , abbreviation = initTextFieldValue bc.abbreviation
     }

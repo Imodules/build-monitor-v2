@@ -1,5 +1,6 @@
 module Dashboards.AddEdit exposing (add, edit)
 
+import Dashboards.Components exposing (cancelButton, dashboardNameField, saveButton)
 import Dashboards.Lib exposing (configInList)
 import Dashboards.Models as DashboardsModel exposing (DashboardForm)
 import Html exposing (Html, button, div, h4, h5, h6, hr, i, li, span, text, ul)
@@ -9,7 +10,6 @@ import Models exposing (BuildType, Model, Project)
 import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
 import Pages.Components exposing (icon, iconLinkButton, textField)
 import RemoteData
-import Routes exposing (Route(DashboardsRoute))
 import Types exposing (Id)
 
 
@@ -34,29 +34,12 @@ add model =
 view : Model -> DashboardForm -> Msg -> Html Msg
 view model dashForm saveMsg =
     div [ id "settings" ]
-        [ div [ class "button-area" ] [ saveButton model.dashboards saveMsg, cancelButton ]
-        , div [] [ textField dashForm.name "text" "dashboardName" "Dashboard Name" "fa-tachometer" (ChangeDashboardName >> DashboardMsg) ]
+        [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelButton ]
+        , dashboardNameField dashForm
         , hr [] []
         , h6 [ class "title is-6" ] [ text "Choose Builds" ]
-        , div [ class "project-area" ] [ maybeProjects model model.projects ]
+        , div [ class "project-area" ] [ maybeProjects model ]
         ]
-
-
-saveButton : DashboardsModel.Model -> Msg -> Html Msg
-saveButton model saveMsg =
-    let
-        disableButton =
-            not (isFormValid model)
-    in
-    button [ class "button is-success", disabled disableButton, onClick saveMsg ]
-        [ icon "fa fa-check-square-o"
-        , span [] [ text "Save" ]
-        ]
-
-
-cancelButton : Html Msg
-cancelButton =
-    iconLinkButton "" DashboardsRoute "fa-times-circle-o" "Cancel"
 
 
 isFormValid : DashboardsModel.Model -> Bool
@@ -64,9 +47,9 @@ isFormValid model =
     model.dashboardForm.isDirty && model.dashboardForm.name.isValid
 
 
-maybeProjects : Model -> RemoteData.WebData (List Project) -> Html Msg
-maybeProjects model response =
-    case response of
+maybeProjects : Model -> Html Msg
+maybeProjects model =
+    case model.projects of
         RemoteData.NotAsked ->
             text ""
 
@@ -74,15 +57,15 @@ maybeProjects model response =
             text "Loading..."
 
         RemoteData.Success projects ->
-            maybeBuildTypes model projects model.buildTypes
+            maybeBuildTypes model projects
 
         RemoteData.Failure error ->
             text (toString error)
 
 
-maybeBuildTypes : Model -> List Project -> RemoteData.WebData (List BuildType) -> Html Msg
-maybeBuildTypes model projects response =
-    case response of
+maybeBuildTypes : Model -> List Project -> Html Msg
+maybeBuildTypes model projects =
+    case model.buildTypes of
         RemoteData.NotAsked ->
             text ""
 

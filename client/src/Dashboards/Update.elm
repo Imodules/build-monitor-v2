@@ -2,7 +2,7 @@ module Dashboards.Update exposing (..)
 
 import Dashboards.Api as Api
 import Dashboards.Lib exposing (configInList)
-import Dashboards.Models as Dashboards exposing (initialBuildConfig)
+import Dashboards.Models as Dashboards exposing (buildConfigToForm, initialBuildConfigForm)
 import Lib exposing (createCommand)
 import List.Extra exposing (find)
 import Models exposing (Model)
@@ -41,7 +41,7 @@ update_ baseUrl token msg model =
                     if configInList id old then
                         List.filter (\i -> i.id /= id) old
                     else
-                        initialBuildConfig id "" :: old
+                        initialBuildConfigForm id "" :: old
 
                 newDashboardForm old =
                     { old | buildConfigs = updatedList old.buildConfigs, isDirty = True }
@@ -73,7 +73,7 @@ update_ baseUrl token msg model =
                             if String.isEmpty old.id || old.id /= id then
                                 { id = dashboard.id
                                 , name = initTextFieldValue dashboard.name
-                                , buildConfigs = dashboard.buildConfigs
+                                , buildConfigs = List.map buildConfigToForm dashboard.buildConfigs
                                 , isDirty = False
                                 }
                             else

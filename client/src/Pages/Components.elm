@@ -75,6 +75,21 @@ textField field fieldType id_ labelText icon msg_ =
         ]
 
 
+textBox : TextField -> (String -> Msg) -> Html Msg
+textBox field msg_ =
+    div [ class "field" ]
+        [ div [ class "control" ]
+            [ input
+                [ class "input"
+                , type_ "text"
+                , value field.value
+                , onInput msg_
+                ]
+                []
+            ]
+        ]
+
+
 textArea : TextField -> String -> String -> (String -> Msg) -> Html Msg
 textArea field id_ labelText msg_ =
     let

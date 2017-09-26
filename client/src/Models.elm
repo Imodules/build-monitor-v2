@@ -55,6 +55,15 @@ type alias Project =
     }
 
 
+initialProject : Project
+initialProject =
+    { id = ""
+    , name = "INIT"
+    , description = ""
+    , parentProjectId = "_Root"
+    }
+
+
 type alias BuildType =
     { id : Id
     , name : String

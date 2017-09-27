@@ -3,7 +3,6 @@ module View exposing (..)
 import Auth.Login as Login
 import Auth.SignUp as SignUp
 import Dashboards.AddEdit as DashboardAddEdit
-import Dashboards.Configure as DashboardConfigure
 import Dashboards.List as DashboardList
 import Dashboards.View as DashboardView
 import Html exposing (..)
@@ -32,9 +31,6 @@ view model =
 
             EditDashboardRoute id ->
                 DashboardAddEdit.edit model id |> contentWrapper
-
-            ConfigureDashboardRoute id ->
-                DashboardConfigure.view model id |> contentWrapper
 
             NewDashboardRoute ->
                 DashboardAddEdit.add model |> contentWrapper

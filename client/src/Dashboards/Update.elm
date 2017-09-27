@@ -2,13 +2,13 @@ module Dashboards.Update exposing (..)
 
 import Dashboards.Api as Api
 import Dashboards.Lib exposing (configInList, getBuildPath, getDefaultPrefix)
-import Dashboards.Models as Dashboards exposing (BuildConfigForm, buildConfigToForm, initialBuildConfigForm)
+import Dashboards.Models as Dashboards exposing (BuildConfigForm, EditTab(Configure, Select), buildConfigToForm, initialBuildConfigForm, initialFormModel)
 import Lib exposing (createCommand)
 import List.Extra exposing (find)
 import Models exposing (Model)
 import Msgs exposing (DashboardMsg(..), Msg(ChangeLocation, DashboardMsg))
 import RemoteData
-import Routes exposing (Route(ConfigureDashboardRoute))
+import Routes exposing (Route(DashboardsRoute))
 import Routing exposing (getToken)
 import Types exposing (Id, TextField, Token, initTextFieldValue)
 
@@ -65,6 +65,23 @@ update_ baseUrl token msg model_ =
         EditDashboard ->
             ( model, Api.editDashboard baseUrl token model )
 
+        OnSelectTabClick ->
+            let
+                newDashboardForm old =
+                    { old | tab = Select }
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
+        OnConfigureTabClick ->
+            let
+                newDashboardForm old =
+                    { old | tab = Configure }
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
+        StartCreateDashboard ->
+            ( { model | dashboardForm = initialFormModel }, Cmd.none )
+
         StartEditDashboard id ->
             let
                 dashboards =
@@ -86,6 +103,7 @@ update_ baseUrl token msg model_ =
                                 , name = initTextFieldValue dashboard.name
                                 , buildConfigs = List.map buildConfigToForm dashboard.buildConfigs
                                 , isDirty = False
+                                , tab = Select
                                 }
                             else
                                 old
@@ -98,7 +116,7 @@ update_ baseUrl token msg model_ =
         OnCreateDashboard result ->
             case result of
                 Ok dashboard ->
-                    ( model, createCommand (ChangeLocation (ConfigureDashboardRoute dashboard.id)) )
+                    ( model, createCommand (ChangeLocation DashboardsRoute) )
 
                 Err dashboard ->
                     let

@@ -7,7 +7,7 @@ import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (icon, iconLinkButton)
 import RemoteData
-import Routes exposing (Route(ConfigureDashboardRoute, EditDashboardRoute, NewDashboardRoute))
+import Routes exposing (Route(EditDashboardRoute, NewDashboardRoute))
 import Types exposing (Id)
 
 
@@ -59,7 +59,6 @@ dashboardListItem model dashboard =
             , div [ class "level-right" ]
                 [ viewButton dashboard.id
                 , editButton dashboard.id
-                , configureButton dashboard.id
                 ]
             ]
         ]
@@ -73,8 +72,3 @@ viewButton id =
 editButton : Id -> Html Msg
 editButton id =
     div [ class "level-item" ] [ iconLinkButton "is-info" (EditDashboardRoute id) "fa-edit" "Edit" ]
-
-
-configureButton : Id -> Html Msg
-configureButton id =
-    div [ class "level-item" ] [ iconLinkButton "" (ConfigureDashboardRoute id) "fa-cog" "Configure" ]

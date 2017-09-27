@@ -41,8 +41,11 @@ type DashboardMsg
     = ChangeDashboardName String
     | OnFetchDashboards (WebData (List Dashboard))
     | ClickBuildType Id
+    | StartCreateDashboard
     | CreateDashboard
     | StartEditDashboard Id
     | EditDashboard
     | OnCreateDashboard (Result Http.Error Dashboard)
     | ChangeBuildAbbreviation Id String
+    | OnSelectTabClick
+    | OnConfigureTabClick

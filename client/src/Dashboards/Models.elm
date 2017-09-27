@@ -23,6 +23,7 @@ initialFormModel =
     , name = initTextField
     , buildConfigs = []
     , isDirty = False
+    , tab = Select
     }
 
 
@@ -58,7 +59,13 @@ type alias DashboardForm =
     , name : TextField
     , buildConfigs : List BuildConfigForm
     , isDirty : Bool
+    , tab : EditTab
     }
+
+
+type EditTab
+    = Select
+    | Configure
 
 
 buildConfigToForm : BuildConfig -> BuildConfigForm

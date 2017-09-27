@@ -8,7 +8,7 @@ import Json.Decode as Decode
 import Lib exposing (createCommand)
 import List
 import Models exposing (Model)
-import Msgs exposing (DashboardMsg(StartEditDashboard), Msg(DashboardMsg))
+import Msgs exposing (DashboardMsg(StartCreateDashboard, StartEditDashboard), Msg(DashboardMsg))
 import Navigation exposing (Location)
 import Routes exposing (..)
 import Types exposing (Token)
@@ -23,7 +23,6 @@ matchers =
         , map NewDashboardRoute (s "dashboards" </> s "new")
         , map DashboardRoute (s "dashboards" </> string)
         , map EditDashboardRoute (s "dashboards" </> string </> s "edit")
-        , map ConfigureDashboardRoute (s "dashboards" </> string </> s "configure")
         , map SignUpRoute (s "signup")
         , map LoginRoute (s "login")
         ]
@@ -43,9 +42,6 @@ toPath route =
 
         EditDashboardRoute id ->
             editDashboard id
-
-        ConfigureDashboardRoute id ->
-            configureDashboard id
 
         DashboardsRoute ->
             dashboards
@@ -70,40 +66,72 @@ getToken model =
 getLocationCommand : Model -> Route -> Cmd Msg
 getLocationCommand model route =
     let
+        routeCommand =
+            getLocationCommands model route
+
+        refreshCommand =
+            getLocationRefreshCommand model route
+
+        cmdList =
+            List.append routeCommand refreshCommand
+    in
+    case cmdList of
+        [] ->
+            Cmd.none
+
+        _ ->
+            Cmd.batch cmdList
+
+
+getLocationCommands : Model -> Route -> List (Cmd Msg)
+getLocationCommands model route =
+    let
         token =
             getToken model
     in
     if needsToLogin model route then
-        Cmd.none
+        []
     else
         case route of
             NewDashboardRoute ->
-                Cmd.batch
-                    [ Api.fetchProjects model.flags.apiUrl
-                    , Api.fetchBuildTypes model.flags.apiUrl
-                    ]
+                [ createCommand (DashboardMsg StartCreateDashboard) ]
 
             EditDashboardRoute id ->
-                Cmd.batch
-                    [ createCommand (DashboardMsg (StartEditDashboard id))
-                    , DashboardsApi.fetchDashboards model.flags.apiUrl
-                    , Api.fetchProjects model.flags.apiUrl
-                    , Api.fetchBuildTypes model.flags.apiUrl
-                    ]
-
-            ConfigureDashboardRoute id ->
-                Cmd.batch
-                    [ createCommand (DashboardMsg (StartEditDashboard id))
-                    , DashboardsApi.fetchDashboards model.flags.apiUrl
-                    , Api.fetchProjects model.flags.apiUrl
-                    , Api.fetchBuildTypes model.flags.apiUrl
-                    ]
+                [ createCommand (DashboardMsg (StartEditDashboard id)) ]
 
             DashboardsRoute ->
-                DashboardsApi.fetchDashboards model.flags.apiUrl
+                [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
 
             _ ->
-                Cmd.none
+                []
+
+
+getLocationRefreshCommand : Model -> Route -> List (Cmd Msg)
+getLocationRefreshCommand model route =
+    let
+        token =
+            getToken model
+    in
+    if needsToLogin model route then
+        []
+    else
+        case route of
+            NewDashboardRoute ->
+                [ Api.fetchProjects model.flags.apiUrl
+                , Api.fetchBuildTypes model.flags.apiUrl
+                ]
+
+            EditDashboardRoute id ->
+                [ DashboardsApi.fetchDashboards model.flags.apiUrl
+                , Api.fetchProjects model.flags.apiUrl
+                , Api.fetchBuildTypes model.flags.apiUrl
+                ]
+
+            DashboardsRoute ->
+                [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
+
+            _ ->
+                []
 
 
 authRoutes : List Route

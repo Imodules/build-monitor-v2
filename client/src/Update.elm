@@ -12,7 +12,7 @@ import Msgs exposing (Msg(..))
 import Navigation exposing (back, newUrl)
 import Ports exposing (logout, setTokenStorage)
 import Routes exposing (Route(DashboardRoute, DashboardsRoute))
-import Routing exposing (getLocationCommand, parseLocation, toPath)
+import Routing exposing (getLocationCommand, getLocationRefreshCommand, parseLocation, toPath)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -31,11 +31,8 @@ update msg model =
             let
                 newRoute =
                     parseLocation location
-
-                newCommand =
-                    getLocationCommand model newRoute
             in
-            ( { model | route = newRoute }, newCommand )
+            ( { model | route = newRoute }, getLocationCommand model newRoute )
 
         SetTokenStorage token ->
             ( model, setTokenStorage token )
@@ -62,7 +59,19 @@ update msg model =
             handleReAuth model result
 
         RefreshPageData _ ->
-            ( model, getLocationCommand model model.route )
+            let
+                cmdList =
+                    getLocationRefreshCommand model model.route
+
+                cmd =
+                    case cmdList of
+                        [] ->
+                            Cmd.none
+
+                        _ ->
+                            Cmd.batch cmdList
+            in
+            ( model, cmd )
 
         OnFetchProjects response ->
             ( { model | projects = response }, Cmd.none )

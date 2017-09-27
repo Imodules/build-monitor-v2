@@ -1,25 +1,17 @@
 module Dashboards.AddEdit exposing (add, edit)
 
 import Dashboards.Components exposing (cancelButton, dashboardNameField, saveButton)
-import Dashboards.Lib exposing (configInList)
-import Dashboards.Models as DashboardsModel exposing (DashboardForm)
-import Html exposing (Html, button, div, h4, h5, h6, hr, i, li, span, text, ul)
-import Html.Attributes exposing (class, disabled, id)
-import Html.Events exposing (onClick)
+import Dashboards.Configure as DashboardConfigure
+import Dashboards.Models as DashboardsModel exposing (DashboardForm, EditTab(Configure, Select))
+import Dashboards.Select as DashboardSelect
+import Html exposing (Html, a, div, hr, li, span, text, ul)
+import Html.Attributes exposing (class, id)
 import Models exposing (BuildType, Model, Project)
-import Msgs exposing (DashboardMsg(..), Msg(DashboardMsg))
-import Pages.Components exposing (icon, iconLinkButton, textField)
+import Msgs exposing (DashboardMsg(CreateDashboard, EditDashboard, OnConfigureTabClick, OnSelectTabClick), Msg(DashboardMsg))
+import Pages.Components exposing (icon)
 import RemoteData
+import Routing exposing (onLinkClick)
 import Types exposing (Id)
-
-
-edit : Model -> Id -> Html Msg
-edit model id =
-    let
-        dashForm =
-            model.dashboards.dashboardForm
-    in
-    view model dashForm (DashboardMsg EditDashboard)
 
 
 add : Model -> Html Msg
@@ -31,13 +23,22 @@ add model =
     view model dashForm (DashboardMsg CreateDashboard)
 
 
+edit : Model -> Id -> Html Msg
+edit model id =
+    let
+        dashForm =
+            model.dashboards.dashboardForm
+    in
+    view model dashForm (DashboardMsg EditDashboard)
+
+
 view : Model -> DashboardForm -> Msg -> Html Msg
 view model dashForm saveMsg =
     div [ id "settings" ]
         [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelButton ]
         , dashboardNameField dashForm
         , hr [] []
-        , h6 [ class "title is-6" ] [ text "Choose Builds" ]
+        , tabs dashForm
         , div [ class "project-area" ] [ maybeProjects model ]
         ]
 
@@ -73,67 +74,37 @@ maybeBuildTypes model projects =
             text "Loading..."
 
         RemoteData.Success buildTypes ->
-            projectTree model projects buildTypes
+            projectArea model projects buildTypes
 
         RemoteData.Failure error ->
             text (toString error)
 
 
-projectTree : Model -> List Project -> List BuildType -> Html Msg
-projectTree model projects buildTypes =
-    let
-        content =
-            List.map (\p -> topProjectRow model p projects buildTypes) (topProjects projects)
-    in
-    div [] content
-
-
-topProjectRow : Model -> Project -> List Project -> List BuildType -> Html Msg
-topProjectRow model project projects buildTypes =
-    let
-        childProjects =
-            projectsByParent project.id projects
-
-        content =
-            if List.length childProjects > 0 then
-                List.map (\p -> topProjectRow model p projects buildTypes) childProjects
-            else
-                List.map (\bt -> buildTypeRow model bt) (buildTypesByProject project.id buildTypes)
-    in
-    div [ class "box" ]
-        [ h4 [ class "title is-4" ] [ icon "fa fa-cubes fa-fw", text project.name ]
-        , div [ class "box" ] content
+tabs : DashboardForm -> Html Msg
+tabs dashForm =
+    div [ class "tabs is-boxed is-medium" ]
+        [ ul []
+            [ tab "Select" "fa fa-check-square-o fa-fw" (dashForm.tab == Select) OnSelectTabClick
+            , tab "Configure" "fa fa-cog fa-fw" (dashForm.tab == Configure) OnConfigureTabClick
+            ]
         ]
 
 
-buildTypeRow : Model -> BuildType -> Html Msg
-buildTypeRow model buildType =
+tab : String -> String -> Bool -> DashboardMsg -> Html Msg
+tab tabText img isActive msg =
     let
-        handleClick =
-            buildType.id |> (ClickBuildType >> DashboardMsg)
-
-        isSelected =
-            configInList buildType.id model.dashboards.dashboardForm.buildConfigs
-
-        rowClass =
-            if isSelected then
-                "box buildType selected"
+        tabClass =
+            if isActive then
+                "is-active"
             else
-                "box buildType"
+                ""
     in
-    div [ class rowClass, onClick handleClick ] [ h5 [ class "title is-5" ] [ icon "fa fa-cube fa-fw", text buildType.name ] ]
+    li [ class tabClass ] [ a [ onLinkClick (DashboardMsg msg) ] [ icon img, span [] [ text tabText ] ] ]
 
 
-topProjects : List Project -> List Project
-topProjects =
-    projectsByParent "_Root"
-
-
-projectsByParent : String -> List Project -> List Project
-projectsByParent parent projects =
-    List.filter (\n -> n.parentProjectId == parent) projects
-
-
-buildTypesByProject : Id -> List BuildType -> List BuildType
-buildTypesByProject projectId buildTypes =
-    List.filter (\n -> n.projectId == projectId) buildTypes
+projectArea : Model -> List Project -> List BuildType -> Html Msg
+projectArea model projects buildTypes =
+    if model.dashboards.dashboardForm.tab == Select then
+        DashboardSelect.view model projects buildTypes
+    else
+        DashboardConfigure.view model projects buildTypes

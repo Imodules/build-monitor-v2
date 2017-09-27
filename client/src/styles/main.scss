@@ -52,3 +52,13 @@ div#dashboard {
 	background-color: $green;
   }
 }
+
+.project-area {
+  padding: 3px;
+  height: calc(100vh - 206px);
+  overflow: auto;
+
+  .top-project:not(:first-child) {
+    margin-top: 40px;
+  }
+}

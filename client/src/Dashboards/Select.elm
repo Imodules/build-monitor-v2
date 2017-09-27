@@ -1,7 +1,7 @@
 module Dashboards.Select exposing (view)
 
 import Dashboards.Lib exposing (configInList)
-import Html exposing (Html, div, h4, h5, text)
+import Html exposing (Html, div, h4, h5, hr, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Models exposing (BuildType, Model, Project)
@@ -31,7 +31,7 @@ topProjectRow model project projects buildTypes =
             else
                 List.map (\bt -> buildTypeRow model bt) (buildTypesByProject project.id buildTypes)
     in
-    div [ class "box" ]
+    div [ class "top-project" ]
         [ h4 [ class "title is-4" ] [ icon "fa fa-cubes fa-fw", text project.name ]
         , div [ class "box" ] content
         ]

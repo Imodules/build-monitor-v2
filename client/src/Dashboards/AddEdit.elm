@@ -37,7 +37,6 @@ view model dashForm saveMsg =
     div [ id "settings" ]
         [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelButton ]
         , dashboardNameField dashForm
-        , hr [] []
         , tabs dashForm
         , div [ class "project-area" ] [ maybeProjects model ]
         ]
@@ -82,7 +81,7 @@ maybeBuildTypes model projects =
 
 tabs : DashboardForm -> Html Msg
 tabs dashForm =
-    div [ class "tabs is-boxed is-medium" ]
+    div [ class "tabs is-fullwidth is-medium" ]
         [ ul []
             [ tab "Select" "fa fa-check-square-o fa-fw" (dashForm.tab == Select) OnSelectTabClick
             , tab "Configure" "fa fa-cog fa-fw" (dashForm.tab == Configure) OnConfigureTabClick

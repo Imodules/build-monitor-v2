@@ -45,3 +45,4 @@ type DashboardMsg
     | StartEditDashboard Id
     | EditDashboard
     | OnCreateDashboard (Result Http.Error Dashboard)
+    | ChangeBuildAbbreviation Id String

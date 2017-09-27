@@ -44,7 +44,7 @@ buildConfigEncoder config =
     let
         attributes =
             [ ( "id", Encode.string config.id )
-            , ( "abbriviation", Encode.string config.abbreviation.value )
+            , ( "abbreviation", Encode.string config.abbreviation.value )
             ]
     in
     Encode.object attributes

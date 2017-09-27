@@ -77,10 +77,20 @@ textField field fieldType id_ labelText icon msg_ =
 
 textBox : TextField -> (String -> Msg) -> Html Msg
 textBox field msg_ =
+    let
+        inputClass =
+            if field.isDirty then
+                if not field.isValid then
+                    "input is-danger"
+                else
+                    "input is-success"
+            else
+                "input"
+    in
     div [ class "field" ]
         [ div [ class "control" ]
             [ input
-                [ class "input"
+                [ class inputClass
                 , type_ "text"
                 , value field.value
                 , onInput msg_

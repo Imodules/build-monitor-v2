@@ -52,6 +52,8 @@ func (s *Server) CreateDashboard(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
+	addDashboardToBuildTypes(appDb, dbDashboard)
+
 	return ctx.JSON(http.StatusCreated, dbDashboard)
 }
 
@@ -65,6 +67,11 @@ func (s *Server) DeleteDashboard(ctx echo.Context) error {
 	dashboard, _ := appDb.FindDashboardById(id)
 	if dashboard.Owner.Id.Hex() != claims.UserId {
 		return ctx.JSON(http.StatusUnauthorized, ErrorResponse{Message: "You are not the owner"})
+	}
+
+	if err := appDb.RemoveDashboardFromBuildTypes(id); err != nil {
+		log.Error("Failed to delete dashboard from the build types", err)
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
 	if err := appDb.DeleteDashboard(id); err != nil {
@@ -92,6 +99,11 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnauthorized, ErrorResponse{Message: "You are not the owner"})
 	}
 
+	if err := appDb.RemoveDashboardFromBuildTypes(id); err != nil {
+		log.Error("Failed to delete dashboard from the build types", err)
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+	}
+
 	dashboard := db.Dashboard{
 		Id:           id,
 		Name:         r.Name,
@@ -105,5 +117,15 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
+	addDashboardToBuildTypes(appDb, dbDashboard)
+
 	return ctx.JSON(http.StatusOK, dbDashboard)
+}
+
+func addDashboardToBuildTypes(appDb IAppDb, dbDashboard *db.Dashboard) {
+	var ids []string
+	for _, config := range dbDashboard.BuildConfigs {
+		ids = append(ids, config.Id)
+	}
+	appDb.AddDashboardToBuildTypes(ids, dbDashboard.Id)
 }

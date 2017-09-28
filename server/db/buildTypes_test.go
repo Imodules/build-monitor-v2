@@ -64,7 +64,7 @@ func TestAppDb_UpsertBuildType(t *testing.T) {
 				{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55, BranchName: "master"},
 			}
 
-			appDb.UpdateBuilds(bt.Id, builds)
+			appDb.UpdateBuildTypeBuilds(bt.Id, builds)
 
 			Convey("It should not remove the builds from the db", func() {
 				dbBuildType, _ := appDb.FindBuildTypeById(bt.Id)
@@ -104,7 +104,7 @@ func TestAppDb_UpdateBuildTypeBuilds(t *testing.T) {
 					{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55, BranchName: "master"},
 				}
 
-				newBt, err := appDb.UpdateBuilds(bt.Id, builds)
+				newBt, err := appDb.UpdateBuildTypeBuilds(bt.Id, builds)
 
 				Convey("It should not error", func() {
 					So(err, ShouldBeNil)
@@ -135,6 +135,64 @@ func TestAppDb_UpdateBuildTypeBuilds(t *testing.T) {
 				})
 			})
 		})
+	})
+}
+
+func TestAppDb_AddRemoveDashboardFromBuildTypes(t *testing.T) {
+	Convey("Given an appDb", t, func() {
+		c := cfg.Config{PasswordSalt: "something here"}
+		log := logrus.WithField("test", "TestAppDb_UpsertBuildType")
+
+		appDb := db.Create(dbSession, &c, log, time.Now)
+
+		Convey("With multiple build types with dashboard ids", func() {
+			buildType1 := db.BuildType{
+				Id: "Build Type Id 01",
+			}
+			bt1, _ := appDb.UpsertBuildType(buildType1)
+
+			buildType2 := db.BuildType{
+				Id: "Build Type Id 02",
+			}
+			bt2, _ := appDb.UpsertBuildType(buildType2)
+
+			buildType3 := db.BuildType{
+				Id: "Build Type Id 03",
+			}
+			bt3, _ := appDb.UpsertBuildType(buildType3)
+
+			appDb.AddDashboardToBuildTypes([]string{bt1.Id, bt3.Id}, "dash-01")
+			appDb.AddDashboardToBuildTypes([]string{bt1.Id, bt2.Id, bt3.Id}, "dash-02")
+			appDb.AddDashboardToBuildTypes([]string{bt2.Id, bt3.Id}, "dash-03")
+
+			Convey("When I remove a dashboard from build types", func() {
+				err := appDb.RemoveDashboardFromBuildTypes("dash-02")
+				So(err, ShouldBeNil)
+
+				Convey("It should remove them from all", func() {
+					dash2Results, err := appDb.DashboardBuildTypeList("dash-02")
+					So(err, ShouldBeNil)
+					So(len(dash2Results), ShouldEqual, 0)
+
+					Convey("But only that id", func() {
+						dash1Results, err := appDb.DashboardBuildTypeList("dash-01")
+						So(err, ShouldBeNil)
+
+						So(len(dash1Results), ShouldEqual, 2)
+						So(dash1Results[0].Id, ShouldEqual, bt1.Id)
+						So(dash1Results[1].Id, ShouldEqual, bt3.Id)
+
+						dash3Results, err := appDb.DashboardBuildTypeList("dash-03")
+						So(err, ShouldBeNil)
+
+						So(len(dash3Results), ShouldEqual, 2)
+						So(dash3Results[0].Id, ShouldEqual, bt2.Id)
+						So(dash3Results[1].Id, ShouldEqual, bt3.Id)
+					})
+				})
+			})
+		})
+
 	})
 }
 

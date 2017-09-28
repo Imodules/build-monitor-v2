@@ -7,11 +7,12 @@ import (
 )
 
 type BuildType struct {
-	Id          string  `bson:"_id" json:"id"`
-	Name        string  `bson:"name" json:"name"`
-	Description string  `bson:"description" json:"description"`
-	ProjectID   string  `bson:"projectId" json:"projectId"`
-	Builds      []Build `bson:"builds" json:"builds"`
+	Id           string   `bson:"_id" json:"id"`
+	Name         string   `bson:"name" json:"name"`
+	Description  string   `bson:"description" json:"description"`
+	ProjectID    string   `bson:"projectId" json:"projectId"`
+	Builds       []Build  `bson:"builds" json:"builds"`
+	DashboardIds []string `bson:"dashboardIds" json:"dashboardIds"` // TODO: Change to dashboardIds
 }
 
 type Build struct {
@@ -57,7 +58,7 @@ func (appDb *AppDb) UpsertBuildType(r BuildType) (*BuildType, error) {
 	return &buildType, nil
 }
 
-func (appDb *AppDb) UpdateBuilds(buildTypeId string, builds []Build) (*BuildType, error) {
+func (appDb *AppDb) UpdateBuildTypeBuilds(buildTypeId string, builds []Build) (*BuildType, error) {
 	now := appDb.now()
 
 	change := mgo.Change{
@@ -82,6 +83,26 @@ func (appDb *AppDb) UpdateBuilds(buildTypeId string, builds []Build) (*BuildType
 	}
 
 	return &buildType, nil
+}
+
+func (appDb *AppDb) AddDashboardToBuildTypes(buildTypeIds []string, dashboardId string) error {
+	now := appDb.now()
+
+	selector := bson.M{"_id": bson.M{"$in": buildTypeIds}}
+	update := bson.M{"$set": bson.M{"modifiedAt": now}, "$push": bson.M{"dashboardIds": dashboardId}}
+
+	_, err := BuildTypes(appDb.Session).UpdateAll(selector, update)
+	return err
+}
+
+func (appDb *AppDb) RemoveDashboardFromBuildTypes(dashboardId string) error {
+	now := appDb.now()
+
+	selector := bson.M{"dashboardIds": dashboardId}
+	update := bson.M{"$set": bson.M{"modifiedAt": now}, "$pull": bson.M{"dashboardIds": dashboardId}}
+
+	_, err := BuildTypes(appDb.Session).UpdateAll(selector, update)
+	return err
 }
 
 func (appDb *AppDb) FindBuildTypeById(id string) (*BuildType, error) {
@@ -110,6 +131,18 @@ func (appDb *AppDb) BuildTypeList() ([]BuildType, error) {
 			"projectId":   1,
 			"paused":      1,
 		}).All(&buildTypeList); err != nil {
+		return nil, err
+	}
+
+	return buildTypeList, nil
+}
+
+func (appDb *AppDb) DashboardBuildTypeList(dashboardId string) ([]BuildType, error) {
+	var buildTypeList []BuildType
+
+	if err := BuildTypes(appDb.Session).
+		Find(bson.M{"deleted": bson.M{"$exists": false}, "dashboardIds": dashboardId}).
+		All(&buildTypeList); err != nil {
 		return nil, err
 	}
 

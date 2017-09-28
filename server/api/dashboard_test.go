@@ -182,6 +182,7 @@ func TestServer_CreateDashboard(t *testing.T) {
 
 			Convey("When the create succeeds", func() {
 				mockDb.On("UpsertDashboard", mock.AnythingOfType("db.Dashboard")).Return(&dbDashboard, nil)
+				mockDb.On("AddDashboardToBuildTypes", []string{"db1", "db2"}, dbDashboard.Id).Return(nil)
 
 				resultErr := s.CreateDashboard(c)
 
@@ -283,6 +284,7 @@ func TestServer_DeleteDashboard(t *testing.T) {
 			mockDb.On("FindDashboardById", id).Return(&dashboard, nil)
 
 			Convey("And it successfully deletes from the db", func() {
+				mockDb.On("RemoveDashboardFromBuildTypes", id).Return(nil)
 				mockDb.On("DeleteDashboard", id).Return(nil)
 
 				err := s.DeleteDashboard(c)
@@ -299,8 +301,30 @@ func TestServer_DeleteDashboard(t *testing.T) {
 			})
 
 			Convey("And it fails to delete from the db", func() {
+				mockDb.On("RemoveDashboardFromBuildTypes", id).Return(nil)
+
 				expectedErr := errors.New("this was expected")
 				mockDb.On("DeleteDashboard", id).Return(expectedErr)
+
+				err := s.DeleteDashboard(c)
+				So(err, ShouldBeNil)
+
+				mockDb.AssertExpectations(t)
+
+				Convey("It should return http.StatusInternalServerError", func() {
+					So(rec.Code, ShouldEqual, http.StatusInternalServerError)
+
+					var resp api.ErrorResponse
+					err := json.Unmarshal(rec.Body.Bytes(), &resp)
+
+					So(err, ShouldBeNil)
+					So(resp.Message, ShouldEqual, expectedErr.Error())
+				})
+			})
+
+			Convey("And it fails to delete the id from the build types", func() {
+				expectedErr := errors.New("this was expected")
+				mockDb.On("RemoveDashboardFromBuildTypes", id).Return(expectedErr)
 
 				err := s.DeleteDashboard(c)
 				So(err, ShouldBeNil)
@@ -400,7 +424,9 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 				Convey("And the update succeeds", func() {
 					mockDb.On("FindDashboardById", id).Return(&dbDashboard, nil)
+					mockDb.On("RemoveDashboardFromBuildTypes", id).Return(nil)
 					mockDb.On("UpsertDashboard", mock.AnythingOfType("db.Dashboard")).Return(&dbDashboard, nil)
+					mockDb.On("AddDashboardToBuildTypes", []string{"db1", "db2"}, dbDashboard.Id).Return(nil)
 
 					resultErr := s.UpdateDashboard(c)
 
@@ -410,7 +436,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 						mockDb.AssertExpectations(t)
 
-						dashboardToDb := mockDb.Calls[1].Arguments[0].(db.Dashboard)
+						dashboardToDb := mockDb.Calls[2].Arguments[0].(db.Dashboard)
 
 						So(dashboardToDb.Id, ShouldEqual, id)
 						So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
@@ -438,6 +464,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 				Convey("And the update fails", func() {
 					expectedErr := errors.New("what now")
 					mockDb.On("FindDashboardById", id).Return(&dbDashboard, nil)
+					mockDb.On("RemoveDashboardFromBuildTypes", id).Return(nil)
 					mockDb.On("UpsertDashboard", mock.AnythingOfType("db.Dashboard")).Return(nil, expectedErr)
 
 					resultErr := s.UpdateDashboard(c)
@@ -448,13 +475,38 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 						mockDb.AssertExpectations(t)
 
-						dashboardToDb := mockDb.Calls[1].Arguments[0].(db.Dashboard)
+						dashboardToDb := mockDb.Calls[2].Arguments[0].(db.Dashboard)
 
 						So(dashboardToDb.Id, ShouldNotBeEmpty)
 						So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 						So(dashboardToDb.Name, ShouldEqual, request.Name)
 						So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
 						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
+
+						Convey("And return http.StatusInternalServerError", func() {
+							So(rec.Code, ShouldEqual, http.StatusInternalServerError)
+
+							var resp api.ErrorResponse
+							err := json.Unmarshal(rec.Body.Bytes(), &resp)
+
+							So(err, ShouldBeNil)
+							So(resp.Message, ShouldEqual, expectedErr.Error())
+						})
+					})
+				})
+
+				Convey("And the RemoveDashboardFromBuildTypes fails", func() {
+					expectedErr := errors.New("what now")
+					mockDb.On("FindDashboardById", id).Return(&dbDashboard, nil)
+					mockDb.On("RemoveDashboardFromBuildTypes", id).Return(expectedErr)
+
+					resultErr := s.UpdateDashboard(c)
+
+					Convey("It should not upsert the dashboard with the owner and a new id", func() {
+
+						So(resultErr, ShouldBeNil)
+
+						mockDb.AssertExpectations(t)
 
 						Convey("And return http.StatusInternalServerError", func() {
 							So(rec.Code, ShouldEqual, http.StatusInternalServerError)

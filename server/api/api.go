@@ -52,6 +52,10 @@ type IAppDb interface {
 	FindDashboardById(id string) (*db.Dashboard, error)
 	UpsertDashboard(dashboard db.Dashboard) (*db.Dashboard, error)
 	DeleteDashboard(id string) error
+
+	AddDashboardToBuildTypes(buildTypeIds []string, dashboardId string) error
+	RemoveDashboardFromBuildTypes(dashboardId string) error
+	DashboardBuildTypeList(dashboardId string) ([]db.BuildType, error)
 }
 
 type Server struct {

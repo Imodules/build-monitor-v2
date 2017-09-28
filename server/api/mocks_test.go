@@ -260,4 +260,24 @@ func (m *IAppDbMock) FindDashboardById(id string) (*db.Dashboard, error) {
 	return args.Get(0).(*db.Dashboard), args.Error(1)
 }
 
+func (m *IAppDbMock) AddDashboardToBuildTypes(buildTypeIds []string, dashboardId string) error {
+	args := m.Called(buildTypeIds, dashboardId)
+	return args.Error(0)
+}
+
+func (m *IAppDbMock) RemoveDashboardFromBuildTypes(dashboardId string) error {
+	args := m.Called(dashboardId)
+	return args.Error(0)
+}
+
+func (m *IAppDbMock) DashboardBuildTypeList(dashboardId string) ([]db.BuildType, error) {
+	args := m.Called(dashboardId)
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]db.BuildType), args.Error(1)
+}
+
 //endregion

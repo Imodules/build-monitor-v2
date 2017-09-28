@@ -7,7 +7,7 @@ import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (icon, iconLinkButton)
 import RemoteData
-import Routes exposing (Route(EditDashboardRoute, NewDashboardRoute))
+import Routes exposing (Route(DashboardRoute, EditDashboardRoute, NewDashboardRoute))
 import Types exposing (Id)
 
 
@@ -66,7 +66,7 @@ dashboardListItem model dashboard =
 
 viewButton : Id -> Html Msg
 viewButton id =
-    div [ class "level-item" ] [ iconLinkButton "is-primary" NewDashboardRoute "fa-eye" "View" ]
+    div [ class "level-item" ] [ iconLinkButton "is-primary" (DashboardRoute id) "fa-eye" "View" ]
 
 
 editButton : Id -> Html Msg

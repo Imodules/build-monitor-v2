@@ -73,3 +73,38 @@ buildConfigToForm bc =
     { id = bc.id
     , abbreviation = initTextFieldValue bc.abbreviation
     }
+
+
+type alias DashboardDetails =
+    { id : Id
+    , name : String
+    }
+
+
+type alias ConfigDetail =
+    { id : Id
+    , abbreviation : String
+    , branches : List Branch
+    }
+
+
+type alias Branch =
+    { name : String
+    , builds : List Build
+    }
+
+
+type BuildStatus
+    = Unknown
+    | Success
+    | Running
+    | Failure
+
+
+type alias Build =
+    { id : Int
+    , number : String
+    , status : BuildStatus
+    , statusText : String
+    , progress : Int
+    }

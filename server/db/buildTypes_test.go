@@ -59,21 +59,29 @@ func TestAppDb_UpsertBuildType(t *testing.T) {
 			bt, _ := appDb.UpsertBuildType(buildType)
 
 			builds := []db.Build{
-				{Id: 908, Number: "BT-51", Status: teamcity.StatusSuccess, StatusText: "this was the last", Progress: 100, BranchName: "master"},
-				{Id: 905, Number: "BT-41", Status: teamcity.StatusFailure, StatusText: "dddd", Progress: 88, BranchName: "master"},
-				{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55, BranchName: "master"},
+				{Id: 908, Number: "BT-51", Status: teamcity.StatusSuccess, StatusText: "this was the last", Progress: 100},
+				{Id: 905, Number: "BT-41", Status: teamcity.StatusFailure, StatusText: "dddd", Progress: 88},
+				{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55},
 			}
 
-			appDb.UpdateBuildTypeBuilds(bt.Id, builds)
+			branches := []db.Branch{
+				{Name: "master", Builds: builds},
+				{Name: "dev", Builds: builds},
+			}
+
+			appDb.UpdateBuildTypeBuilds(bt.Id, branches)
 
 			Convey("It should not remove the builds from the db", func() {
 				dbBuildType, _ := appDb.FindBuildTypeById(bt.Id)
 
-				So(len(dbBuildType.Builds), ShouldEqual, 3)
+				So(len(dbBuildType.Branches), ShouldEqual, 2)
 
-				So(dbBuildType.Builds[0].Id, ShouldEqual, 908)
-				So(dbBuildType.Builds[1].Id, ShouldEqual, 905)
-				So(dbBuildType.Builds[2].Id, ShouldEqual, 901)
+				So(dbBuildType.Branches[0].Name, ShouldEqual, "master")
+				So(dbBuildType.Branches[1].Name, ShouldEqual, "dev")
+
+				So(dbBuildType.Branches[0].Builds[0].Id, ShouldEqual, 908)
+				So(dbBuildType.Branches[0].Builds[1].Id, ShouldEqual, 905)
+				So(dbBuildType.Branches[0].Builds[2].Id, ShouldEqual, 901)
 			})
 		})
 	})
@@ -99,37 +107,43 @@ func TestAppDb_UpdateBuildTypeBuilds(t *testing.T) {
 			Convey("When we add builds to the build type", func() {
 
 				builds := []db.Build{
-					{Id: 908, Number: "BT-51", Status: teamcity.StatusSuccess, StatusText: "this was the last", Progress: 100, BranchName: "master"},
-					{Id: 905, Number: "BT-41", Status: teamcity.StatusFailure, StatusText: "dddd", Progress: 88, BranchName: "master"},
-					{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55, BranchName: "master"},
+					{Id: 908, Number: "BT-51", Status: teamcity.StatusSuccess, StatusText: "this was the last", Progress: 100},
+					{Id: 905, Number: "BT-41", Status: teamcity.StatusFailure, StatusText: "dddd", Progress: 88},
+					{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55},
 				}
 
-				newBt, err := appDb.UpdateBuildTypeBuilds(bt.Id, builds)
+				branches := []db.Branch{
+					{Name: "master", Builds: builds},
+					{Name: "dev", Builds: builds},
+				}
+
+				newBt, err := appDb.UpdateBuildTypeBuilds(bt.Id, branches)
 
 				Convey("It should not error", func() {
 					So(err, ShouldBeNil)
 
 					Convey("And return the updated build type", func() {
-						So(len(newBt.Builds), ShouldEqual, 3)
+						So(len(newBt.Branches), ShouldEqual, 2)
 
-						So(newBt.Builds[0].Id, ShouldEqual, 908)
-						So(newBt.Builds[1].Id, ShouldEqual, 905)
-						So(newBt.Builds[2].Id, ShouldEqual, 901)
+						So(newBt.Branches[0].Name, ShouldEqual, "master")
+						So(newBt.Branches[1].Name, ShouldEqual, "dev")
+
+						So(newBt.Branches[1].Builds[0].Id, ShouldEqual, 908)
+						So(newBt.Branches[1].Builds[1].Id, ShouldEqual, 905)
+						So(newBt.Branches[1].Builds[2].Id, ShouldEqual, 901)
 
 						Convey("And we should be able to query them from the db", func() {
 							dbBuildType, dbErr := appDb.FindBuildTypeById(bt.Id)
 
 							So(dbErr, ShouldBeNil)
 							So(dbBuildType.Id, ShouldEqual, bt.Id)
-							So(len(dbBuildType.Builds), ShouldEqual, 3)
 
-							So(dbBuildType.Builds[0].Id, ShouldEqual, 908)
-							So(dbBuildType.Builds[1].Id, ShouldEqual, 905)
-							So(dbBuildType.Builds[2].Id, ShouldEqual, 901)
+							So(dbBuildType.Branches[0].Name, ShouldEqual, "master")
+							So(dbBuildType.Branches[1].Name, ShouldEqual, "dev")
 
-							So(dbBuildType.Builds[0].Number, ShouldEqual, "BT-51")
-							So(dbBuildType.Builds[1].Number, ShouldEqual, "BT-41")
-							So(dbBuildType.Builds[2].Number, ShouldEqual, "BT-31")
+							So(dbBuildType.Branches[1].Builds[0].Id, ShouldEqual, 908)
+							So(dbBuildType.Branches[1].Builds[1].Id, ShouldEqual, 905)
+							So(dbBuildType.Branches[1].Builds[2].Id, ShouldEqual, 901)
 						})
 					})
 				})

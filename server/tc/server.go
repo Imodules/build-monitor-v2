@@ -14,6 +14,7 @@ import (
 type ITcClient interface {
 	GetProjects() ([]teamcity.Project, error)
 	GetBuildTypes() ([]teamcity.BuildType, error)
+	GetBuildsForBuildType(id string, count int) ([]teamcity.Build, error)
 }
 
 type IDb interface {
@@ -22,8 +23,10 @@ type IDb interface {
 	DeleteProject(id string) error
 
 	UpsertBuildType(r db.BuildType) (*db.BuildType, error)
+	UpdateBuildTypeBuilds(buildTypeId string, branches []db.Branch) (*db.BuildType, error)
 	BuildTypeList() ([]db.BuildType, error)
 	DeleteBuildType(id string) error
+	DashboardList() ([]db.Dashboard, error)
 }
 
 type Server struct {
@@ -51,6 +54,11 @@ func NewServer(log *logrus.Entry, c *cfg.Config, appDb IDb) Server {
 func (c *Server) Start() error {
 	// Refresh projects on start to ensure we are able to connect and read from the server
 	if err := refresh(c); err != nil {
+		return err
+	}
+
+	// Get histories for all needed build types
+	if err := refreshBuildHistories(c); err != nil {
 		return err
 	}
 
@@ -111,4 +119,8 @@ func refresh(c *Server) error {
 	}
 
 	return nil
+}
+
+func refreshBuildHistories(c *Server) error {
+	return GetBuildHistory(c)
 }

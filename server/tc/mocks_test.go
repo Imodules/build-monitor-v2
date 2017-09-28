@@ -31,6 +31,16 @@ func (m *ITcClientMock) GetBuildTypes() ([]teamcity.BuildType, error) {
 	return args.Get(0).([]teamcity.BuildType), args.Error(1)
 }
 
+func (m *ITcClientMock) GetBuildsForBuildType(id string, count int) ([]teamcity.Build, error) {
+	args := m.Called(id, count)
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]teamcity.Build), args.Error(1)
+}
+
 type IDbMock struct {
 	mock.Mock
 }
@@ -85,4 +95,24 @@ func (m *IDbMock) DeleteBuildType(id string) error {
 	args := m.Called(id)
 
 	return args.Error(0)
+}
+
+func (m *IDbMock) UpdateBuildTypeBuilds(buildTypeId string, branches []db.Branch) (*db.BuildType, error) {
+	args := m.Called(buildTypeId, branches)
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).(*db.BuildType), args.Error(1)
+}
+
+func (m *IDbMock) DashboardList() ([]db.Dashboard, error) {
+	args := m.Called()
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]db.Dashboard), args.Error(1)
 }

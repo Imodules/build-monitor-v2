@@ -11,8 +11,13 @@ type BuildType struct {
 	Name         string   `bson:"name" json:"name"`
 	Description  string   `bson:"description" json:"description"`
 	ProjectID    string   `bson:"projectId" json:"projectId"`
-	Builds       []Build  `bson:"builds" json:"builds"`
-	DashboardIds []string `bson:"dashboardIds" json:"dashboardIds"` // TODO: Change to dashboardIds
+	Branches     []Branch `bson:"branches" json:"branches"`
+	DashboardIds []string `bson:"dashboardIds" json:"dashboardIds"`
+}
+
+type Branch struct {
+	Name   string  `bson:"name" json:"name"`
+	Builds []Build `bson:"builds" json:"builds"`
 }
 
 type Build struct {
@@ -21,7 +26,6 @@ type Build struct {
 	Status     teamcity.BuildStatus `json:"status"`
 	StatusText string               `json:"statusText"`
 	Progress   int                  `json:"progress"`
-	BranchName string               `json:"branchName"`
 }
 
 func BuildTypes(s *mgo.Session) *mgo.Collection {
@@ -58,14 +62,14 @@ func (appDb *AppDb) UpsertBuildType(r BuildType) (*BuildType, error) {
 	return &buildType, nil
 }
 
-func (appDb *AppDb) UpdateBuildTypeBuilds(buildTypeId string, builds []Build) (*BuildType, error) {
+func (appDb *AppDb) UpdateBuildTypeBuilds(buildTypeId string, branches []Branch) (*BuildType, error) {
 	now := appDb.now()
 
 	change := mgo.Change{
 		Update: bson.M{
 			"$set": bson.M{
 				"modifiedAt": now,
-				"builds":     builds,
+				"branches":   branches,
 			},
 			"$unset": bson.M{"deleted": ""},
 		},

@@ -31,8 +31,13 @@ func setupRoutes(s *Server) {
 		return c.File(s.Config.ClientPath + "index.html")
 	})
 
-	s.Server.POST("/api/signup", s.SignUp)
-	s.Server.POST("/api/login", s.Login)
+	openApi := s.Server.Group("/api")
+	openApi.POST("/signup", s.SignUp)
+	openApi.POST("/login", s.Login)
+	openApi.GET("/projects", s.Projects)
+	openApi.GET("/buildTypes", s.BuildTypes)
+	openApi.GET("/dashboards", s.Dashboards)
+	openApi.GET("/dashboards/:id", s.DashboardDetails)
 
 	requireClaims := middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: jwt.SigningMethodHS256.Name,
@@ -41,17 +46,11 @@ func setupRoutes(s *Server) {
 		SigningKey:    []byte(s.Config.JwtSecret),
 	})
 
-	openApi := s.Server.Group("/api")
-	openApi.GET("/projects", s.Projects)
-	openApi.GET("/buildTypes", s.BuildTypes)
-	openApi.GET("/dashboards", s.Dashboards)
-
-	secureGroup := s.Server.Group("/api", requireClaims)
-	secureGroup.GET("/authenticate", s.ReAuthenticate)
-
-	secureGroup.POST("/dashboards", s.CreateDashboard)
-	secureGroup.PUT("/dashboards/:id", s.UpdateDashboard)
-	secureGroup.DELETE("/dashboards/:id", s.DeleteDashboard)
+	secureApi := s.Server.Group("/api", requireClaims)
+	secureApi.GET("/authenticate", s.ReAuthenticate)
+	secureApi.POST("/dashboards", s.CreateDashboard)
+	secureApi.PUT("/dashboards/:id", s.UpdateDashboard)
+	secureApi.DELETE("/dashboards/:id", s.DeleteDashboard)
 }
 
 func logRoutes(s *Server) {

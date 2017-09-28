@@ -114,21 +114,21 @@ func TestServer_Dashboards(t *testing.T) {
 	})
 }
 
-func TestServer_DashboardDetails(t *testing.T) {
-	Convey("Given a server", t, func() {
-		config := cfg.Config{JwtSecret: "this world"}
-		s := api.Server{Config: &config}
-
-		id := "hey01hi"
-		c, rec := createTestGetRequest("/api/dashboards/" + id)
-
-		c.SetParamNames("id")
-		c.SetParamValues(id)
-
-		mockDb := new(IAppDbMock)
-		c.Set(dbKey, mockDb)
-	})
-}
+//func TestServer_DashboardDetails(t *testing.T) {
+//	Convey("Given a server", t, func() {
+//		config := cfg.Config{JwtSecret: "this world"}
+//		s := api.Server{Config: &config}
+//
+//		id := "hey01hi"
+//		c, rec := createTestGetRequest("/api/dashboards/" + id)
+//
+//		c.SetParamNames("id")
+//		c.SetParamValues(id)
+//
+//		mockDb := new(IAppDbMock)
+//		c.Set(dbKey, mockDb)
+//	})
+//}
 
 func TestServer_CreateDashboard(t *testing.T) {
 	Convey("Given a server", t, func() {

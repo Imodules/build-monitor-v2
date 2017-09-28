@@ -119,8 +119,9 @@ func (m *IServerMock) Use(middleware ...echo.MiddlewareFunc) {
 	m.Called(middleware)
 }
 
-func (m *IServerMock) Static(prefix, root string) {
-	m.Called(prefix, root)
+func (m *IServerMock) Static(prefix, root string) *echo.Route {
+	args := m.Called(prefix, root)
+	return args.Get(0).(*echo.Route)
 }
 
 func (em *IServerMock) Routes() []*echo.Route {
@@ -143,20 +144,24 @@ func (em *IServerMock) Shutdown(ctx context.Context) error {
 	return args.Error(0)
 }
 
-func (em *IServerMock) GET(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) {
-	em.Called(path, h, m)
+func (em *IServerMock) GET(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	args := em.Called(path, h, m)
+	return args.Get(0).(*echo.Route)
 }
 
-func (em *IServerMock) POST(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) {
-	em.Called(path, h, m)
+func (em *IServerMock) POST(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	args := em.Called(path, h, m)
+	return args.Get(0).(*echo.Route)
 }
 
-func (em *IServerMock) PATCH(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) {
-	em.Called(path, h, m)
+func (em *IServerMock) PATCH(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	args := em.Called(path, h, m)
+	return args.Get(0).(*echo.Route)
 }
 
-func (em *IServerMock) PUT(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) {
-	em.Called(path, h, m)
+func (em *IServerMock) PUT(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	args := em.Called(path, h, m)
+	return args.Get(0).(*echo.Route)
 }
 
 //endregion

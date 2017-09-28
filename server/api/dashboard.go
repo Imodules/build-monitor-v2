@@ -20,9 +20,9 @@ func (s *Server) Dashboards(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, dashboards)
 }
 
-func (s *Server) DashboardDetails(ctx echo.Context) error {
-	return nil
-}
+//func (s *Server) DashboardDetails(ctx echo.Context) error {
+//	return nil
+//}
 
 type UpdateDashboardRequest struct {
 	Name         string           `json:"name"`

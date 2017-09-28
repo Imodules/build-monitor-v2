@@ -1,16 +1,26 @@
 package db
 
 import (
+	"github.com/pstuart2/go-teamcity"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type BuildType struct {
-	Id          string `bson:"_id" json:"id"`
-	Name        string `bson:"name" json:"name"`
-	Description string `bson:"description" json:"description"`
-	ProjectID   string `bson:"projectId" json:"projectId"`
-	Paused      bool   `bson:"paused" json:"paused"`
+	Id          string  `bson:"_id" json:"id"`
+	Name        string  `bson:"name" json:"name"`
+	Description string  `bson:"description" json:"description"`
+	ProjectID   string  `bson:"projectId" json:"projectId"`
+	Builds      []Build `bson:"builds" json:"builds"`
+}
+
+type Build struct {
+	Id         int                  `json:"id"`
+	Number     string               `json:"number"`
+	Status     teamcity.BuildStatus `json:"status"`
+	StatusText string               `json:"statusText"`
+	Progress   int                  `json:"progress"`
+	BranchName string               `json:"branchName"`
 }
 
 func BuildTypes(s *mgo.Session) *mgo.Collection {
@@ -27,7 +37,6 @@ func (appDb *AppDb) UpsertBuildType(r BuildType) (*BuildType, error) {
 				"name":        r.Name,
 				"description": r.Description,
 				"projectId":   r.ProjectID,
-				"paused":      r.Paused,
 			},
 			"$unset":       bson.M{"deleted": ""},
 			"$setOnInsert": bson.M{"createdAt": now},
@@ -42,6 +51,42 @@ func (appDb *AppDb) UpsertBuildType(r BuildType) (*BuildType, error) {
 	}).Apply(change, &buildType)
 
 	if err != nil {
+		return nil, err
+	}
+
+	return &buildType, nil
+}
+
+func (appDb *AppDb) UpdateBuilds(buildTypeId string, builds []Build) (*BuildType, error) {
+	now := appDb.now()
+
+	change := mgo.Change{
+		Update: bson.M{
+			"$set": bson.M{
+				"modifiedAt": now,
+				"builds":     builds,
+			},
+			"$unset": bson.M{"deleted": ""},
+		},
+		Upsert:    false,
+		ReturnNew: true,
+	}
+
+	var buildType BuildType
+	_, err := BuildTypes(appDb.Session).Find(bson.M{
+		"_id": buildTypeId,
+	}).Apply(change, &buildType)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &buildType, nil
+}
+
+func (appDb *AppDb) FindBuildTypeById(id string) (*BuildType, error) {
+	var buildType BuildType
+	if err := FindById(BuildTypes(appDb.Session), id, &buildType); err != nil {
 		return nil, err
 	}
 

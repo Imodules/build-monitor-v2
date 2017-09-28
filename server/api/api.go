@@ -20,23 +20,23 @@ type IServer interface {
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 	Use(middleware ...echo.MiddlewareFunc)
 
-	Static(prefix, root string)
+	Static(prefix, root string) *echo.Route
 	Routes() []*echo.Route
 	Group(prefix string, m ...echo.MiddlewareFunc) (g *echo.Group)
 	Start(address string) error
 	Shutdown(ctx context.Context) error
 
-	GET(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
-	POST(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
-	PATCH(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
-	PUT(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
+	GET(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
+	POST(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
+	PATCH(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
+	PUT(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
 }
 
 type IGroup interface {
-	GET(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
-	POST(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
-	PATCH(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
-	DELETE(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc)
+	GET(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
+	POST(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
+	PATCH(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
+	DELETE(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route
 }
 
 type IAppDb interface {

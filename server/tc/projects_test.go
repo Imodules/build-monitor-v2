@@ -9,7 +9,7 @@ import (
 
 	"build-monitor-v2/server/db"
 	"errors"
-	"github.com/kapitanov/go-teamcity"
+	"github.com/pstuart2/go-teamcity"
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
 )

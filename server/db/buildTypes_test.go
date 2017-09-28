@@ -7,6 +7,7 @@ import (
 	"build-monitor-v2/server/cfg"
 	"build-monitor-v2/server/db"
 
+	"github.com/pstuart2/go-teamcity"
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
 	"gopkg.in/mgo.v2/bson"
@@ -19,13 +20,13 @@ func TestAppDb_UpsertBuildType(t *testing.T) {
 
 		appDb := db.Create(dbSession, &c, log, time.Now)
 
-		buildType := db.BuildType{
-			Id:        "Build Type Id 01",
-			Name:      "Some build type for this",
-			ProjectID: "Some project id here",
-		}
-
 		Convey("When a new buildType is inserted into the db", func() {
+			buildType := db.BuildType{
+				Id:        "Build Type Id 01",
+				Name:      "Some build type for this",
+				ProjectID: "Some project id here",
+			}
+
 			result, err := appDb.UpsertBuildType(buildType)
 
 			Convey("It should not error and return the object", func() {
@@ -44,6 +45,93 @@ func TestAppDb_UpsertBuildType(t *testing.T) {
 					So(dbBuildType.Id, ShouldEqual, result.Id)
 					So(dbBuildType.Name, ShouldEqual, result.Name)
 					So(dbBuildType.ProjectID, ShouldEqual, result.ProjectID)
+				})
+			})
+		})
+
+		Convey("When an existing buildType with builds is updated in the db", func() {
+			buildType := db.BuildType{
+				Id:        "Build Type Id 02",
+				Name:      "Some build type for this 2",
+				ProjectID: "Some project id here 2",
+			}
+
+			bt, _ := appDb.UpsertBuildType(buildType)
+
+			builds := []db.Build{
+				{Id: 908, Number: "BT-51", Status: teamcity.StatusSuccess, StatusText: "this was the last", Progress: 100, BranchName: "master"},
+				{Id: 905, Number: "BT-41", Status: teamcity.StatusFailure, StatusText: "dddd", Progress: 88, BranchName: "master"},
+				{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55, BranchName: "master"},
+			}
+
+			appDb.UpdateBuilds(bt.Id, builds)
+
+			Convey("It should not remove the builds from the db", func() {
+				dbBuildType, _ := appDb.FindBuildTypeById(bt.Id)
+
+				So(len(dbBuildType.Builds), ShouldEqual, 3)
+
+				So(dbBuildType.Builds[0].Id, ShouldEqual, 908)
+				So(dbBuildType.Builds[1].Id, ShouldEqual, 905)
+				So(dbBuildType.Builds[2].Id, ShouldEqual, 901)
+			})
+		})
+	})
+}
+
+func TestAppDb_UpdateBuildTypeBuilds(t *testing.T) {
+	Convey("Given an appDb", t, func() {
+		c := cfg.Config{PasswordSalt: "something here"}
+		log := logrus.WithField("test", "TestAppDb_UpsertBuildType")
+
+		appDb := db.Create(dbSession, &c, log, time.Now)
+
+		buildType := db.BuildType{
+			Id:        "Build Type Id 01",
+			Name:      "Some build type for this",
+			ProjectID: "Some project id here",
+		}
+
+		Convey("With a valid build type", func() {
+			bt, btError := appDb.UpsertBuildType(buildType)
+			So(btError, ShouldBeNil)
+
+			Convey("When we add builds to the build type", func() {
+
+				builds := []db.Build{
+					{Id: 908, Number: "BT-51", Status: teamcity.StatusSuccess, StatusText: "this was the last", Progress: 100, BranchName: "master"},
+					{Id: 905, Number: "BT-41", Status: teamcity.StatusFailure, StatusText: "dddd", Progress: 88, BranchName: "master"},
+					{Id: 901, Number: "BT-31", Status: teamcity.StatusSuccess, StatusText: "ffff", Progress: 55, BranchName: "master"},
+				}
+
+				newBt, err := appDb.UpdateBuilds(bt.Id, builds)
+
+				Convey("It should not error", func() {
+					So(err, ShouldBeNil)
+
+					Convey("And return the updated build type", func() {
+						So(len(newBt.Builds), ShouldEqual, 3)
+
+						So(newBt.Builds[0].Id, ShouldEqual, 908)
+						So(newBt.Builds[1].Id, ShouldEqual, 905)
+						So(newBt.Builds[2].Id, ShouldEqual, 901)
+
+						Convey("And we should be able to query them from the db", func() {
+							dbBuildType, dbErr := appDb.FindBuildTypeById(bt.Id)
+
+							So(dbErr, ShouldBeNil)
+							So(dbBuildType.Id, ShouldEqual, bt.Id)
+							So(len(dbBuildType.Builds), ShouldEqual, 3)
+
+							So(dbBuildType.Builds[0].Id, ShouldEqual, 908)
+							So(dbBuildType.Builds[1].Id, ShouldEqual, 905)
+							So(dbBuildType.Builds[2].Id, ShouldEqual, 901)
+
+							So(dbBuildType.Builds[0].Number, ShouldEqual, "BT-51")
+							So(dbBuildType.Builds[1].Number, ShouldEqual, "BT-41")
+							So(dbBuildType.Builds[2].Number, ShouldEqual, "BT-31")
+						})
+					})
 				})
 			})
 		})

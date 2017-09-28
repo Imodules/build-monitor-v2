@@ -1,5 +1,7 @@
 {
   "/guestAuth/app/rest/*": "/$1",
   "/projects/id\\::pid": "/projects?id=:pid",
-  "/buildTypes/id\\::pid": "/buildTypes?id=:pid"
+  "/buildTypes/id\\::pid": "/buildTypes?id=:pid",
+  "/builds?locator=buildType\\::id,branch:default:any": "/builds?buildTypeId=:id",
+  "/builds?locator=running:any,branch:default:any": "/runningBuilds"
 }

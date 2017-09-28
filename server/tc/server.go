@@ -7,7 +7,7 @@ import (
 
 	"build-monitor-v2/server/db"
 
-	"github.com/kapitanov/go-teamcity"
+	"github.com/pstuart2/go-teamcity"
 	"github.com/sirupsen/logrus"
 )
 
@@ -90,9 +90,6 @@ func monitor(c *Server) {
 
 	for shouldStop == false {
 		select {
-		//case m := <-msgs:
-		//	err := ci.c.process(&m, db, ci.influx, Log.WithField("deliveryTag", m.DeliveryTag))
-		//	ci.handleProcessResult(ch, &m, err)
 		case shouldStop = <-c.stop:
 			c.Log.Info("Stopping")
 			break

@@ -16,14 +16,14 @@
 [[projects]]
   name = "github.com/elithrar/simple-scrypt"
   packages = ["."]
-  revision = "47767683c6c880a9f89e48d376c70de7f5268951"
-  version = "v1.1"
+  revision = "2325946f714c95de4a6088202c402fbdfa64163b"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js"]
-  revision = "2b1d432c8a82c9bff0b0baffaeb3ec6e92974112"
+  revision = "415225646bb92c4449bb484646f2c95a98402f6f"
 
 [[projects]]
   branch = "master"
@@ -44,22 +44,16 @@
   version = "v4.2.1"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/kapitanov/go-teamcity"
-  packages = ["."]
-  revision = "2dcf0ae756496cbcce129d26f67d2cdf1d4505d9"
-
-[[projects]]
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
-  revision = "935a60782cbbc55110e7bd4b33120e4567cbee43"
-  version = "v3.2.1"
+  revision = "cec7629194fe4bf83b0c72d9a02d340c7a1468ac"
+  version = "3.2.3"
 
 [[projects]]
   name = "github.com/labstack/gommon"
   packages = ["bytes","color","log","random"]
-  revision = "779b8a8b9850a97acba6a3fe20feb628c39e17c1"
-  version = "0.2.2"
+  revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
+  version = "0.2.3"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -70,8 +64,8 @@
 [[projects]]
   name = "github.com/mattn/go-isatty"
   packages = ["."]
-  revision = "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
-  version = "v0.0.2"
+  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
+  version = "v0.0.3"
 
 [[projects]]
   name = "github.com/pborman/uuid"
@@ -86,22 +80,28 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/pstuart2/go-teamcity"
+  packages = ["."]
+  revision = "45eccf5cd6c8d152ef3990f17657fdbbdd206bf9"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "a3f95b5c423586578a4e099b11a46c2479628cac"
-  version = "1.0.2"
+  revision = "f006c2ac4710855cf0f916dd6b77acf6b048dc6e"
+  version = "v1.0.3"
 
 [[projects]]
   name = "github.com/smartystreets/assertions"
   packages = [".","internal/go-render/render","internal/oglematchers"]
-  revision = "e9a2f6771d97c709b2f7609fdf89ebde8b64c926"
-  version = "1.6.0"
+  revision = "ff1918e1e5a13a74014644ae7c1e0ba2f791364d"
+  version = "1.8.0"
 
 [[projects]]
   name = "github.com/smartystreets/goconvey"
   packages = ["convey","convey/gotest","convey/reporting"]
-  revision = "d4c757aa9afd1e2fc1832aaab209b5794eb336e1"
-  version = "1.6.2"
+  revision = "9e8dc3f972df6c8fcc0375ef492c24d0bb204857"
+  version = "1.6.3"
 
 [[projects]]
   branch = "master"
@@ -130,14 +130,14 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert","pbkdf2","scrypt"]
-  revision = "558b6879de74bc843225cde5686419267ff707ca"
+  packages = ["acme","acme/autocert","pbkdf2","scrypt","ssh/terminal"]
+  revision = "c84b36c635ad003a10f0c755dff5685ceef18c71"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
-  revision = "396c9fc8fb0ce27fc7a1ff136dc5af797bba258a"
+  packages = ["unix","windows"]
+  revision = "314a259e304ff91bd6985da2a7149bbf91237993"
 
 [[projects]]
   branch = "v2"
@@ -148,6 +148,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0edd11deef17c8c383cbceb86345447575d91e69c553d981eaf0b83cbf3197e3"
+  inputs-digest = "7964f3140fe45d40a63fbfdf2741a12b8b6bda1cefa0c159f85f3ab30c0375a1"
   solver-name = "gps-cdcl"
   solver-version = 1

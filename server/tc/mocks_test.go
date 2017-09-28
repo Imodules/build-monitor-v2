@@ -3,7 +3,7 @@ package tc_test
 import (
 	"build-monitor-v2/server/db"
 
-	"github.com/kapitanov/go-teamcity"
+	"github.com/pstuart2/go-teamcity"
 	"github.com/stretchr/testify/mock"
 )
 

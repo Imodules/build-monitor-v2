@@ -2531,5 +2531,91 @@
 		"webUrl": "http://buildserver:90/viewType.html?buildTypeId=bt163"
 	  }
 	]
+  },
+  "runningBuilds": {
+	"count": 1,
+	"build": [
+	  {
+		"id": 317144,
+		"buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+		"number": "EMR-D-10",
+		"status": "SUCCESS",
+		"state": "running",
+		"running": true,
+		"percentageComplete": 4,
+		"branchName": "develop",
+		"defaultBranch": true,
+		"href": "/httpAuth/app/rest/builds/id:317144",
+		"webUrl": "http://buildserver:90/viewLog.html?buildId=317144&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+	  }
+	]
+  },
+  "builds": {
+	"count": 6,
+	"build": [
+	  {
+		"id": 317144,
+		"buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+		"number": "EMR-D-10",
+		"status": "SUCCESS",
+		"state": "finished",
+		"branchName": "develop",
+		"defaultBranch": true,
+		"href": "/httpAuth/app/rest/builds/id:317144",
+		"webUrl": "http://buildserver:90/viewLog.html?buildId=317144&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+	  },
+	  {
+		"id": 316889,
+		"buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+		"number": "EMR-D-9",
+		"status": "SUCCESS",
+		"state": "finished",
+		"branchName": "master",
+		"href": "/httpAuth/app/rest/builds/id:316889",
+		"webUrl": "http://buildserver:90/viewLog.html?buildId=316889&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+	  },
+	  {
+		"id": 315476,
+		"buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+		"number": "EMR-D-8",
+		"status": "SUCCESS",
+		"state": "finished",
+		"branchName": "feature/PSDevChoice",
+		"href": "/httpAuth/app/rest/builds/id:315476",
+		"webUrl": "http://buildserver:90/viewLog.html?buildId=315476&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+	  },
+	  {
+		"id": 313035,
+		"buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+		"number": "EMR-D-7",
+		"status": "SUCCESS",
+		"state": "finished",
+		"branchName": "develop",
+		"defaultBranch": true,
+		"href": "/httpAuth/app/rest/builds/id:313035",
+		"webUrl": "http://buildserver:90/viewLog.html?buildId=313035&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+	  },
+	  {
+		"id": 312998,
+		"buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+		"number": "EMR-D-6",
+		"status": "SUCCESS",
+		"state": "finished",
+		"branchName": "develop",
+		"defaultBranch": true,
+		"href": "/httpAuth/app/rest/builds/id:312998",
+		"webUrl": "http://buildserver:90/viewLog.html?buildId=312998&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+	  },
+	  {
+		"id": 310256,
+		"buildTypeId": "CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop",
+		"number": "EMR-D-5",
+		"status": "SUCCESS",
+		"state": "finished",
+		"branchName": "feature/PSDevChoice",
+		"href": "/httpAuth/app/rest/builds/id:310256",
+		"webUrl": "http://buildserver:90/viewLog.html?buildId=310256&buildTypeId=CheckInTriggeredBuilds_EmailMarketing_EmailReporting_Develop"
+	  }
+	]
   }
 }

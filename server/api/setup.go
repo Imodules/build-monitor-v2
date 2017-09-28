@@ -37,7 +37,7 @@ func setupRoutes(s *Server) {
 	openApi.GET("/projects", s.Projects)
 	openApi.GET("/buildTypes", s.BuildTypes)
 	openApi.GET("/dashboards", s.Dashboards)
-	openApi.GET("/dashboards/:id", s.DashboardDetails)
+	//openApi.GET("/dashboards/:id", s.DashboardDetails)
 
 	requireClaims := middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: jwt.SigningMethodHS256.Name,

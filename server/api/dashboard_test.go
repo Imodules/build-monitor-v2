@@ -14,6 +14,7 @@ import (
 
 	"errors"
 
+	"github.com/pstuart2/go-teamcity"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/stretchr/testify/mock"
 	"gopkg.in/mgo.v2/bson"
@@ -114,21 +115,184 @@ func TestServer_Dashboards(t *testing.T) {
 	})
 }
 
-//func TestServer_DashboardDetails(t *testing.T) {
-//	Convey("Given a server", t, func() {
-//		config := cfg.Config{JwtSecret: "this world"}
-//		s := api.Server{Config: &config}
-//
-//		id := "hey01hi"
-//		c, rec := createTestGetRequest("/api/dashboards/" + id)
-//
-//		c.SetParamNames("id")
-//		c.SetParamValues(id)
-//
-//		mockDb := new(IAppDbMock)
-//		c.Set(dbKey, mockDb)
-//	})
-//}
+func TestServer_DashboardDetails(t *testing.T) {
+	Convey("Given a server", t, func() {
+		config := cfg.Config{JwtSecret: "this world"}
+		s := api.Server{Config: &config}
+
+		id := "hey01hi"
+		c, rec := createTestGetRequest("/api/dashboards/" + id)
+
+		c.SetParamNames("id")
+		c.SetParamValues(id)
+
+		mockDb := new(IAppDbMock)
+		c.Set(dbKey, mockDb)
+
+		Convey("When we fail to get the dashboard", func() {
+			expectedErr := errors.New("oh yeah")
+
+			mockDb.On("FindDashboardById", id).Return(nil, expectedErr)
+
+			err := s.DashboardDetails(c)
+
+			Convey("It should return StatusInternalServerError", func() {
+				mockDb.AssertExpectations(t)
+
+				So(err, ShouldBeNil)
+
+				Convey("And return http.StatusInternalServerError", func() {
+					So(rec.Code, ShouldEqual, http.StatusInternalServerError)
+				})
+			})
+		})
+
+		Convey("When we get the dashboard without builds selected", func() {
+			dashboard := db.Dashboard{Id: id, Name: "a cooler"}
+			mockDb.On("FindDashboardById", id).Return(&dashboard, nil)
+
+			buildTypes := []db.BuildType{}
+			mockDb.On("DashboardBuildTypeList", dashboard.Id).Return(buildTypes, nil)
+
+			expected := api.DashboardDetails{
+				Id:   dashboard.Id,
+				Name: dashboard.Name,
+			}
+
+			err := s.DashboardDetails(c)
+
+			Convey("It should return the DashboardDetails", func() {
+				mockDb.AssertExpectations(t)
+
+				So(err, ShouldBeNil)
+				So(rec.Code, ShouldEqual, http.StatusOK)
+
+				Convey("And the dashboard", func() {
+					var resultDashboard db.Dashboard
+					err := json.Unmarshal(rec.Body.Bytes(), &resultDashboard)
+					So(err, ShouldBeNil)
+
+					expectedString, _ := json.Marshal(expected)
+					So(rec.Body.String(), ShouldEqual, string(expectedString))
+
+				})
+			})
+		})
+
+		Convey("When we get the dashboard with builds selected", func() {
+			dashboard := db.Dashboard{
+				Id:   id,
+				Name: "a cooler",
+				BuildConfigs: []db.BuildConfig{
+					{Id: "bcfg1", Abbreviation: "BC-1"},
+					{Id: "bcfg2", Abbreviation: "BC-2"},
+					{Id: "bcfg3", Abbreviation: "BC-3"},
+				},
+			}
+
+			mockDb.On("FindDashboardById", id).Return(&dashboard, nil)
+
+			Convey("And the call to get the builds fails", func() {
+				expectedErr := errors.New("failed to get stuff")
+				mockDb.On("DashboardBuildTypeList", dashboard.Id).Return(nil, expectedErr)
+
+				err := s.DashboardDetails(c)
+
+				Convey("It should return StatusInternalServerError", func() {
+					mockDb.AssertExpectations(t)
+
+					So(err, ShouldBeNil)
+
+					Convey("And return http.StatusInternalServerError", func() {
+						So(rec.Code, ShouldEqual, http.StatusInternalServerError)
+					})
+				})
+			})
+
+			Convey("And the call to get the builds succeeds", func() {
+				bt1 := db.BuildType{
+					Id: "bcfg1",
+					Branches: []db.Branch{
+						{
+							Name: "branch-1",
+							Builds: []db.Build{
+								{Id: 3, Number: "tcb4", Status: teamcity.StatusSuccess, StatusText: "show it?", Progress: 4},
+								{Id: 1, Number: "tcb1", Status: teamcity.StatusFailure, StatusText: "always!", Progress: 6},
+							},
+						},
+						{
+							Name: "branch-2",
+							Builds: []db.Build{
+								{Id: 5, Number: "tcb5", Status: teamcity.StatusSuccess, StatusText: "show it?", Progress: 0},
+								{Id: 6, Number: "tcb6", Status: teamcity.StatusFailure, StatusText: "always!", Progress: 8},
+							},
+						},
+					},
+				}
+
+				bt2 := db.BuildType{
+					Id: "bcfg2",
+					Branches: []db.Branch{
+						{
+							Name: "branch-6",
+							Builds: []db.Build{
+								{Id: 3, Number: "tg1", Status: teamcity.StatusSuccess, StatusText: "show it?", Progress: 4},
+								{Id: 1, Number: "tg2", Status: teamcity.StatusFailure, StatusText: "always!", Progress: 6},
+							},
+						},
+						{
+							Name: "branch-7",
+							Builds: []db.Build{
+								{Id: 5, Number: "tg3", Status: teamcity.StatusSuccess, StatusText: "show it?", Progress: 0},
+								{Id: 6, Number: "tg4", Status: teamcity.StatusFailure, StatusText: "always!", Progress: 8},
+							},
+						},
+					},
+				}
+
+				buildTypes := []db.BuildType{bt1, bt2}
+				mockDb.On("DashboardBuildTypeList", dashboard.Id).Return(buildTypes, nil)
+
+				expected := api.DashboardDetails{
+					Id:   dashboard.Id,
+					Name: dashboard.Name,
+					Details: []api.BuildTypeDetail{
+						{
+							Id:           "bcfg1",
+							Abbreviation: "BC-1",
+							Branches:     bt1.Branches,
+						},
+						{
+							Id:           "bcfg2",
+							Abbreviation: "BC-2",
+							Branches:     bt2.Branches,
+						},
+						{Id: "bcfg3", Abbreviation: "BC-3"},
+					},
+				}
+
+				err := s.DashboardDetails(c)
+
+				Convey("It should return the DashboardDetails", func() {
+					mockDb.AssertExpectations(t)
+
+					So(err, ShouldBeNil)
+					So(rec.Code, ShouldEqual, http.StatusOK)
+
+					Convey("And the dashboard", func() {
+						var resultDashboard db.Dashboard
+						err := json.Unmarshal(rec.Body.Bytes(), &resultDashboard)
+						So(err, ShouldBeNil)
+
+						expectedString, _ := json.Marshal(expected)
+						So(rec.Body.String(), ShouldEqual, string(expectedString))
+
+					})
+				})
+			})
+		})
+	})
+}
 
 func TestServer_CreateDashboard(t *testing.T) {
 	Convey("Given a server", t, func() {

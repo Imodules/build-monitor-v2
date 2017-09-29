@@ -33,7 +33,7 @@ update_ baseUrl token msg model_ =
             ( { model | dashboards = response }, Cmd.none )
 
         OnFetchDetails response ->
-            ( model, Cmd.none )
+            ( { model | details = response }, Cmd.none )
 
         ChangeDashboardName value ->
             let

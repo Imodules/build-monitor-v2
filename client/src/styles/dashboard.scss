@@ -1,0 +1,201 @@
+$success: #006400;
+$success-light: lighten($success, 10%);
+$success-dark: darken($success, 5%);
+$success-darker: darken($success, 10%);
+
+$error: #8B0000;
+$error-light: lighten($error, 10%);
+$error-dark: darken($error, 10%);
+
+$lightText: darken(#fff, 30%);
+$darkText: lighten(#000, 20%);
+
+$borderFlash1: darken(#fff, 20%);
+$borderFlash2: lighten(#000, 20%);
+
+div#dashboard {
+  background-color: #000;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
+
+  .top-bar {
+	margin: 0;
+	#configLink {
+	  a {
+		text-decoration: none;
+	  }
+	}
+  }
+
+  .build-items {
+	margin: 0 2px;
+  }
+}
+
+div.clockBar {
+  color: white;
+  font-size: 200%;
+}
+
+div.buildItem {
+  padding: 5px !important;
+  //padding-left: 5px;
+  //padding-right: 5px;
+
+  .bi-wrapper {
+	height: 255px;
+	border: solid 5px;
+	padding: 3px;
+	border-radius: 10px;
+
+	&.success {
+	  border-color: $success-dark;
+	  background-color: $success-darker;
+	}
+
+	&.error {
+	  border-color: $error;
+	  background-color: $error-dark;
+	}
+
+	.bi-title {
+	  text-align: center;
+	  color: #fff;
+	  font-weight: 500;
+	  font-size: 800%;
+	  height: 150px;
+	  max-height: 150px;
+	  overflow: hidden;
+	  margin-top: -45px;
+	  margin-bottom: 10px;
+	}
+
+	.bi-sub-title {
+	  text-align: center;
+	  color: $lightText;
+	  margin-bottom: 10px;
+	}
+
+	.bhLabel {
+	  color: #fff;
+	  text-align: center;
+	  border: solid 1px rgba(255, 255, 255, 0.2);
+	  border-radius: 5px;
+	}
+
+	.bh-fail {
+	  background-color: $error-dark;
+	}
+
+	.bh-succ {
+	  background-color: $success-darker;
+	}
+
+	.bsCurrent {
+	  color: white;
+
+	  max-height: 20px;
+	  overflow: hidden;
+	}
+
+	.bsLast {
+	  font-weight: 600;
+	  font-size: 300%;
+	  position: absolute;
+	  bottom: 5px;
+	  left: 13px;
+	  color: $lightText;
+	}
+
+	.bsBrokeit {
+	  font-weight: 600;
+	  font-size: 300%;
+	  position: absolute;
+	  bottom: 5px;
+	  left: 13px;
+
+	  -webkit-animation-name: colorBlink;
+	  -webkit-animation-duration: 2s;
+	  -webkit-animation-timing-function: linear;
+	  -webkit-animation-iteration-count: infinite;
+	  -webkit-animation-direction: alternate;
+
+	  -moz-animation-name: colorBlink;
+	  -moz-animation-duration: 2s;
+	  -moz-animation-timing-function: linear;
+	  -moz-animation-iteration-count: infinite;
+	  -moz-animation-direction: alternate;
+
+	  animation-name: colorBlink;
+	  animation-duration: 2s;
+	  animation-timing-function: linear;
+	  animation-iteration-count: infinite;
+	  animation-direction: alternate;
+	}
+
+	.bsTotal {
+	  font-weight: 300;
+	  font-size: 300%;
+	  position: absolute;
+	  bottom: 5px;
+	  right: 13px;
+	  color: $lightText;
+	}
+  }
+}
+
+.blink_me {
+  -webkit-animation-name: blinker;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+
+  -moz-animation-name: blinker;
+  -moz-animation-duration: 2s;
+  -moz-animation-timing-function: linear;
+  -moz-animation-iteration-count: infinite;
+
+  animation-name: blinker;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {
+  0% { opacity: 1.0; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {
+  0% { opacity: 1.0; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1.0; }
+}
+
+@keyframes blinker {
+  0% { opacity: 1.0; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1.0; }
+}
+
+@-moz-keyframes colorBlink {
+  0% { color: white; }
+  50% {color: $error-dark; }
+  100% { color: white; }
+}
+
+@-webkit-keyframes colorBlink {
+  0% { color: white; }
+  50% {color: $error-dark; }
+  100% { color: white; }
+}
+
+@keyframes colorBlink {
+  0% { color: white; }
+  50% {color: $error-dark; }
+  100% { color: white; }
+}

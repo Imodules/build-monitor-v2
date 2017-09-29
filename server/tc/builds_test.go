@@ -138,7 +138,7 @@ func TestServer_GetBuildHistory(t *testing.T) {
 					serverMock.AssertExpectations(t)
 
 					So(len(dbArray1), ShouldEqual, 2)
-					So(dbArray1[0].Name, ShouldEqual, "dev")
+					So(dbArray1[0].Name, ShouldBeIn, []string{"dev", "feat"})
 					So(len(dbArray1[0].Builds), ShouldEqual, 3)
 
 					So(dbArray1[1].Name, ShouldEqual, "feat")
@@ -164,6 +164,71 @@ func TestServer_GetBuildHistory(t *testing.T) {
 
 					So(dbArray4[1].Name, ShouldEqual, "feat")
 					So(len(dbArray4[1].Builds), ShouldEqual, 3)
+				})
+			})
+
+			Convey("And there are > 12 builds", func() {
+				b01 := teamcity.Build{BranchName: "dev", ID: 121}
+				b02 := teamcity.Build{BranchName: "dev", ID: 122}
+				b03 := teamcity.Build{BranchName: "dev", ID: 123}
+				b04 := teamcity.Build{BranchName: "dev", ID: 124}
+				b05 := teamcity.Build{BranchName: "dev", ID: 125}
+				b06 := teamcity.Build{BranchName: "dev", ID: 126}
+				b07 := teamcity.Build{BranchName: "dev", ID: 127}
+				b08 := teamcity.Build{BranchName: "dev", ID: 128}
+				b09 := teamcity.Build{BranchName: "dev", ID: 129}
+				b10 := teamcity.Build{BranchName: "dev", ID: 130}
+				b11 := teamcity.Build{BranchName: "dev", ID: 131}
+				b12 := teamcity.Build{BranchName: "dev", ID: 132}
+				b13 := teamcity.Build{BranchName: "dev", ID: 133}
+
+				allBuilds := []teamcity.Build{b01, b02, b03, b04, b05, b06, b07, b08, b09, b10, b11, b12, b13}
+
+				serverMock.On("GetBuildsForBuildType", "bcfg1", 1000).Times(1).Return(allBuilds, nil)
+				serverMock.On("GetBuildsForBuildType", "bcfg2", 1000).Times(1).Return(allBuilds, nil)
+				serverMock.On("GetBuildsForBuildType", "bcfg3", 1000).Times(1).Return(allBuilds, nil)
+				serverMock.On("GetBuildsForBuildType", "bcfg4", 1000).Times(1).Return(allBuilds, nil)
+
+				var dbArray1 []db.Branch
+				var dbArray2 []db.Branch
+				var dbArray3 []db.Branch
+				var dbArray4 []db.Branch
+
+				dbMock.On("UpdateBuildTypeBuilds", "bcfg1", mock.Anything).Times(1).Return(nil, nil).Run(func(args mock.Arguments) {
+					dbArray1 = args.Get(1).([]db.Branch)
+				})
+				dbMock.On("UpdateBuildTypeBuilds", "bcfg2", mock.Anything).Times(1).Return(nil, nil).Run(func(args mock.Arguments) {
+					dbArray2 = args.Get(1).([]db.Branch)
+				})
+				dbMock.On("UpdateBuildTypeBuilds", "bcfg3", mock.Anything).Times(1).Return(nil, errors.New("error to log and ignore")).Run(func(args mock.Arguments) {
+					dbArray3 = args.Get(1).([]db.Branch)
+				})
+				dbMock.On("UpdateBuildTypeBuilds", "bcfg4", mock.Anything).Times(1).Return(nil, nil).Run(func(args mock.Arguments) {
+					dbArray4 = args.Get(1).([]db.Branch)
+				})
+
+				Convey("It should call GetBuildsForBuildType once for each build config And update the database with only 12 builds", func() {
+
+					tc.GetBuildHistory(&c)
+
+					dbMock.AssertExpectations(t)
+					serverMock.AssertExpectations(t)
+
+					So(len(dbArray1), ShouldEqual, 1)
+					So(dbArray1[0].Name, ShouldEqual, "dev")
+					So(len(dbArray1[0].Builds), ShouldEqual, 12)
+
+					So(len(dbArray2), ShouldEqual, 1)
+					So(dbArray2[0].Name, ShouldEqual, "dev")
+					So(len(dbArray2[0].Builds), ShouldEqual, 12)
+
+					So(len(dbArray3), ShouldEqual, 1)
+					So(dbArray3[0].Name, ShouldEqual, "dev")
+					So(len(dbArray3[0].Builds), ShouldEqual, 12)
+
+					So(len(dbArray4), ShouldEqual, 1)
+					So(dbArray4[0].Name, ShouldEqual, "dev")
+					So(len(dbArray4[0].Builds), ShouldEqual, 12)
 				})
 			})
 		})

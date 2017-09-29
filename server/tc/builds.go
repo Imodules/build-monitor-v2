@@ -44,7 +44,9 @@ var GetBuildHistory = func(c *Server) error {
 				branch = branchMap[build.BranchName]
 			}
 
-			branch.Builds = append(branch.Builds, BuildToDb(build))
+			if len(branch.Builds) < 12 {
+				branch.Builds = append(branch.Builds, BuildToDb(build))
+			}
 		}
 
 		if len(branchMap) > 0 {

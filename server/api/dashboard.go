@@ -28,6 +28,7 @@ type DashboardDetails struct {
 
 type BuildTypeDetail struct {
 	Id           string      `json:"id"`
+	Name         string      `json:"name"`
 	Abbreviation string      `json:"abbreviation"`
 	Branches     []db.Branch `json:"branches"`
 }
@@ -56,10 +57,11 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 	}
 
 	for _, c := range dashboard.BuildConfigs {
-		detail := BuildTypeDetail{Id: c.Id, Abbreviation: c.Abbreviation}
 		buildType := findBuildType(c.Id, buildTypes)
+		detail := BuildTypeDetail{Id: c.Id, Abbreviation: c.Abbreviation}
 
 		if buildType != nil {
+			detail.Name = buildType.Name
 			detail.Branches = buildType.Branches
 		}
 

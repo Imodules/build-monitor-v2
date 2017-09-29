@@ -8,25 +8,6 @@ div.elm-overlay {
   margin-top: 5px;
 }
 
-div#dashboard {
-  background-color: #000;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  overflow: hidden;
-
-  #configLink {
-	position: absolute;
-	top: 0;
-	right: 0;
-
-	a {
-	  text-decoration: none;
-	}
-  }
-}
-
 .button-area {
   margin-bottom: 15px;
 
@@ -62,3 +43,5 @@ div#dashboard {
     margin-top: 40px;
   }
 }
+
+@import "dashboard";

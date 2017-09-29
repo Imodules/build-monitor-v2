@@ -211,7 +211,8 @@ func TestServer_DashboardDetails(t *testing.T) {
 
 			Convey("And the call to get the builds succeeds", func() {
 				bt1 := db.BuildType{
-					Id: "bcfg1",
+					Id:   "bcfg1",
+					Name: "Build Type 1",
 					Branches: []db.Branch{
 						{
 							Name: "branch-1",
@@ -231,7 +232,8 @@ func TestServer_DashboardDetails(t *testing.T) {
 				}
 
 				bt2 := db.BuildType{
-					Id: "bcfg2",
+					Id:   "bcfg2",
+					Name: "Build Type 2",
 					Branches: []db.Branch{
 						{
 							Name: "branch-6",
@@ -259,11 +261,13 @@ func TestServer_DashboardDetails(t *testing.T) {
 					Details: []api.BuildTypeDetail{
 						{
 							Id:           "bcfg1",
+							Name:         "Build Type 1",
 							Abbreviation: "BC-1",
 							Branches:     bt1.Branches,
 						},
 						{
 							Id:           "bcfg2",
+							Name:         "Build Type 2",
 							Abbreviation: "BC-2",
 							Branches:     bt2.Branches,
 						},

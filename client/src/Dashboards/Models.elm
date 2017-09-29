@@ -7,6 +7,7 @@ import Types exposing (Id, Owner, TextField, initTextField, initTextFieldValue)
 type alias Model =
     { dashboards : WebData (List Dashboard)
     , dashboardForm : DashboardForm
+    , details : WebData DashboardDetails
     }
 
 
@@ -14,6 +15,7 @@ initialModel : Model
 initialModel =
     { dashboards = RemoteData.NotAsked
     , dashboardForm = initialFormModel
+    , details = RemoteData.NotAsked
     }
 
 
@@ -84,6 +86,7 @@ type alias DashboardDetails =
 
 type alias ConfigDetail =
     { id : Id
+    , name : String
     , abbreviation : String
     , branches : List Branch
     }

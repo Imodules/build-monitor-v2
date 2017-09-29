@@ -55,13 +55,14 @@ detailsDecoder =
     decode DashboardDetails
         |> required "id" Decode.string
         |> required "name" Decode.string
-        |> optional "configs" (Decode.list configDetailDecoder) []
+        |> optional "details" (Decode.list configDetailDecoder) []
 
 
 configDetailDecoder : Decoder ConfigDetail
 configDetailDecoder =
     decode ConfigDetail
         |> required "id" Decode.string
+        |> required "name" Decode.string
         |> required "abbreviation" Decode.string
         |> optional "branches" (Decode.list branchDecoder) []
 

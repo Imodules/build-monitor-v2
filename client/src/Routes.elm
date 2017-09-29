@@ -41,8 +41,3 @@ signUp =
 login : String
 login =
     "/login"
-
-
-profile : String
-profile =
-    "/user"

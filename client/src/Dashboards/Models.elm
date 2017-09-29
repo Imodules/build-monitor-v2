@@ -78,6 +78,7 @@ buildConfigToForm bc =
 type alias DashboardDetails =
     { id : Id
     , name : String
+    , configs : List ConfigDetail
     }
 
 

@@ -1,6 +1,6 @@
 module Msgs exposing (..)
 
-import Dashboards.Models exposing (Dashboard)
+import Dashboards.Models exposing (Dashboard, DashboardDetails)
 import Http
 import Models exposing (BuildType, Project, User)
 import Navigation exposing (Location)
@@ -40,6 +40,7 @@ type AuthMsg
 type DashboardMsg
     = ChangeDashboardName String
     | OnFetchDashboards (WebData (List Dashboard))
+    | OnFetchDetails (WebData DashboardDetails)
     | ClickBuildType Id
     | StartCreateDashboard
     | CreateDashboard

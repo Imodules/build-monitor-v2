@@ -32,6 +32,9 @@ update_ baseUrl token msg model_ =
         OnFetchDashboards response ->
             ( { model | dashboards = response }, Cmd.none )
 
+        OnFetchDetails response ->
+            ( model, Cmd.none )
+
         ChangeDashboardName value ->
             let
                 newDashboardForm old =

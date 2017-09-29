@@ -1,18 +1,18 @@
 module Dashboards.Decoders exposing (..)
 
-import Dashboards.Models as Dashboards exposing (BuildConfig, Dashboard)
+import Dashboards.Models as Dashboards exposing (Branch, Build, BuildConfig, BuildStatus(Failure, Running, Success, Unknown), ConfigDetail, Dashboard, DashboardDetails)
 import Decoders exposing (ownerDecoder)
-import Json.Decode as Decode exposing (Decoder, andThen, fail, string, succeed)
-import Json.Decode.Pipeline exposing (decode, required)
+import Json.Decode as Decode exposing (Decoder)
+import Json.Decode.Pipeline exposing (decode, optional, required)
 import Json.Encode as Encode
 
 
-dashboardsDecoder : Decode.Decoder (List Dashboard)
+dashboardsDecoder : Decoder (List Dashboard)
 dashboardsDecoder =
     Decode.list dashboardDecoder
 
 
-dashboardDecoder : Decode.Decoder Dashboard
+dashboardDecoder : Decoder Dashboard
 dashboardDecoder =
     decode Dashboard
         |> required "id" Decode.string
@@ -21,7 +21,7 @@ dashboardDecoder =
         |> required "buildConfigs" (Decode.list buildConfigDecoder)
 
 
-buildConfigDecoder : Decode.Decoder BuildConfig
+buildConfigDecoder : Decoder BuildConfig
 buildConfigDecoder =
     decode BuildConfig
         |> required "id" Decode.string
@@ -48,3 +48,56 @@ buildConfigEncoder config =
             ]
     in
     Encode.object attributes
+
+
+detailsDecoder : Decoder DashboardDetails
+detailsDecoder =
+    decode DashboardDetails
+        |> required "id" Decode.string
+        |> required "name" Decode.string
+        |> optional "configs" (Decode.list configDetailDecoder) []
+
+
+configDetailDecoder : Decoder ConfigDetail
+configDetailDecoder =
+    decode ConfigDetail
+        |> required "id" Decode.string
+        |> required "abbreviation" Decode.string
+        |> optional "branches" (Decode.list branchDecoder) []
+
+
+branchDecoder : Decoder Branch
+branchDecoder =
+    decode Branch
+        |> optional "name" Decode.string ""
+        |> optional "builds" (Decode.list buildDecoder) []
+
+
+buildDecoder : Decoder Build
+buildDecoder =
+    decode Build
+        |> required "id" Decode.int
+        |> required "number" Decode.string
+        |> required "status" buildStatusDecoder
+        |> optional "statusText" Decode.string ""
+        |> optional "progress" Decode.int 0
+
+
+buildStatusDecoder : Decoder BuildStatus
+buildStatusDecoder =
+    Decode.int
+        |> Decode.andThen
+            (\statusInt ->
+                case statusInt of
+                    1 ->
+                        Decode.succeed Success
+
+                    2 ->
+                        Decode.succeed Running
+
+                    3 ->
+                        Decode.succeed Failure
+
+                    somethingElse ->
+                        Decode.fail <| "Unknown build status: " ++ toString somethingElse
+            )

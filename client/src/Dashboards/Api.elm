@@ -1,12 +1,12 @@
 module Dashboards.Api exposing (..)
 
 import Api exposing (authGet, authPost, authPut, post)
-import Dashboards.Decoders exposing (dashboardDecoder, dashboardsDecoder, updateDashboardEncoder)
+import Dashboards.Decoders exposing (dashboardDecoder, dashboardsDecoder, detailsDecoder, updateDashboardEncoder)
 import Dashboards.Models as Dashboards
 import Http
-import Msgs exposing (DashboardMsg(OnCreateDashboard, OnFetchDashboards), Msg)
+import Msgs exposing (DashboardMsg(OnCreateDashboard, OnFetchDashboards, OnFetchDetails), Msg)
 import RemoteData
-import Types exposing (Token)
+import Types exposing (Id, Token)
 import Urls
 
 
@@ -41,3 +41,10 @@ editDashboard baseApiUrl token model =
             authPut (Urls.dashboard baseApiUrl model.dashboardForm.id) token requestBody dashboardDecoder
     in
     Http.send (OnCreateDashboard >> Msgs.DashboardMsg) request
+
+
+dashboardDetails : String -> Id -> Cmd Msg
+dashboardDetails baseApiUrl id =
+    Http.get (Urls.dashboard baseApiUrl id) detailsDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map (OnFetchDetails >> Msgs.DashboardMsg)

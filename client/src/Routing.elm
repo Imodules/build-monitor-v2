@@ -130,6 +130,9 @@ getLocationRefreshCommand model route =
             DashboardsRoute ->
                 [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
 
+            DashboardRoute id ->
+                [ DashboardsApi.dashboardDetails model.flags.apiUrl id ]
+
             _ ->
                 []
 

@@ -9,9 +9,8 @@ type Config struct {
 	AllowedOrigin              string      `env:"allowedOrigin" flag:"allowedOrigin" flagDesc:"The CORS allowed origin"`
 	JwtSecret                  string      `env:"jwtSecret" flag:"jwtSecret" flagDesc:"The secret key for the JWT token"`
 	TcUrl                      string      `env:"tcUrl" flag:"tcUrl" flagDesc:"The main url for the TeamCity REST API"`
-	TcProjectPollInterval      string      `env:"tcProjectPollInterval" flag:"tcProjectPollInterval" flagDesc:"How often to poll TeamCity to refresh project list"`
-	TcBuildPollInterval        string      `env:"tcBuildPollInterval" flag:"tcBuildPollInterval" flagDesc:"How often to poll the TeamCity for new running builds"`
-	TcRunningBuildPollInterval string      `env:"tcRunningBuildPollInterval" flag:"tcRunningBuildPollInterval" flagDesc:"How often to poll TeamCity for running build status"`
+	TcPollInterval             string      `env:"tcPollInterval" flag:"tcPollInterval" flagDesc:"How often to poll TeamCity for builds"`
+	TcRunningBuildPollInterval string      `env:"tcRunningBuildPollInterval" flag:"tcRunningBuildPollInterval" flagDesc:"How often to poll TeamCity when we have running builds"`
 }
 
 func Load(getOverrides func(s interface{}) error) (Config, error) {
@@ -27,15 +26,14 @@ func Load(getOverrides func(s interface{}) error) (Config, error) {
 
 func getDefaults() Config {
 	return Config{
-		Port:          3030,
-		Db:            "mongodb://localhost:27017/build-monitor-v2",
-		PasswordSalt:  "you-really-need-to-change-this",
-		ClientPath:    "../client/dist",
-		AllowedOrigin: "*",
-		JwtSecret:     "you-really-need-to-change-this-one-also",
-		TcUrl:         "http://localhost:3031",
-		TcProjectPollInterval:      "20m",
-		TcBuildPollInterval:        "20s",
+		Port:                       3030,
+		Db:                         "mongodb://localhost:27017/build-monitor-v2",
+		PasswordSalt:               "you-really-need-to-change-this",
+		ClientPath:                 "../client/dist",
+		AllowedOrigin:              "*",
+		JwtSecret:                  "you-really-need-to-change-this-one-also",
+		TcUrl:                      "http://localhost:3031",
+		TcPollInterval:             "20s",
 		TcRunningBuildPollInterval: "5s",
 	}
 }

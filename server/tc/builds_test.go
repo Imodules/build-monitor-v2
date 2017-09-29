@@ -24,10 +24,10 @@ func TestServer_GetBuildHistory(t *testing.T) {
 		dbMock := new(IDbMock)
 
 		c := tc.Server{
-			Tc:                  serverMock,
-			Db:                  dbMock,
-			Log:                 log,
-			ProjectPollInterval: time.Millisecond * 500,
+			Tc:             serverMock,
+			Db:             dbMock,
+			Log:            log,
+			TcPollInterval: time.Millisecond * 500,
 		}
 
 		Convey("When DashboardList errors", func() {

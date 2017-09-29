@@ -1273,6 +1273,10 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
+font-awesome-animation@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/font-awesome-animation/-/font-awesome-animation-0.0.10.tgz#50f0491bd98d4ba2f7c0cf94c2a39c297c106d9c"
+
 font-awesome@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"

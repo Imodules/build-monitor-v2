@@ -20,7 +20,7 @@ func TestNewServer(t *testing.T) {
 	Convey("Given a logger, config", t, func() {
 		Convey("When the intervals are valid", func() {
 			conf := cfg.Config{
-				TcProjectPollInterval:      "2h45m",
+				TcPollInterval:             "2h45m",
 				TcBuildPollInterval:        "1500ms",
 				TcRunningBuildPollInterval: "2m",
 			}
@@ -33,15 +33,15 @@ func TestNewServer(t *testing.T) {
 
 				So(server, ShouldNotBeNil)
 				So(server.Log, ShouldEqual, log)
-				So(server.ProjectPollInterval, ShouldEqual, (time.Hour*2)+(time.Minute*45))
-				So(server.BuildPollInterval, ShouldEqual, time.Millisecond*1500)
+				So(server.TcPollInterval, ShouldEqual, (time.Hour*2)+(time.Minute*45))
+				So(server.TcRunningBuildPollInterval, ShouldEqual, time.Millisecond*1500)
 				So(server.RunningBuildPollInterval, ShouldEqual, time.Minute*2)
 			})
 		})
 
 		Convey("When the intervals are not valid", func() {
 			conf := cfg.Config{
-				TcProjectPollInterval:      "a",
+				TcPollInterval:             "a",
 				TcBuildPollInterval:        "b",
 				TcRunningBuildPollInterval: "c",
 			}
@@ -62,9 +62,9 @@ func TestServer_Start_Shutdown(t *testing.T) {
 		serverMock := new(ITcClientMock)
 
 		c := tc.Server{
-			Tc:                  serverMock,
-			Log:                 log,
-			ProjectPollInterval: time.Millisecond * 500,
+			Tc:             serverMock,
+			Log:            log,
+			TcPollInterval: time.Millisecond * 500,
 		}
 
 		Convey("When we successfully start the monitor", func() {

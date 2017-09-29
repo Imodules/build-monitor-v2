@@ -21,10 +21,10 @@ func TestServer_RefreshProjects(t *testing.T) {
 		dbMock := new(IDbMock)
 
 		c := tc.Server{
-			Tc:                  serverMock,
-			Db:                  dbMock,
-			Log:                 log,
-			ProjectPollInterval: time.Millisecond * 500,
+			Tc:             serverMock,
+			Db:             dbMock,
+			Log:            log,
+			TcPollInterval: time.Millisecond * 500,
 		}
 
 		Convey("When there are no projects", func() {

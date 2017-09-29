@@ -1,6 +1,7 @@
 'use strict';
 
 require('font-awesome/css/font-awesome.css');
+require('font-awesome-animation/dist/font-awesome-animation.min.css');
 require('./styles/main.scss');
 
 const Elm = require('./Main.elm');

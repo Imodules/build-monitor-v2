@@ -15,6 +15,8 @@ type ITcClient interface {
 	GetProjects() ([]teamcity.Project, error)
 	GetBuildTypes() ([]teamcity.BuildType, error)
 	GetBuildsForBuildType(id string, count int) ([]teamcity.Build, error)
+	GetRunningBuilds() ([]teamcity.Build, error)
+	GetBuildByID(id int) (teamcity.Build, error)
 }
 
 type IDb interface {
@@ -27,27 +29,26 @@ type IDb interface {
 	BuildTypeList() ([]db.BuildType, error)
 	DeleteBuildType(id string) error
 	DashboardList() ([]db.Dashboard, error)
+	FindBuildTypeById(id string) (*db.BuildType, error)
 }
 
 type Server struct {
-	Tc                       ITcClient
-	Db                       IDb
-	Log                      *logrus.Entry
-	ProjectPollInterval      time.Duration
-	BuildPollInterval        time.Duration
-	RunningBuildPollInterval time.Duration
-	stop                     chan bool
-	stopped                  chan bool
+	Tc                         ITcClient
+	Db                         IDb
+	Log                        *logrus.Entry
+	TcPollInterval             time.Duration
+	TcRunningBuildPollInterval time.Duration
+	stop                       chan bool
+	stopped                    chan bool
 }
 
 func NewServer(log *logrus.Entry, c *cfg.Config, appDb IDb) Server {
 	return Server{
-		Tc:                       teamcity.NewClient(c.TcUrl, teamcity.GuestAuth()),
-		Db:                       appDb,
-		Log:                      log,
-		ProjectPollInterval:      getIntervalDuration(log, "TcProjectPollInterval", c.TcProjectPollInterval),
-		BuildPollInterval:        getIntervalDuration(log, "TcBuildPollInterval", c.TcBuildPollInterval),
-		RunningBuildPollInterval: getIntervalDuration(log, "TcRunningBuildPollInterval", c.TcRunningBuildPollInterval),
+		Tc:                         teamcity.NewClient(c.TcUrl, teamcity.GuestAuth()),
+		Db:                         appDb,
+		Log:                        log,
+		TcPollInterval:             getIntervalDuration(log, "TcPollInterval", c.TcPollInterval),
+		TcRunningBuildPollInterval: getIntervalDuration(log, "TcBuildPollInterval", c.TcRunningBuildPollInterval),
 	}
 }
 
@@ -96,13 +97,28 @@ func monitor(c *Server) {
 	c.Log.Info("Starting Teamcity monitor")
 	shouldStop := false
 
+	loopCount := 0
+	currentPollInterval := c.TcPollInterval
+	runningBuilds := []teamcity.Build{}
+
 	for shouldStop == false {
+		loopCount++
+
 		select {
 		case shouldStop = <-c.stop:
 			c.Log.Info("Stopping")
 			break
-		case <-time.After(c.ProjectPollInterval):
-			refresh(c)
+		case <-time.After(currentPollInterval):
+			if loopCount%100 == 0 {
+				refresh(c)
+			}
+
+			runningBuilds = GetRunningBuilds(c, runningBuilds)
+			if len(runningBuilds) == 0 {
+				currentPollInterval = c.TcRunningBuildPollInterval
+			} else {
+				currentPollInterval = c.TcPollInterval
+			}
 		}
 	}
 

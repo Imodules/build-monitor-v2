@@ -34,7 +34,7 @@ init flags location =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Time.every (20 * second) Msgs.RefreshPageData
+        [ Time.every (10 * second) Msgs.RefreshPageData
         , Time.every (5 * second) (Msgs.ChangeBranches >> Msgs.DashboardMsg)
         , gotTokenFromStorage Msgs.GotTokenFromStorage
         ]

@@ -1,7 +1,7 @@
 module Dashboards.View exposing (..)
 
 import Dashboards.Lib exposing (findVisibleBranch)
-import Dashboards.Models exposing (Branch, Build, BuildStatus(Failure, Success), ConfigDetail, DashboardDetails)
+import Dashboards.Models exposing (Branch, Build, BuildStatus(Failure, Running, Success), ConfigDetail, DashboardDetails)
 import Html exposing (Html, a, div, h2, h4, i, section, text)
 import Html.Attributes exposing (class, href, id)
 import List.Extra exposing (getAt)
@@ -90,6 +90,7 @@ configItem model cd =
             [ biTitle cd.abbreviation
             , biSubTitle (getSubtitleText cd branch)
             , buildRow branch.builds
+            , bottomRow branch.builds
             ]
         ]
 
@@ -109,12 +110,43 @@ buildRow builds =
     div [ class "columns is-marginless" ] (List.map buildItem builds)
 
 
+bottomRow : List Build -> Html Msg
+bottomRow builds =
+    let
+        lastBuild =
+            List.head builds
+    in
+    div [ class "level" ]
+        [ div [ class "level-left leftStatus is-size-3" ] [ leftStatus lastBuild ]
+        ]
+
+
+leftStatus : Maybe Build -> Html Msg
+leftStatus maybeBuild =
+    case maybeBuild of
+        Just build ->
+            case build.status of
+                Running ->
+                    div [ class "level-item" ] [ text build.statusText ]
+
+                _ ->
+                    div [ class "level-item" ] [ text build.number ]
+
+        _ ->
+            div [ class "level-item" ] [ text "no info" ]
+
+
 buildItem : Build -> Html Msg
 buildItem build =
-    if build.status == Success then
-        successItem
-    else
-        failureItem
+    case build.status of
+        Success ->
+            successItem
+
+        Running ->
+            buildingItem
+
+        _ ->
+            failureItem
 
 
 successItem : Html Msg
@@ -125,6 +157,11 @@ successItem =
 failureItem : Html Msg
 failureItem =
     div [ class "column is-1 bhLabel bh-fail" ] [ i [ class "fa fa-trash-o" ] [] ]
+
+
+buildingItem : Html Msg
+buildingItem =
+    div [ class "column is-1 bhLabel bh-succ" ] [ i [ class "fa fa-circle-o-notch faa-spin animated" ] [] ]
 
 
 isLastBuildError : List Build -> Bool

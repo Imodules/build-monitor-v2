@@ -6,9 +6,74 @@ import (
 	"github.com/pstuart2/go-teamcity"
 )
 
-var GetRunningBuilds = func(c *Server) error {
-	// httpAuth/app/rest/builds?locator=running:true
-	return nil
+var GetRunningBuilds = func(c *Server, lastBuilds []teamcity.Build) []teamcity.Build {
+	runningBuilds, err := c.Tc.GetRunningBuilds()
+	if err != nil {
+		c.Log.Errorf("Failed to get running builds, Error: %v", err)
+	}
+
+	usefulBuilds := []teamcity.Build{}
+
+	c.Log.Infof("Running: %v", runningBuilds)
+	for _, b := range runningBuilds {
+		bt, btErr := c.Db.FindBuildTypeById(b.BuildTypeID)
+		if btErr != nil {
+			c.Log.Errorf("Failed to get build type for: %s, Error: %v", b.BuildTypeID, btErr)
+			continue
+		}
+
+		if len(bt.DashboardIds) == 0 {
+			c.Log.Infof("No dashboards are monitoring this build, ignore")
+			continue
+		}
+
+		usefulBuilds = append(usefulBuilds, b)
+
+		processBuild(c, b, bt)
+	}
+
+	if len(lastBuilds) > 0 {
+		for _, lb := range lastBuilds {
+			if !isBuildInList(lb.ID, usefulBuilds) {
+				bt, btErr := c.Db.FindBuildTypeById(lb.BuildTypeID)
+				if btErr != nil {
+					c.Log.Errorf("Failed to get build type for: %s, Error: %v", lb.BuildTypeID, btErr)
+					continue
+				}
+
+				build, err := c.Tc.GetBuildByID(lb.ID)
+				if err != nil {
+					c.Log.Errorf("Failed to get the updated build for id: %d", lb.ID)
+					continue
+				}
+
+				processBuild(c, build, bt)
+			}
+		}
+	}
+
+	return usefulBuilds
+}
+
+func processBuild(c *Server, b teamcity.Build, bt *db.BuildType) {
+	index := indexOfBranch(b.BranchName, bt.Branches)
+	if index == -1 {
+		bt.Branches = append(bt.Branches, db.Branch{Name: b.BranchName})
+		index = len(bt.Branches) - 1
+	}
+	newBuild := BuildToDb(b)
+	if len(bt.Branches[index].Builds) == 0 || bt.Branches[index].Builds[0].Id == newBuild.Id {
+		bt.Branches[index].Builds[0] = newBuild
+	} else {
+		bt.Branches[index].Builds = append([]db.Build{newBuild}, bt.Branches[index].Builds...)
+	}
+	if len(bt.Branches[index].Builds) > 12 {
+		bt.Branches[index].Builds = bt.Branches[index].Builds[:12]
+	}
+	_, updErr := c.Db.UpdateBuildTypeBuilds(bt.Id, bt.Branches)
+	if updErr != nil {
+		c.Log.Errorf("Failed to update builds for buildType: %s, Error: %v", bt.Id, updErr)
+	}
 }
 
 var GetBuildHistory = func(c *Server) error {
@@ -86,4 +151,24 @@ func branchMapToArray(branches map[string]*db.Branch) []db.Branch {
 	}
 
 	return arr
+}
+
+func indexOfBranch(name string, branches []db.Branch) int {
+	for k, v := range branches {
+		if v.Name == name {
+			return k
+		}
+	}
+
+	return -1
+}
+
+func isBuildInList(id int, builds []teamcity.Build) bool {
+	for _, v := range builds {
+		if v.ID == id {
+			return true
+		}
+	}
+
+	return false
 }

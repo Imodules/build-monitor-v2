@@ -8,6 +8,7 @@ type alias Model =
     { dashboards : WebData (List Dashboard)
     , dashboardForm : DashboardForm
     , details : WebData DashboardDetails
+    , visibleBranches : List VisibleBranch
     }
 
 
@@ -16,6 +17,7 @@ initialModel =
     { dashboards = RemoteData.NotAsked
     , dashboardForm = initialFormModel
     , details = RemoteData.NotAsked
+    , visibleBranches = []
     }
 
 
@@ -89,6 +91,13 @@ type alias ConfigDetail =
     , name : String
     , abbreviation : String
     , branches : List Branch
+    }
+
+
+type alias VisibleBranch =
+    { id : Id
+    , size : Int
+    , index : Int
     }
 
 

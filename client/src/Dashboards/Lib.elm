@@ -1,6 +1,6 @@
 module Dashboards.Lib exposing (..)
 
-import Dashboards.Models exposing (BuildConfigForm)
+import Dashboards.Models exposing (BuildConfigForm, VisibleBranch)
 import List.Extra exposing (find)
 import Models exposing (BuildType, Project, initialProject)
 import Types exposing (Id)
@@ -72,3 +72,8 @@ getPathPart s =
 getFirstLetter : String -> String
 getFirstLetter s =
     String.slice 0 1 s
+
+
+findVisibleBranch : Id -> List VisibleBranch -> Maybe VisibleBranch
+findVisibleBranch id branches =
+    find (\b -> b.id == id) branches

@@ -1,8 +1,10 @@
 module Dashboards.View exposing (..)
 
+import Dashboards.Lib exposing (findVisibleBranch)
 import Dashboards.Models exposing (Branch, Build, BuildStatus(Failure, Success), ConfigDetail, DashboardDetails)
 import Html exposing (Html, a, div, h2, h4, i, section, text)
 import Html.Attributes exposing (class, href, id)
+import List.Extra exposing (getAt)
 import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (iconLink)
@@ -49,14 +51,26 @@ maybeDetails model =
 
 detailsPage : Model -> DashboardDetails -> Html Msg
 detailsPage model details =
-    div [ class "columns is-multiline build-items" ] (List.map configItem details.configs)
+    div [ class "columns is-multiline build-items" ] (List.map (\c -> configItem model c) details.configs)
 
 
-configItem : ConfigDetail -> Html Msg
-configItem cd =
+configItem : Model -> ConfigDetail -> Html Msg
+configItem model cd =
     let
+        branchIndex =
+            let
+                vb =
+                    findVisibleBranch cd.id model.dashboards.visibleBranches
+            in
+            case vb of
+                Just visibleBranch ->
+                    visibleBranch.index
+
+                _ ->
+                    0
+
         branch =
-            case List.head cd.branches of
+            case getAt branchIndex cd.branches of
                 Just branch ->
                     branch
 

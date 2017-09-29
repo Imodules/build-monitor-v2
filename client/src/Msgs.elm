@@ -41,6 +41,7 @@ type DashboardMsg
     = ChangeDashboardName String
     | OnFetchDashboards (WebData (List Dashboard))
     | OnFetchDetails (WebData DashboardDetails)
+    | ChangeBranches Time
     | ClickBuildType Id
     | StartCreateDashboard
     | CreateDashboard

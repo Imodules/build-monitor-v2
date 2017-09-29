@@ -2,7 +2,7 @@ module Dashboards.Update exposing (..)
 
 import Dashboards.Api as Api
 import Dashboards.Lib exposing (configInList, getBuildPath, getDefaultPrefix)
-import Dashboards.Models as Dashboards exposing (BuildConfigForm, EditTab(Configure, Select), buildConfigToForm, initialBuildConfigForm, initialFormModel)
+import Dashboards.Models as Dashboards exposing (BuildConfigForm, ConfigDetail, EditTab(Configure, Select), VisibleBranch, buildConfigToForm, initialBuildConfigForm, initialFormModel)
 import Lib exposing (createCommand)
 import List.Extra exposing (find)
 import Models exposing (Model)
@@ -33,7 +33,17 @@ update_ baseUrl token msg model_ =
             ( { model | dashboards = response }, Cmd.none )
 
         OnFetchDetails response ->
-            ( { model | details = response }, Cmd.none )
+            let
+                newVisibleBranches =
+                    if model.visibleBranches == [] then
+                        initVisibleBranches model
+                    else
+                        model.visibleBranches
+            in
+            ( { model | details = response, visibleBranches = newVisibleBranches }, Cmd.none )
+
+        ChangeBranches _ ->
+            ( { model | visibleBranches = switchBranches model.visibleBranches }, Cmd.none )
 
         ChangeDashboardName value ->
             let
@@ -199,3 +209,70 @@ getNewConfig model id =
             getDefaultPrefix buildPath
     in
     initialBuildConfigForm id prefix
+
+
+initVisibleBranches : Dashboards.Model -> List VisibleBranch
+initVisibleBranches model =
+    case model.details of
+        RemoteData.Success details ->
+            buildNewVisibleBranches details.configs
+
+        _ ->
+            model.visibleBranches
+
+
+buildNewVisibleBranches : List ConfigDetail -> List VisibleBranch
+buildNewVisibleBranches cds =
+    List.map createVisibleBranch cds
+
+
+createVisibleBranch : ConfigDetail -> VisibleBranch
+createVisibleBranch cd =
+    { id = cd.id, size = List.length cd.branches, index = 0 }
+
+
+updateVisibleBranches : List ConfigDetail -> List VisibleBranch -> List VisibleBranch
+updateVisibleBranches cds old =
+    let
+        updateBranch cd =
+            createVisibleBranch cd
+
+        getUpdatedBranch cd maybeBranch =
+            case maybeBranch of
+                Just branch ->
+                    let
+                        branchCount =
+                            List.length cd.branches
+
+                        validIndex =
+                            if branch.index >= branchCount then
+                                0
+                            else
+                                branch.index
+                    in
+                    { branch | size = branchCount, index = validIndex }
+
+                _ ->
+                    createVisibleBranch cd
+    in
+    List.map updateBranch cds
+
+
+switchBranches : List VisibleBranch -> List VisibleBranch
+switchBranches branches =
+    List.map
+        (\b ->
+            if b.size == 1 then
+                b
+            else
+                incrementBranch b
+        )
+        branches
+
+
+incrementBranch : VisibleBranch -> VisibleBranch
+incrementBranch branch =
+    if branch.index < branch.size - 1 then
+        { branch | index = branch.index + 1 }
+    else
+        { branch | index = 0 }

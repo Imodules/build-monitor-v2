@@ -35,3 +35,7 @@ our dev shop.
 | -allowed-origin       | BM_ALLOWED_ORIGIN      | *                                          |
 | -password-salt        | BM_PASSWORD_SALT       | you-really-need-to-change-this             |
 | -jwt-secret           | BM_JWT_SECRET          | you-really-need-to-change-this-one-also    |
+| -tc-url               | BM_TC_URL              | http://localhost:3031                      |
+
+## Other dependencies
+```docker run --name dev-mongo -p 27017:27017 -d mongo```

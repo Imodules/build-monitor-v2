@@ -19,6 +19,7 @@ import (
 )
 
 func main() {
+
 	log := logrus.WithField("component", "main")
 
 	log.Info("Loading config...")

@@ -10,6 +10,7 @@ var GetRunningBuilds = func(c *Server, lastBuilds []teamcity.Build) []teamcity.B
 	runningBuilds, err := c.Tc.GetRunningBuilds()
 	if err != nil {
 		c.Log.Errorf("Failed to get running builds, Error: %v", err)
+		return lastBuilds
 	}
 
 	usefulBuilds := []teamcity.Build{}

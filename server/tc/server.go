@@ -97,27 +97,20 @@ func monitor(c *Server) {
 	c.Log.Info("Starting Teamcity monitor")
 	shouldStop := false
 
-	loopCount := 0
 	currentPollInterval := c.TcPollInterval
 	runningBuilds := []teamcity.Build{}
 
 	for shouldStop == false {
-		loopCount++
-
 		select {
 		case shouldStop = <-c.stop:
 			c.Log.Info("Stopping")
 			break
 		case <-time.After(currentPollInterval):
-			if loopCount%100 == 0 {
-				refresh(c)
-			}
-
 			runningBuilds = GetRunningBuilds(c, runningBuilds)
 			if len(runningBuilds) == 0 {
-				currentPollInterval = c.TcRunningBuildPollInterval
-			} else {
 				currentPollInterval = c.TcPollInterval
+			} else {
+				currentPollInterval = c.TcRunningBuildPollInterval
 			}
 		}
 	}
@@ -126,15 +119,12 @@ func monitor(c *Server) {
 }
 
 func refresh(c *Server) error {
+	// TODO: Need to be able to recieve message form API to trigger this
 	if err := RefreshProjects(c); err != nil {
 		return err
 	}
 
-	if err := RefreshBuildTypes(c); err != nil {
-		return err
-	}
-
-	return nil
+	return RefreshBuildTypes(c)
 }
 
 func refreshBuildHistories(c *Server) error {

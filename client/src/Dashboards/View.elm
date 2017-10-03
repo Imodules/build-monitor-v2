@@ -85,7 +85,7 @@ configItem model cd =
                         "success"
                    )
     in
-    div [ class "column is-6 is-paddingless buildItem" ]
+    div [ class "column is-3 is-paddingless buildItem" ]
         [ div [ class wrapperClass ]
             [ biTitle cd.abbreviation
             , biSubTitle (getSubtitleText cd branch)

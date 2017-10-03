@@ -41,6 +41,22 @@ func (m *ITcClientMock) GetBuildsForBuildType(id string, count int) ([]teamcity.
 	return args.Get(0).([]teamcity.Build), args.Error(1)
 }
 
+func (m *ITcClientMock) GetRunningBuilds() ([]teamcity.Build, error) {
+	args := m.Called()
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]teamcity.Build), args.Error(1)
+}
+
+func (m *ITcClientMock) GetBuildByID(id int) (teamcity.Build, error) {
+	args := m.Called(id)
+
+	return args.Get(0).(teamcity.Build), args.Error(1)
+}
+
 type IDbMock struct {
 	mock.Mock
 }
@@ -115,4 +131,14 @@ func (m *IDbMock) DashboardList() ([]db.Dashboard, error) {
 	}
 
 	return args.Get(0).([]db.Dashboard), args.Error(1)
+}
+
+func (m *IDbMock) FindBuildTypeById(id string) (*db.BuildType, error) {
+	args := m.Called()
+
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).(*db.BuildType), args.Error(1)
 }

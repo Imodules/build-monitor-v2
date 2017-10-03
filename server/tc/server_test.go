@@ -1,6 +1,7 @@
 package tc_test
 
 import (
+	"errors"
 	"testing"
 
 	"build-monitor-v2/server/cfg"
@@ -9,8 +10,7 @@ import (
 
 	"time"
 
-	"errors"
-
+	teamcity "github.com/pstuart2/go-teamcity"
 	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -21,8 +21,7 @@ func TestNewServer(t *testing.T) {
 		Convey("When the intervals are valid", func() {
 			conf := cfg.Config{
 				TcPollInterval:             "2h45m",
-				TcBuildPollInterval:        "1500ms",
-				TcRunningBuildPollInterval: "2m",
+				TcRunningBuildPollInterval: "200ms",
 			}
 			log := logrus.WithField("test", "TestNewServer")
 
@@ -34,15 +33,13 @@ func TestNewServer(t *testing.T) {
 				So(server, ShouldNotBeNil)
 				So(server.Log, ShouldEqual, log)
 				So(server.TcPollInterval, ShouldEqual, (time.Hour*2)+(time.Minute*45))
-				So(server.TcRunningBuildPollInterval, ShouldEqual, time.Millisecond*1500)
-				So(server.RunningBuildPollInterval, ShouldEqual, time.Minute*2)
+				So(server.TcRunningBuildPollInterval, ShouldEqual, time.Millisecond*200)
 			})
 		})
 
 		Convey("When the intervals are not valid", func() {
 			conf := cfg.Config{
 				TcPollInterval:             "a",
-				TcBuildPollInterval:        "b",
 				TcRunningBuildPollInterval: "c",
 			}
 			log := logrus.WithField("test", "TestNewServer")
@@ -62,9 +59,10 @@ func TestServer_Start_Shutdown(t *testing.T) {
 		serverMock := new(ITcClientMock)
 
 		c := tc.Server{
-			Tc:             serverMock,
-			Log:            log,
-			TcPollInterval: time.Millisecond * 500,
+			Tc:                         serverMock,
+			Log:                        log,
+			TcPollInterval:             time.Millisecond * 500,
+			TcRunningBuildPollInterval: time.Millisecond * 500,
 		}
 
 		Convey("When we successfully start the monitor", func() {
@@ -92,27 +90,36 @@ func TestServer_Start_Shutdown(t *testing.T) {
 			}
 			defer func() { tc.GetBuildHistory = oldGetBuildHistory }()
 
-			Convey("It should call GetProjects at startup", func() {
+			Convey("And there are no running builds", func() {
+				oldGetRunningBuilds := tc.GetRunningBuilds
+				getRunningBuildsCallCount := 0
+				tc.GetRunningBuilds = func(tcs *tc.Server, lastBuilds []teamcity.Build) []teamcity.Build {
+					getRunningBuildsCallCount++
+					return []teamcity.Build{}
+				}
+				defer func() { tc.GetRunningBuilds = oldGetRunningBuilds }()
 
-				err := c.Start()
-				So(err, ShouldBeNil)
-				So(refreshProjectsCallCount, ShouldEqual, 1)
-				So(refreshBuildTypesCallCount, ShouldEqual, 1)
-				So(refreshBuildHistoryCallCount, ShouldEqual, 1)
+				Convey("It should call RefreshProjects at startup", func() {
 
-				Convey("And call again after the timeout", func() {
-					<-time.After(time.Millisecond * 750)
+					err := c.Start()
+					So(err, ShouldBeNil)
+					So(refreshProjectsCallCount, ShouldEqual, 1)
+					So(refreshBuildTypesCallCount, ShouldEqual, 1)
+					So(refreshBuildHistoryCallCount, ShouldEqual, 1)
+					So(getRunningBuildsCallCount, ShouldEqual, 0)
 
-					So(refreshProjectsCallCount, ShouldEqual, 2)
-					So(refreshBuildTypesCallCount, ShouldEqual, 2)
+					Convey("And call GetRunningBuilds after the timeout", func() {
+						<-time.After(time.Millisecond * 750)
 
-					Convey("But not GetBuildHistory", func() {
+						So(refreshProjectsCallCount, ShouldEqual, 1)
+						So(refreshBuildTypesCallCount, ShouldEqual, 1)
 						So(refreshBuildHistoryCallCount, ShouldEqual, 1)
+						So(getRunningBuildsCallCount, ShouldEqual, 1)
 
 						c.Shutdown()
 					})
-				})
 
+				})
 			})
 		})
 
@@ -144,69 +151,69 @@ func TestServer_Start_Shutdown(t *testing.T) {
 			})
 		})
 
-		Convey("When we fail to start the monitor because RefreshBuildTypes fails", func() {
-			expectedError := errors.New("there was something wrong")
+		// Convey("When we fail to start the monitor because RefreshBuildTypes fails", func() {
+		// 	expectedError := errors.New("there was something wrong")
 
-			oldRefreshProjects := tc.RefreshProjects
-			refreshProjectsCallCount := 0
-			tc.RefreshProjects = func(tcs *tc.Server) error {
-				refreshProjectsCallCount++
-				return nil
-			}
-			defer func() { tc.RefreshProjects = oldRefreshProjects }()
+		// 	oldRefreshProjects := tc.RefreshProjects
+		// 	refreshProjectsCallCount := 0
+		// 	tc.RefreshProjects = func(tcs *tc.Server) error {
+		// 		refreshProjectsCallCount++
+		// 		return nil
+		// 	}
+		// 	defer func() { tc.RefreshProjects = oldRefreshProjects }()
 
-			oldRefreshBuildTypes := tc.RefreshBuildTypes
-			refreshBuildTypesCallCount := 0
-			tc.RefreshBuildTypes = func(tcs *tc.Server) error {
-				refreshBuildTypesCallCount++
-				return expectedError
-			}
-			defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
+		// 	oldRefreshBuildTypes := tc.RefreshBuildTypes
+		// 	refreshBuildTypesCallCount := 0
+		// 	tc.RefreshBuildTypes = func(tcs *tc.Server) error {
+		// 		refreshBuildTypesCallCount++
+		// 		return expectedError
+		// 	}
+		// 	defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
 
-			Convey("It should call RefreshProjects at startup", func() {
+		// 	Convey("It should call RefreshProjects at startup", func() {
 
-				err := c.Start()
-				So(err, ShouldEqual, expectedError)
-				So(refreshProjectsCallCount, ShouldEqual, 1)
-				So(refreshBuildTypesCallCount, ShouldEqual, 1)
-			})
-		})
+		// 		err := c.Start()
+		// 		So(err, ShouldEqual, expectedError)
+		// 		So(refreshProjectsCallCount, ShouldEqual, 1)
+		// 		So(refreshBuildTypesCallCount, ShouldEqual, 1)
+		// 	})
+		// })
 
-		Convey("When we fail to start the monigor because GetBuildHistory fails", func() {
-			expectedError := errors.New("there was something wrong")
+		// Convey("When we fail to start the monigor because GetBuildHistory fails", func() {
+		// 	expectedError := errors.New("there was something wrong")
 
-			oldRefreshProjects := tc.RefreshProjects
-			refreshProjectsCallCount := 0
-			tc.RefreshProjects = func(tcs *tc.Server) error {
-				refreshProjectsCallCount++
-				return nil
-			}
-			defer func() { tc.RefreshProjects = oldRefreshProjects }()
+		// 	oldRefreshProjects := tc.RefreshProjects
+		// 	refreshProjectsCallCount := 0
+		// 	tc.RefreshProjects = func(tcs *tc.Server) error {
+		// 		refreshProjectsCallCount++
+		// 		return nil
+		// 	}
+		// 	defer func() { tc.RefreshProjects = oldRefreshProjects }()
 
-			oldRefreshBuildTypes := tc.RefreshBuildTypes
-			refreshBuildTypesCallCount := 0
-			tc.RefreshBuildTypes = func(tcs *tc.Server) error {
-				refreshBuildTypesCallCount++
-				return nil
-			}
-			defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
+		// 	oldRefreshBuildTypes := tc.RefreshBuildTypes
+		// 	refreshBuildTypesCallCount := 0
+		// 	tc.RefreshBuildTypes = func(tcs *tc.Server) error {
+		// 		refreshBuildTypesCallCount++
+		// 		return nil
+		// 	}
+		// 	defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
 
-			oldGetBuildHistory := tc.GetBuildHistory
-			refreshBuildHistoryCallCount := 0
-			tc.GetBuildHistory = func(tcs *tc.Server) error {
-				refreshBuildHistoryCallCount++
-				return expectedError
-			}
-			defer func() { tc.GetBuildHistory = oldGetBuildHistory }()
+		// 	oldGetBuildHistory := tc.GetBuildHistory
+		// 	refreshBuildHistoryCallCount := 0
+		// 	tc.GetBuildHistory = func(tcs *tc.Server) error {
+		// 		refreshBuildHistoryCallCount++
+		// 		return expectedError
+		// 	}
+		// 	defer func() { tc.GetBuildHistory = oldGetBuildHistory }()
 
-			Convey("It should call RefreshProjects at startup", func() {
+		// 	Convey("It should call RefreshProjects at startup", func() {
 
-				err := c.Start()
-				So(err, ShouldEqual, expectedError)
-				So(refreshProjectsCallCount, ShouldEqual, 1)
-				So(refreshBuildTypesCallCount, ShouldEqual, 1)
-				So(refreshBuildHistoryCallCount, ShouldEqual, 1)
-			})
-		})
+		// 		err := c.Start()
+		// 		So(err, ShouldEqual, expectedError)
+		// 		So(refreshProjectsCallCount, ShouldEqual, 1)
+		// 		So(refreshBuildTypesCallCount, ShouldEqual, 1)
+		// 		So(refreshBuildHistoryCallCount, ShouldEqual, 1)
+		// 	})
+		// })
 	})
 }

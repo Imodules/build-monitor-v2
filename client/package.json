@@ -1,5 +1,5 @@
 {
-  "name": "world-backup-client",
+  "name": "build-monitor-v2",
   "version": "0.0.1",
   "main": "index.js",
   "author": "Paul Stuart",
@@ -7,7 +7,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack -p",
     "clean": "rm -rf dist",
-    "client": "NODE_ENV=development webpack-dev-server --port 3000",
+    "client": "cross-env NODE_ENV=development webpack-dev-server --port 3000",
     "server": "cd ../server && go run main.go",
     "start": "nf start"
   },
@@ -26,6 +26,7 @@
     "webpack-dev-server": "^2.4.5"
   },
   "devDependencies": {
+    "cross-env": "^5.0.5",
     "lobo": "^0.2.1",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.5",

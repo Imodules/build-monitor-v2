@@ -68,6 +68,12 @@
   version = "v0.0.3"
 
 [[projects]]
+  name = "github.com/metakeule/fmtdate"
+  packages = ["."]
+  revision = "1493d7e84f5de011ebbcfd054543e23717c5cb68"
+  version = "v1.1.1"
+
+[[projects]]
   name = "github.com/pborman/uuid"
   packages = ["."]
   revision = "e790cca94e6cc75c7064b1332e63811d4aae1a53"
@@ -83,7 +89,7 @@
   branch = "master"
   name = "github.com/pstuart2/go-teamcity"
   packages = ["."]
-  revision = "45eccf5cd6c8d152ef3990f17657fdbbdd206bf9"
+  revision = "424cd9e7b6ac3f9a5bc8013516771186c0c2a229"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"

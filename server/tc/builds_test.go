@@ -5,8 +5,6 @@ import (
 
 	"build-monitor-v2/server/tc"
 
-	"time"
-
 	"build-monitor-v2/server/db"
 
 	"errors"
@@ -17,6 +15,47 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+func TestServer_GetRunningBuilds(t *testing.T) {
+	Convey("Given a server", t, func() {
+		log := logrus.WithField("test", "TestServer_GetBuildHistory")
+		serverMock := new(ITcClientMock)
+		dbMock := new(IDbMock)
+
+		c := tc.Server{
+			Tc:  serverMock,
+			Db:  dbMock,
+			Log: log,
+		}
+
+		Convey("When GetRunningBuilds errors", func() {
+			serverMock.On("GetRunningBuilds").Return([]teamcity.Build{}, errors.New("this shouldn't have happened"))
+
+			lastBuilds := []teamcity.Build{{ID: 42}, {ID: 43}}
+			newLastBuilds := tc.GetRunningBuilds(&c, lastBuilds)
+
+			Convey("It should return the same build list we passed in", func() {
+				So(newLastBuilds, ShouldResemble, lastBuilds)
+			})
+		})
+
+		Convey("When GetRunningBuilds returns 0 builds", func() {
+			Convey("And no lastBuilds were passed in", func() {
+
+			})
+
+			Convey("And lastBuilds were passed in", func() {
+
+			})
+		})
+
+		Convey("When GetRunningBuilds returns builds", func() {
+			// it should only worry about the ones that have DashboardIds
+
+			// any lastbuilds not in the new list need to get the final complete call
+		})
+	})
+}
+
 func TestServer_GetBuildHistory(t *testing.T) {
 	Convey("Given a server", t, func() {
 		log := logrus.WithField("test", "TestServer_GetBuildHistory")
@@ -24,10 +63,9 @@ func TestServer_GetBuildHistory(t *testing.T) {
 		dbMock := new(IDbMock)
 
 		c := tc.Server{
-			Tc:             serverMock,
-			Db:             dbMock,
-			Log:            log,
-			TcPollInterval: time.Millisecond * 500,
+			Tc:  serverMock,
+			Db:  dbMock,
+			Log: log,
 		}
 
 		Convey("When DashboardList errors", func() {
@@ -138,32 +176,20 @@ func TestServer_GetBuildHistory(t *testing.T) {
 					serverMock.AssertExpectations(t)
 
 					So(len(dbArray1), ShouldEqual, 2)
-					So(dbArray1[0].Name, ShouldBeIn, []string{"dev", "feat"})
-					So(len(dbArray1[0].Builds), ShouldEqual, 3)
-
-					So(dbArray1[1].Name, ShouldEqual, "feat")
-					So(len(dbArray1[1].Builds), ShouldEqual, 1)
+					So(len(getBranch("dev", dbArray1).Builds), ShouldEqual, 3)
+					So(len(getBranch("feat", dbArray1).Builds), ShouldEqual, 1)
 
 					So(len(dbArray2), ShouldEqual, 2)
-					So(dbArray2[0].Name, ShouldEqual, "feat")
-					So(len(dbArray2[0].Builds), ShouldEqual, 1)
-
-					So(dbArray2[1].Name, ShouldEqual, "dev")
-					So(len(dbArray2[1].Builds), ShouldEqual, 1)
+					So(len(getBranch("dev", dbArray2).Builds), ShouldEqual, 1)
+					So(len(getBranch("feat", dbArray2).Builds), ShouldEqual, 1)
 
 					So(len(dbArray3), ShouldEqual, 2)
-					So(dbArray3[0].Name, ShouldEqual, "dev")
-					So(len(dbArray3[0].Builds), ShouldEqual, 2)
-
-					So(dbArray3[1].Name, ShouldEqual, "feat")
-					So(len(dbArray3[1].Builds), ShouldEqual, 3)
+					So(len(getBranch("dev", dbArray3).Builds), ShouldEqual, 2)
+					So(len(getBranch("feat", dbArray3).Builds), ShouldEqual, 3)
 
 					So(len(dbArray4), ShouldEqual, 2)
-					So(dbArray4[0].Name, ShouldEqual, "dev")
-					So(len(dbArray4[0].Builds), ShouldEqual, 1)
-
-					So(dbArray4[1].Name, ShouldEqual, "feat")
-					So(len(dbArray4[1].Builds), ShouldEqual, 3)
+					So(len(getBranch("dev", dbArray4).Builds), ShouldEqual, 1)
+					So(len(getBranch("feat", dbArray4).Builds), ShouldEqual, 3)
 				})
 			})
 
@@ -233,4 +259,14 @@ func TestServer_GetBuildHistory(t *testing.T) {
 			})
 		})
 	})
+}
+
+func getBranch(name string, branches []db.Branch) db.Branch {
+	for _, b := range branches {
+		if b.Name == name {
+			return b
+		}
+	}
+
+	return db.Branch{}
 }

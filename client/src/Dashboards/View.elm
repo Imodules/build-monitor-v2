@@ -2,6 +2,7 @@ module Dashboards.View exposing (..)
 
 import Dashboards.Lib exposing (findVisibleBranch)
 import Dashboards.Models exposing (Branch, Build, BuildStatus(Failure, Running, Success), ConfigDetail, DashboardDetails)
+import Date.Distance exposing (inWords)
 import Html exposing (Html, a, div, h2, h4, i, section, text)
 import Html.Attributes exposing (class, href, id)
 import List.Extra exposing (getAt)
@@ -10,6 +11,7 @@ import Msgs exposing (Msg)
 import Pages.Components exposing (iconLink)
 import RemoteData
 import Routes exposing (Route(DashboardsRoute))
+import Time.DateTime as DateTime
 
 
 view : Model -> Html Msg

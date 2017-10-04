@@ -34,24 +34,74 @@ func TestServer_GetRunningBuilds(t *testing.T) {
 			newLastBuilds := tc.GetRunningBuilds(&c, lastBuilds)
 
 			Convey("It should return the same build list we passed in", func() {
+				serverMock.AssertExpectations(t)
+				dbMock.AssertExpectations(t)
+
 				So(newLastBuilds, ShouldResemble, lastBuilds)
 			})
 		})
 
 		Convey("When GetRunningBuilds returns 0 builds", func() {
+			serverMock.On("GetRunningBuilds").Return([]teamcity.Build{}, errors.New("this shouldn't have happened"))
+
 			Convey("And no lastBuilds were passed in", func() {
+				lastBuilds := []teamcity.Build{}
 
-			})
+				newLastBuilds := tc.GetRunningBuilds(&c, lastBuilds)
 
-			Convey("And lastBuilds were passed in", func() {
+				Convey("It should not do anything else", func() {
+					serverMock.AssertExpectations(t)
+					dbMock.AssertExpectations(t)
 
+					So(len(newLastBuilds), ShouldEqual, 0)
+				})
 			})
 		})
 
 		Convey("When GetRunningBuilds returns builds", func() {
-			// it should only worry about the ones that have DashboardIds
+			builds := []teamcity.Build{
+				{ID: 100, BuildTypeID: "bt100"},                         // btErr
+				{ID: 101, BuildTypeID: "bt101", BranchName: "branch-1"}, // Still Processing
+				{ID: 102, BuildTypeID: "bt102"},                         // Ignore
+				{ID: 104, BuildTypeID: "bt104"},                         // New
+			}
 
-			// any lastbuilds not in the new list need to get the final complete call
+			lastBuilds := []teamcity.Build{
+				{ID: 101}, // Still Processing
+				{ID: 103}, // Completed
+			}
+
+			serverMock.On("GetRunningBuilds").Return(builds, nil)
+
+			dbBt1 := db.BuildType{Id: "bt1", DashboardIds: []string{"abc", "123"},
+				Branches: []db.Branch{{Name: "branch-1"}},
+			}
+
+			dbBt2 := db.BuildType{Id: "bt1", DashboardIds: []string{}}
+			//dbBt3 := db.BuildType{Id: "bt1", DashboardIds: []string{"asdf"}}
+			dbBt4 := db.BuildType{Id: "bt1", DashboardIds: []string{"asdf"}}
+
+			dbMock.On("FindBuildTypeById", "bt100").Return(nil, errors.New("Something bad"))
+			dbMock.On("FindBuildTypeById", "bt101").Return(&dbBt1, nil)
+			dbMock.On("FindBuildTypeById", "bt102").Return(&dbBt2, nil)
+			//dbMock.On("FindBuildTypeById", "bt103").Return(&dbBt3, nil)
+			dbMock.On("FindBuildTypeById", "bt104").Return(&dbBt4, nil)
+
+			resultBuilds := tc.GetRunningBuilds(&c, lastBuilds)
+
+			Convey("It should process all the builds in the builds list", func() {
+
+				serverMock.AssertExpectations(t)
+				dbMock.AssertExpectations(t)
+
+				Convey("And it should finish any lastBuilds no longer in builds list", func() {
+					Convey("And it should return useful builds", func() {
+						So(len(resultBuilds), ShouldEqual, 2)
+						So(resultBuilds[0].ID, ShouldEqual, 101)
+						So(resultBuilds[1].ID, ShouldEqual, 104)
+					})
+				})
+			})
 		})
 	})
 }

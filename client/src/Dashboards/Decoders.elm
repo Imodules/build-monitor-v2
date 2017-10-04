@@ -1,10 +1,11 @@
 module Dashboards.Decoders exposing (..)
 
 import Dashboards.Models as Dashboards exposing (Branch, Build, BuildConfig, BuildStatus(Failure, Running, Success, Unknown), ConfigDetail, Dashboard, DashboardDetails)
-import Decoders exposing (ownerDecoder)
+import Decoders exposing (dateTimeDecoder, ownerDecoder)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, optional, required)
 import Json.Encode as Encode
+import Time.DateTime as DateTime exposing (DateTime, dateTime, zero)
 
 
 dashboardsDecoder : Decoder (List Dashboard)
@@ -82,6 +83,8 @@ buildDecoder =
         |> required "status" buildStatusDecoder
         |> optional "statusText" Decode.string ""
         |> optional "progress" Decode.int 0
+        |> optional "startDate" dateTimeDecoder (dateTime zero)
+        |> optional "finishDate" dateTimeDecoder (dateTime zero)
 
 
 buildStatusDecoder : Decoder BuildStatus

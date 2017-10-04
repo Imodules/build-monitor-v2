@@ -30,28 +30,28 @@ var GetRunningBuilds = func(c *Server, lastBuilds []teamcity.Build) []teamcity.B
 
 		usefulBuilds = append(usefulBuilds, b)
 
-		processBuild(c, b, bt)
+		//processBuild(c, b, bt)
 	}
 
-	if len(lastBuilds) > 0 {
-		for _, lb := range lastBuilds {
-			if !isBuildInList(lb.ID, usefulBuilds) {
-				bt, btErr := c.Db.FindBuildTypeById(lb.BuildTypeID)
-				if btErr != nil {
-					c.Log.Errorf("Failed to get build type for: %s, Error: %v", lb.BuildTypeID, btErr)
-					continue
-				}
-
-				build, err := c.Tc.GetBuildByID(lb.ID)
-				if err != nil {
-					c.Log.Errorf("Failed to get the updated build for id: %d", lb.ID)
-					continue
-				}
-
-				processBuild(c, build, bt)
-			}
-		}
-	}
+	//if len(lastBuilds) > 0 {
+	//	for _, lb := range lastBuilds {
+	//		if !isBuildInList(lb.ID, usefulBuilds) {
+	//			bt, btErr := c.Db.FindBuildTypeById(lb.BuildTypeID)
+	//			if btErr != nil {
+	//				c.Log.Errorf("Failed to get build type for: %s, Error: %v", lb.BuildTypeID, btErr)
+	//				continue
+	//			}
+	//
+	//			build, err := c.Tc.GetBuildByID(lb.ID)
+	//			if err != nil {
+	//				c.Log.Errorf("Failed to get the updated build for id: %d", lb.ID)
+	//				continue
+	//			}
+	//
+	//			processBuild(c, build, bt)
+	//		}
+	//	}
+	//}
 
 	return usefulBuilds
 }
@@ -142,6 +142,8 @@ func BuildToDb(p teamcity.Build) db.Build {
 		Status:     p.Status,
 		StatusText: p.StatusText,
 		Progress:   p.Progress,
+		StartDate:  p.StartDate,
+		FinishDate: p.FinishDate,
 	}
 }
 

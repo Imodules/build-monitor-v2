@@ -1,6 +1,8 @@
 package db
 
 import (
+	"time"
+
 	"github.com/pstuart2/go-teamcity"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -26,6 +28,8 @@ type Build struct {
 	Status     teamcity.BuildStatus `json:"status"`
 	StatusText string               `json:"statusText"`
 	Progress   int                  `json:"progress"`
+	StartDate  time.Time            `json:"startDate"`
+	FinishDate time.Time            `json:"finishDate"`
 }
 
 func BuildTypes(s *mgo.Session) *mgo.Collection {

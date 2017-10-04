@@ -1,6 +1,7 @@
 module Dashboards.Models exposing (..)
 
 import RemoteData exposing (WebData)
+import Time.DateTime as DateTime exposing (DateTime)
 import Types exposing (Id, Owner, TextField, initTextField, initTextFieldValue)
 
 
@@ -120,4 +121,6 @@ type alias Build =
     , status : BuildStatus
     , statusText : String
     , progress : Int
+    , startDate : DateTime
+    , finishDate : DateTime
     }

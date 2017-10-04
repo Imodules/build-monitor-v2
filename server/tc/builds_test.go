@@ -238,10 +238,14 @@ func TestServer_ProcessRunningBuild(t *testing.T) {
 		})
 
 		Convey("When we have a build type that is already processing this build", func() {
+
+			startDate := time.Now().Add(-1 * time.Minute)
+
 			tcBuild := teamcity.Build{
 				ID:          801,
 				BuildTypeID: "bt-id-801",
 				BranchName:  "this is a b-name",
+				StartDate:   startDate,
 			}
 
 			dbBuildType := db.BuildType{
@@ -264,6 +268,7 @@ func TestServer_ProcessRunningBuild(t *testing.T) {
 					branchesPassedToDb = args.Get(1).([]db.Branch)
 				})
 
+				now := time.Now()
 				tc.ProcessRunningBuild(&c, tcBuild, &dbBuildType)
 
 				Convey("It will update the build on the branch And update the database", func() {
@@ -274,6 +279,8 @@ func TestServer_ProcessRunningBuild(t *testing.T) {
 
 					So(len(branchesPassedToDb[0].Builds), ShouldEqual, 2)
 					So(branchesPassedToDb[0].Builds[0].Id, ShouldEqual, tcBuild.ID)
+					So(branchesPassedToDb[0].Builds[0].StartDate.Unix(), ShouldEqual, startDate.Unix())
+					So(branchesPassedToDb[0].Builds[0].FinishDate.Unix(), ShouldAlmostEqual, now.Unix())
 					So(branchesPassedToDb[0].Builds[1].Id, ShouldEqual, 799)
 				})
 			})

@@ -2,6 +2,7 @@ package tc
 
 import (
 	"build-monitor-v2/server/db"
+	"time"
 
 	"github.com/pstuart2/go-teamcity"
 )
@@ -151,8 +152,16 @@ func BuildToDb(p teamcity.Build) db.Build {
 		StatusText: p.StatusText,
 		Progress:   p.Progress,
 		StartDate:  p.StartDate,
-		FinishDate: p.FinishDate,
+		FinishDate: getCleanFinishDate(p.StartDate, p.FinishDate),
 	}
+}
+
+func getCleanFinishDate(start, finish time.Time) time.Time {
+	if start.After(finish) {
+		return time.Now()
+	}
+
+	return finish
 }
 
 func branchMapToArray(branches map[string]*db.Branch) []db.Branch {

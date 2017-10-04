@@ -25,15 +25,18 @@ topProjectRow model project projects buildTypes =
         childProjects =
             projectsByParent project.id projects
 
-        content =
+        projectContent =
             if List.length childProjects > 0 then
-                List.map (\p -> topProjectRow model p projects buildTypes) childProjects
+                div [class "box"] (List.map (\p -> topProjectRow model p projects buildTypes) childProjects)
             else
-                List.map (\bt -> buildTypeRow model bt) (buildTypesByProject project.id buildTypes)
+                div [] []
+
+        buildContent = List.map (\bt -> buildTypeRow model bt) (buildTypesByProject project.id buildTypes)
     in
     div [ class "top-project" ]
         [ h4 [ class "title is-4" ] [ icon "fa fa-cubes fa-fw", text project.name ]
-        , div [ class "box" ] content
+        , div [ class "box" ] buildContent
+        , projectContent
         ]
 
 

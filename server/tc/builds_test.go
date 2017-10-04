@@ -2,6 +2,7 @@ package tc_test
 
 import (
 	"testing"
+	"time"
 
 	"build-monitor-v2/server/tc"
 
@@ -18,23 +19,23 @@ import (
 func TestServer_GetRunningBuilds(t *testing.T) {
 	Convey("Given a server", t, func() {
 		log := logrus.WithField("test", "TestServer_GetBuildHistory")
-		serverMock := new(ITcClientMock)
+		tcMock := new(ITcClientMock)
 		dbMock := new(IDbMock)
 
 		c := tc.Server{
-			Tc:  serverMock,
+			Tc:  tcMock,
 			Db:  dbMock,
 			Log: log,
 		}
 
 		Convey("When GetRunningBuilds errors", func() {
-			serverMock.On("GetRunningBuilds").Return([]teamcity.Build{}, errors.New("this shouldn't have happened"))
+			tcMock.On("GetRunningBuilds").Return([]teamcity.Build{}, errors.New("this shouldn't have happened"))
 
 			lastBuilds := []teamcity.Build{{ID: 42}, {ID: 43}}
 			newLastBuilds := tc.GetRunningBuilds(&c, lastBuilds)
 
 			Convey("It should return the same build list we passed in", func() {
-				serverMock.AssertExpectations(t)
+				tcMock.AssertExpectations(t)
 				dbMock.AssertExpectations(t)
 
 				So(newLastBuilds, ShouldResemble, lastBuilds)
@@ -42,7 +43,7 @@ func TestServer_GetRunningBuilds(t *testing.T) {
 		})
 
 		Convey("When GetRunningBuilds returns 0 builds", func() {
-			serverMock.On("GetRunningBuilds").Return([]teamcity.Build{}, errors.New("this shouldn't have happened"))
+			tcMock.On("GetRunningBuilds").Return([]teamcity.Build{}, errors.New("this shouldn't have happened"))
 
 			Convey("And no lastBuilds were passed in", func() {
 				lastBuilds := []teamcity.Build{}
@@ -50,7 +51,7 @@ func TestServer_GetRunningBuilds(t *testing.T) {
 				newLastBuilds := tc.GetRunningBuilds(&c, lastBuilds)
 
 				Convey("It should not do anything else", func() {
-					serverMock.AssertExpectations(t)
+					tcMock.AssertExpectations(t)
 					dbMock.AssertExpectations(t)
 
 					So(len(newLastBuilds), ShouldEqual, 0)
@@ -60,57 +61,276 @@ func TestServer_GetRunningBuilds(t *testing.T) {
 
 		Convey("When GetRunningBuilds returns builds", func() {
 			runningBuilds := []teamcity.Build{
-				{ID: 100, BuildTypeID: "bt100"},                         // btErr
-				{ID: 101, BuildTypeID: "bt101", BranchName: "branch-1"}, // Still Processing
-				{ID: 102, BuildTypeID: "bt102"},                         // Ignore
-				{ID: 104, BuildTypeID: "bt104", BranchName: "branch-2"}, // New
-				{ID: 105, BuildTypeID: "bt105"},                         // New
+				{ID: 100, BuildTypeID: "bt100"}, // btErr
+				{ID: 101, BuildTypeID: "bt101"}, // Still Processing
+				{ID: 102, BuildTypeID: "bt102"}, // Ignore
+				{ID: 104, BuildTypeID: "bt104"}, // New
+				{ID: 105, BuildTypeID: "bt105"}, // New
 			}
 
 			lastBuilds := []teamcity.Build{
-				{ID: 101}, // Still Processing
-				{ID: 103}, // Completed
+				{ID: 101, BuildTypeID: "bt101"}, // Still Processing
+				{ID: 103, BuildTypeID: "bt103"}, // Completed
+				{ID: 106, BuildTypeID: "bt106"}, // Completed (err FindBuildTypeById)
+				{ID: 109, BuildTypeID: "bt109"}, // Completed (err GetBuildByID)
 			}
 
-			serverMock.On("GetRunningBuilds").Return(runningBuilds, nil)
+			tcMock.On("GetRunningBuilds").Return(runningBuilds, nil)
 
-			dbBt1 := db.BuildType{Id: "bt101", DashboardIds: []string{"abc", "123"},
-				Branches: []db.Branch{{Name: "branch-1", Builds: []db.Build{
-					{Id: 101},
-				}}},
-			}
-
+			dbBt1 := db.BuildType{Id: "bt101", DashboardIds: []string{"abc", "123"}}
 			dbBt2 := db.BuildType{Id: "bt102", DashboardIds: []string{}}
-			//dbBt3 := db.BuildType{Id: "bt1", DashboardIds: []string{"asdf"}}
-			dbBt4 := db.BuildType{Id: "bt104", DashboardIds: []string{"dash-1"}, Branches: []db.Branch{{Name: ""}}}
+			dbBt4 := db.BuildType{Id: "bt104", DashboardIds: []string{"dash-1"}}
 			dbBt5 := db.BuildType{Id: "bt105", DashboardIds: []string{"dash-1"}}
 
 			dbMock.On("FindBuildTypeById", "bt100").Return(nil, errors.New("Something bad"))
 			dbMock.On("FindBuildTypeById", "bt101").Return(&dbBt1, nil)
 			dbMock.On("FindBuildTypeById", "bt102").Return(&dbBt2, nil)
-			//dbMock.On("FindBuildTypeById", "bt103").Return(&dbBt3, nil)
 			dbMock.On("FindBuildTypeById", "bt104").Return(&dbBt4, nil)
 			dbMock.On("FindBuildTypeById", "bt105").Return(&dbBt5, nil)
 
-			dbMock.On("UpdateBuildTypeBuilds", "bt101", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
-			//dbMock.On("UpdateBuildTypeBuilds", "bt103", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
-			dbMock.On("UpdateBuildTypeBuilds", "bt104", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
-			dbMock.On("UpdateBuildTypeBuilds", "bt105", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
+			// Process last build
+			dbBt3 := db.BuildType{Id: "bt103", DashboardIds: []string{"asdf"}}
+			dbBt9 := db.BuildType{Id: "bt109", DashboardIds: []string{"asdf"}}
+			dbMock.On("FindBuildTypeById", "bt103").Return(&dbBt3, nil)
+			dbMock.On("FindBuildTypeById", "bt106").Return(nil, errors.New("this is an error"))
+			dbMock.On("FindBuildTypeById", "bt109").Return(&dbBt9, nil)
 
-			resultBuilds := tc.GetRunningBuilds(&c, lastBuilds)
+			tcMock.On("GetBuildByID", 103).Return(teamcity.Build{ID: 103, Number: "api-103"}, nil)
+			tcMock.On("GetBuildByID", 109).Return(teamcity.Build{}, errors.New("api failed"))
 
-			Convey("It should process all the builds in the builds list", func() {
+			Convey("And the ProcessRunningBuild succeeds", func() {
+				oldProcessRunningBuild := tc.ProcessRunningBuild
+				prbBuilds := []teamcity.Build{}
+				prbBuildTypes := []db.BuildType{}
+				tc.ProcessRunningBuild = func(c *tc.Server, b teamcity.Build, bt *db.BuildType) error {
+					prbBuilds = append(prbBuilds, b)
+					prbBuildTypes = append(prbBuildTypes, *bt)
+					return nil
+				}
+				defer func() { tc.ProcessRunningBuild = oldProcessRunningBuild }()
 
-				serverMock.AssertExpectations(t)
-				dbMock.AssertExpectations(t)
+				resultBuilds := tc.GetRunningBuilds(&c, lastBuilds)
 
-				Convey("And it should finish any lastBuilds no longer in builds list", func() {
-					Convey("And it should return useful builds", func() {
-						So(len(resultBuilds), ShouldEqual, 3)
-						So(resultBuilds[0].ID, ShouldEqual, 101)
-						So(resultBuilds[1].ID, ShouldEqual, 104)
-						So(resultBuilds[2].ID, ShouldEqual, 105)
+				Convey("It should process all the builds in the builds list", func() {
+
+					tcMock.AssertExpectations(t)
+					dbMock.AssertExpectations(t)
+
+					So(len(prbBuilds), ShouldEqual, 4)
+					So(prbBuilds[0].ID, ShouldEqual, 101)
+					So(prbBuilds[1].ID, ShouldEqual, 104)
+					So(prbBuilds[2].ID, ShouldEqual, 105)
+					So(prbBuilds[3].ID, ShouldEqual, 103)
+
+					So(len(prbBuildTypes), ShouldEqual, 4)
+					So(prbBuildTypes[0].Id, ShouldEqual, "bt101")
+					So(prbBuildTypes[1].Id, ShouldEqual, "bt104")
+					So(prbBuildTypes[2].Id, ShouldEqual, "bt105")
+					So(prbBuildTypes[3].Id, ShouldEqual, "bt103")
+
+					Convey("And it should finish any lastBuilds no longer in builds list", func() {
+						Convey("And it should return useful builds", func() {
+							So(len(resultBuilds), ShouldEqual, 3)
+							So(resultBuilds[0].ID, ShouldEqual, 101)
+							So(resultBuilds[1].ID, ShouldEqual, 104)
+							So(resultBuilds[2].ID, ShouldEqual, 105)
+						})
 					})
+				})
+			})
+
+			Convey("And the ProcessRunningBuild fails", func() {
+				oldProcessRunningBuild := tc.ProcessRunningBuild
+				prbBuilds := []teamcity.Build{}
+				prbBuildTypes := []db.BuildType{}
+				tc.ProcessRunningBuild = func(c *tc.Server, b teamcity.Build, bt *db.BuildType) error {
+					prbBuilds = append(prbBuilds, b)
+					prbBuildTypes = append(prbBuildTypes, *bt)
+					return errors.New("i am failing")
+				}
+				defer func() { tc.ProcessRunningBuild = oldProcessRunningBuild }()
+
+				resultBuilds := tc.GetRunningBuilds(&c, lastBuilds)
+
+				Convey("It should process all the builds in the builds list", func() {
+
+					tcMock.AssertExpectations(t)
+					dbMock.AssertExpectations(t)
+
+					So(len(prbBuilds), ShouldEqual, 4)
+					So(prbBuilds[0].ID, ShouldEqual, 101)
+					So(prbBuilds[1].ID, ShouldEqual, 104)
+					So(prbBuilds[2].ID, ShouldEqual, 105)
+					So(prbBuilds[3].ID, ShouldEqual, 103)
+
+					So(len(prbBuildTypes), ShouldEqual, 4)
+					So(prbBuildTypes[0].Id, ShouldEqual, "bt101")
+					So(prbBuildTypes[1].Id, ShouldEqual, "bt104")
+					So(prbBuildTypes[2].Id, ShouldEqual, "bt105")
+					So(prbBuildTypes[3].Id, ShouldEqual, "bt103")
+
+					Convey("And it should finish any lastBuilds no longer in builds list", func() {
+						Convey("And it should return useful builds", func() {
+							So(len(resultBuilds), ShouldEqual, 3)
+							So(resultBuilds[0].ID, ShouldEqual, 101)
+							So(resultBuilds[1].ID, ShouldEqual, 104)
+							So(resultBuilds[2].ID, ShouldEqual, 105)
+						})
+					})
+				})
+			})
+		})
+	})
+}
+
+func TestServer_ProcessRunningBuild(t *testing.T) {
+	Convey("Given a server", t, func() {
+		log := logrus.WithField("test", "TestServer_ProcessRunningBuild")
+		serverMock := new(ITcClientMock)
+		dbMock := new(IDbMock)
+
+		c := tc.Server{
+			Tc:  serverMock,
+			Db:  dbMock,
+			Log: log,
+		}
+
+		Convey("When we have a build type without any branches", func() {
+
+			tcBuild := teamcity.Build{
+				ID:          801,
+				BuildTypeID: "bt-id-801",
+				BranchName:  "this is a b-name",
+				Number:      "tc-build-number",
+				Status:      teamcity.StatusRunning,
+				StatusText:  "this will show up some place",
+				Progress:    102,
+				StartDate:   time.Unix(1507141495, 0),
+				FinishDate:  time.Unix(1507141496, 0),
+			}
+			dbBuildType := db.BuildType{Id: "bt-id-801"}
+
+			Convey("And the db update succeeds", func() {
+				var branchesPassedToDb []db.Branch
+
+				dbMock.On("UpdateBuildTypeBuilds", dbBuildType.Id, mock.AnythingOfType("[]db.Branch")).Return(nil, nil).Run(func(args mock.Arguments) {
+					branchesPassedToDb = args.Get(1).([]db.Branch)
+				})
+
+				tc.ProcessRunningBuild(&c, tcBuild, &dbBuildType)
+
+				Convey("It will create a new branch with the build And update the database", func() {
+					dbMock.AssertExpectations(t)
+
+					So(len(branchesPassedToDb), ShouldEqual, 1)
+					So(branchesPassedToDb[0].Name, ShouldEqual, tcBuild.BranchName)
+
+					So(len(branchesPassedToDb[0].Builds), ShouldEqual, 1)
+					So(branchesPassedToDb[0].Builds[0].Id, ShouldEqual, tcBuild.ID)
+					So(branchesPassedToDb[0].Builds[0].Number, ShouldEqual, tcBuild.Number)
+					So(branchesPassedToDb[0].Builds[0].Status, ShouldEqual, tcBuild.Status)
+					So(branchesPassedToDb[0].Builds[0].StatusText, ShouldEqual, tcBuild.StatusText)
+					So(branchesPassedToDb[0].Builds[0].Progress, ShouldEqual, tcBuild.Progress)
+					So(branchesPassedToDb[0].Builds[0].StartDate.Unix(), ShouldEqual, tcBuild.StartDate.Unix())
+					So(branchesPassedToDb[0].Builds[0].FinishDate.Unix(), ShouldEqual, tcBuild.FinishDate.Unix())
+				})
+			})
+		})
+
+		Convey("When we have a build type that is already processing this build", func() {
+			tcBuild := teamcity.Build{
+				ID:          801,
+				BuildTypeID: "bt-id-801",
+				BranchName:  "this is a b-name",
+			}
+
+			dbBuildType := db.BuildType{
+				Id: "bt-id-801",
+				Branches: []db.Branch{
+					{
+						Name: "this is a b-name",
+						Builds: []db.Build{
+							{Id: 801},
+							{Id: 799},
+						},
+					},
+				},
+			}
+
+			Convey("And the db update succeeds", func() {
+				var branchesPassedToDb []db.Branch
+
+				dbMock.On("UpdateBuildTypeBuilds", dbBuildType.Id, mock.AnythingOfType("[]db.Branch")).Return(nil, nil).Run(func(args mock.Arguments) {
+					branchesPassedToDb = args.Get(1).([]db.Branch)
+				})
+
+				tc.ProcessRunningBuild(&c, tcBuild, &dbBuildType)
+
+				Convey("It will update the build on the branch And update the database", func() {
+					dbMock.AssertExpectations(t)
+
+					So(len(branchesPassedToDb), ShouldEqual, 1)
+					So(branchesPassedToDb[0].Name, ShouldEqual, tcBuild.BranchName)
+
+					So(len(branchesPassedToDb[0].Builds), ShouldEqual, 2)
+					So(branchesPassedToDb[0].Builds[0].Id, ShouldEqual, tcBuild.ID)
+					So(branchesPassedToDb[0].Builds[1].Id, ShouldEqual, 799)
+				})
+			})
+		})
+
+		Convey("When we have a build type that already has 12 builds and this is a new build", func() {
+			tcBuild := teamcity.Build{
+				ID:          801,
+				BuildTypeID: "bt-id-801",
+				BranchName:  "this is a b-name",
+			}
+
+			dbBuildType := db.BuildType{
+				Id: "bt-id-801",
+				Branches: []db.Branch{
+					{
+						Name: "this is a b-name",
+						Builds: []db.Build{
+							{Id: 800},
+							{Id: 799},
+							{Id: 798},
+							{Id: 797},
+							{Id: 796},
+							{Id: 795},
+							{Id: 794},
+							{Id: 793},
+							{Id: 792},
+							{Id: 791},
+							{Id: 790},
+							{Id: 789},
+							{Id: 788},
+							{Id: 787},
+							{Id: 786},
+						},
+					},
+				},
+			}
+
+			Convey("And the db update succeeds", func() {
+				var branchesPassedToDb []db.Branch
+
+				dbMock.On("UpdateBuildTypeBuilds", dbBuildType.Id, mock.AnythingOfType("[]db.Branch")).Return(nil, nil).Run(func(args mock.Arguments) {
+					branchesPassedToDb = args.Get(1).([]db.Branch)
+				})
+
+				tc.ProcessRunningBuild(&c, tcBuild, &dbBuildType)
+
+				Convey("It will add the build to the beginning and remove any builds > 12 from the end And update the database", func() {
+					dbMock.AssertExpectations(t)
+
+					So(len(branchesPassedToDb), ShouldEqual, 1)
+					So(branchesPassedToDb[0].Name, ShouldEqual, tcBuild.BranchName)
+
+					So(len(branchesPassedToDb[0].Builds), ShouldEqual, 12)
+					So(branchesPassedToDb[0].Builds[0].Id, ShouldEqual, tcBuild.ID)
+					So(branchesPassedToDb[0].Builds[1].Id, ShouldEqual, 800)
+					So(branchesPassedToDb[0].Builds[11].Id, ShouldEqual, 790)
 				})
 			})
 		})

@@ -31,33 +31,36 @@ var GetRunningBuilds = func(c *Server, lastBuilds []teamcity.Build) []teamcity.B
 
 		usefulBuilds = append(usefulBuilds, b)
 
-		processBuild(c, b, bt)
+		ProcessRunningBuild(c, b, bt)
 	}
 
-	//if len(lastBuilds) > 0 {
-	//	for _, lb := range lastBuilds {
-	//		if !isBuildInList(lb.ID, usefulBuilds) {
-	//			bt, btErr := c.Db.FindBuildTypeById(lb.BuildTypeID)
-	//			if btErr != nil {
-	//				c.Log.Errorf("Failed to get build type for: %s, Error: %v", lb.BuildTypeID, btErr)
-	//				continue
-	//			}
-	//
-	//			build, err := c.Tc.GetBuildByID(lb.ID)
-	//			if err != nil {
-	//				c.Log.Errorf("Failed to get the updated build for id: %d", lb.ID)
-	//				continue
-	//			}
-	//
-	//			processBuild(c, build, bt)
-	//		}
-	//	}
-	//}
+	if len(lastBuilds) > 0 {
+		for _, lb := range lastBuilds {
+			if !isBuildInList(lb.ID, usefulBuilds) {
+				bt, btErr := c.Db.FindBuildTypeById(lb.BuildTypeID)
+				if btErr != nil {
+					c.Log.Errorf("Failed to get build type for: %s, Error: %v", lb.BuildTypeID, btErr)
+					continue
+				}
+
+				build, err := c.Tc.GetBuildByID(lb.ID)
+				if err != nil {
+					c.Log.Errorf("Failed to get the updated build for id: %d", lb.ID)
+					continue
+				}
+
+				if updErr := ProcessRunningBuild(c, build, bt); updErr != nil {
+					c.Log.Errorf("Failed to update builds for buildType: %s, Error: %v", bt.Id, updErr)
+				}
+			}
+		}
+	}
 
 	return usefulBuilds
 }
 
-func processBuild(c *Server, b teamcity.Build, bt *db.BuildType) {
+// ProcessRunningBuild merges a running build into build type and updates the db
+var ProcessRunningBuild = func(c *Server, b teamcity.Build, bt *db.BuildType) error {
 	index := indexOfBranch(b.BranchName, bt.Branches)
 	if index == -1 {
 		bt.Branches = append(bt.Branches, db.Branch{Name: b.BranchName})
@@ -79,9 +82,7 @@ func processBuild(c *Server, b teamcity.Build, bt *db.BuildType) {
 	}
 
 	_, updErr := c.Db.UpdateBuildTypeBuilds(bt.Id, bt.Branches)
-	if updErr != nil {
-		c.Log.Errorf("Failed to update builds for buildType: %s, Error: %v", bt.Id, updErr)
-	}
+	return updErr
 }
 
 var GetBuildHistory = func(c *Server) error {

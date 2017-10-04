@@ -134,7 +134,7 @@ func (m *IDbMock) DashboardList() ([]db.Dashboard, error) {
 }
 
 func (m *IDbMock) FindBuildTypeById(id string) (*db.BuildType, error) {
-	args := m.Called()
+	args := m.Called(id)
 
 	if args.Get(0) == nil {
 		return nil, args.Error(1)

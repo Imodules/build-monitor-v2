@@ -59,11 +59,12 @@ func TestServer_GetRunningBuilds(t *testing.T) {
 		})
 
 		Convey("When GetRunningBuilds returns builds", func() {
-			builds := []teamcity.Build{
+			runningBuilds := []teamcity.Build{
 				{ID: 100, BuildTypeID: "bt100"},                         // btErr
 				{ID: 101, BuildTypeID: "bt101", BranchName: "branch-1"}, // Still Processing
 				{ID: 102, BuildTypeID: "bt102"},                         // Ignore
-				{ID: 104, BuildTypeID: "bt104"},                         // New
+				{ID: 104, BuildTypeID: "bt104", BranchName: "branch-2"}, // New
+				{ID: 105, BuildTypeID: "bt105"},                         // New
 			}
 
 			lastBuilds := []teamcity.Build{
@@ -71,21 +72,30 @@ func TestServer_GetRunningBuilds(t *testing.T) {
 				{ID: 103}, // Completed
 			}
 
-			serverMock.On("GetRunningBuilds").Return(builds, nil)
+			serverMock.On("GetRunningBuilds").Return(runningBuilds, nil)
 
-			dbBt1 := db.BuildType{Id: "bt1", DashboardIds: []string{"abc", "123"},
-				Branches: []db.Branch{{Name: "branch-1"}},
+			dbBt1 := db.BuildType{Id: "bt101", DashboardIds: []string{"abc", "123"},
+				Branches: []db.Branch{{Name: "branch-1", Builds: []db.Build{
+					{Id: 101},
+				}}},
 			}
 
-			dbBt2 := db.BuildType{Id: "bt1", DashboardIds: []string{}}
+			dbBt2 := db.BuildType{Id: "bt102", DashboardIds: []string{}}
 			//dbBt3 := db.BuildType{Id: "bt1", DashboardIds: []string{"asdf"}}
-			dbBt4 := db.BuildType{Id: "bt1", DashboardIds: []string{"asdf"}}
+			dbBt4 := db.BuildType{Id: "bt104", DashboardIds: []string{"dash-1"}, Branches: []db.Branch{{Name: ""}}}
+			dbBt5 := db.BuildType{Id: "bt105", DashboardIds: []string{"dash-1"}}
 
 			dbMock.On("FindBuildTypeById", "bt100").Return(nil, errors.New("Something bad"))
 			dbMock.On("FindBuildTypeById", "bt101").Return(&dbBt1, nil)
 			dbMock.On("FindBuildTypeById", "bt102").Return(&dbBt2, nil)
 			//dbMock.On("FindBuildTypeById", "bt103").Return(&dbBt3, nil)
 			dbMock.On("FindBuildTypeById", "bt104").Return(&dbBt4, nil)
+			dbMock.On("FindBuildTypeById", "bt105").Return(&dbBt5, nil)
+
+			dbMock.On("UpdateBuildTypeBuilds", "bt101", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
+			//dbMock.On("UpdateBuildTypeBuilds", "bt103", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
+			dbMock.On("UpdateBuildTypeBuilds", "bt104", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
+			dbMock.On("UpdateBuildTypeBuilds", "bt105", mock.AnythingOfType("[]db.Branch")).Return(nil, nil)
 
 			resultBuilds := tc.GetRunningBuilds(&c, lastBuilds)
 
@@ -96,9 +106,10 @@ func TestServer_GetRunningBuilds(t *testing.T) {
 
 				Convey("And it should finish any lastBuilds no longer in builds list", func() {
 					Convey("And it should return useful builds", func() {
-						So(len(resultBuilds), ShouldEqual, 2)
+						So(len(resultBuilds), ShouldEqual, 3)
 						So(resultBuilds[0].ID, ShouldEqual, 101)
 						So(resultBuilds[1].ID, ShouldEqual, 104)
+						So(resultBuilds[2].ID, ShouldEqual, 105)
 					})
 				})
 			})

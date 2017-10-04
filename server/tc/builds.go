@@ -6,6 +6,7 @@ import (
 	"github.com/pstuart2/go-teamcity"
 )
 
+// GetRunningBuilds Gets the running builds
 var GetRunningBuilds = func(c *Server, lastBuilds []teamcity.Build) []teamcity.Build {
 	runningBuilds, err := c.Tc.GetRunningBuilds()
 	if err != nil {
@@ -30,7 +31,7 @@ var GetRunningBuilds = func(c *Server, lastBuilds []teamcity.Build) []teamcity.B
 
 		usefulBuilds = append(usefulBuilds, b)
 
-		//processBuild(c, b, bt)
+		processBuild(c, b, bt)
 	}
 
 	//if len(lastBuilds) > 0 {
@@ -62,15 +63,21 @@ func processBuild(c *Server, b teamcity.Build, bt *db.BuildType) {
 		bt.Branches = append(bt.Branches, db.Branch{Name: b.BranchName})
 		index = len(bt.Branches) - 1
 	}
+
 	newBuild := BuildToDb(b)
-	if len(bt.Branches[index].Builds) == 0 || bt.Branches[index].Builds[0].Id == newBuild.Id {
+
+	if len(bt.Branches[index].Builds) == 0 {
+		bt.Branches[index].Builds = append(bt.Branches[index].Builds, newBuild)
+	} else if bt.Branches[index].Builds[0].Id == newBuild.Id {
 		bt.Branches[index].Builds[0] = newBuild
 	} else {
 		bt.Branches[index].Builds = append([]db.Build{newBuild}, bt.Branches[index].Builds...)
 	}
+
 	if len(bt.Branches[index].Builds) > 12 {
 		bt.Branches[index].Builds = bt.Branches[index].Builds[:12]
 	}
+
 	_, updErr := c.Db.UpdateBuildTypeBuilds(bt.Id, bt.Branches)
 	if updErr != nil {
 		c.Log.Errorf("Failed to update builds for buildType: %s, Error: %v", bt.Id, updErr)

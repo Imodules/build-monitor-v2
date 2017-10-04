@@ -20,9 +20,10 @@ func TestAppDb_UpsertDashboard(t *testing.T) {
 		appDb := db.Create(dbSession, &c, log, time.Now)
 
 		dashboard := db.Dashboard{
-			Id:    "Some random id -01",
-			Name:  "Starting name that could change",
-			Owner: db.Owner{Id: bson.NewObjectId(), Username: "cool me"},
+			Id:          "Some random id -01",
+			Name:        "Starting name that could change",
+			Owner:       db.Owner{Id: bson.NewObjectId(), Username: "cool me"},
+			ColumnCount: 4,
 			BuildConfigs: []db.BuildConfig{
 				{Id: "a1", Abbreviation: "cool 1"},
 				{Id: "b2", Abbreviation: "cool 2"},
@@ -50,6 +51,7 @@ func TestAppDb_UpsertDashboard(t *testing.T) {
 					So(err, ShouldBeNil)
 					So(dbDashboard.Id, ShouldEqual, result.Id)
 					So(dbDashboard.Name, ShouldEqual, result.Name)
+					So(dbDashboard.ColumnCount, ShouldEqual, result.ColumnCount)
 					So(dbDashboard.Owner.Id.Hex(), ShouldEqual, result.Owner.Id.Hex())
 					So(dbDashboard.Owner.Username, ShouldEqual, result.Owner.Username)
 

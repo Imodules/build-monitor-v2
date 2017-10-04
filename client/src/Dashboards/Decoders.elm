@@ -18,6 +18,7 @@ dashboardDecoder =
     decode Dashboard
         |> required "id" Decode.string
         |> required "name" Decode.string
+        |> required "columnCount" Decode.int
         |> required "owner" ownerDecoder
         |> required "buildConfigs" (Decode.list buildConfigDecoder)
 
@@ -34,6 +35,7 @@ updateDashboardEncoder model =
     let
         attributes =
             [ ( "name", Encode.string model.dashboardForm.name.value )
+            , ("columnCount", Encode.int (Result.withDefault 0 (String.toInt model.dashboardForm.columnCount.value)))
             , ( "buildConfigs", Encode.list <| List.map buildConfigEncoder <| model.dashboardForm.buildConfigs )
             ]
     in
@@ -56,6 +58,7 @@ detailsDecoder =
     decode DashboardDetails
         |> required "id" Decode.string
         |> required "name" Decode.string
+        |> required "columnCount" Decode.int
         |> optional "details" (Decode.list configDetailDecoder) []
 
 

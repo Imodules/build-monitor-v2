@@ -52,6 +52,13 @@ update_ baseUrl token msg model_ =
             in
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
+        ChangeDashboardColumnCount value ->
+            let
+                newDashboardForm old =
+                    { old | columnCount = updateColumnCount value, isDirty = True }
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
         ChangeBuildAbbreviation id value ->
             let
                 newDashboardForm old =
@@ -114,6 +121,7 @@ update_ baseUrl token msg model_ =
                             if String.isEmpty old.id || old.id /= id then
                                 { id = dashboard.id
                                 , name = initTextFieldValue dashboard.name
+                                , columnCount = initTextFieldValue (toString dashboard.columnCount)
                                 , buildConfigs = List.map buildConfigToForm dashboard.buildConfigs
                                 , isDirty = False
                                 , tab = Select
@@ -154,6 +162,22 @@ updateDashboardName value =
     , error = error
     }
 
+updateColumnCount : String -> TextField
+updateColumnCount value = 
+    let
+        intValue = Result.withDefault 0 (String.toInt value)
+
+        ( isValid, error ) =
+            if intValue < 1 || intValue > 12 then
+                ( False, "Column count should be a value >= 1 and <= 12" )
+            else
+                ( True, "" )
+    in
+    { value = value
+    , isValid = isValid
+    , isDirty = True
+    , error = error
+    }
 
 updateBuildConfigAbbreviation : Id -> String -> List BuildConfigForm -> List BuildConfigForm
 updateBuildConfigAbbreviation id value configs =

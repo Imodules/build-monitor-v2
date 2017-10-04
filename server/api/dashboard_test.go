@@ -148,7 +148,7 @@ func TestServer_DashboardDetails(t *testing.T) {
 		})
 
 		Convey("When we get the dashboard without builds selected", func() {
-			dashboard := db.Dashboard{Id: id, Name: "a cooler"}
+			dashboard := db.Dashboard{Id: id, Name: "a cooler", ColumnCount: 98}
 			mockDb.On("FindDashboardById", id).Return(&dashboard, nil)
 
 			buildTypes := []db.BuildType{}
@@ -157,6 +157,7 @@ func TestServer_DashboardDetails(t *testing.T) {
 			expected := api.DashboardDetails{
 				Id:   dashboard.Id,
 				Name: dashboard.Name,
+				ColumnCount: 98,
 			}
 
 			err := s.DashboardDetails(c)
@@ -183,6 +184,7 @@ func TestServer_DashboardDetails(t *testing.T) {
 			dashboard := db.Dashboard{
 				Id:   id,
 				Name: "a cooler",
+				ColumnCount: 44,
 				BuildConfigs: []db.BuildConfig{
 					{Id: "bcfg1", Abbreviation: "BC-1"},
 					{Id: "bcfg2", Abbreviation: "BC-2"},
@@ -258,6 +260,7 @@ func TestServer_DashboardDetails(t *testing.T) {
 				expected := api.DashboardDetails{
 					Id:   dashboard.Id,
 					Name: dashboard.Name,
+					ColumnCount: 44,
 					Details: []api.BuildTypeDetail{
 						{
 							Id:           "bcfg1",
@@ -319,7 +322,8 @@ func TestServer_CreateDashboard(t *testing.T) {
 
 		Convey("With a valid request", func() {
 			request := api.UpdateDashboardRequest{
-				Name: "This is me new dashboard",
+				Name:        "This is me new dashboard",
+				ColumnCount: 8,
 				BuildConfigs: []db.BuildConfig{
 					{Id: "db1"}, {Id: "db2"},
 				},
@@ -345,6 +349,7 @@ func TestServer_CreateDashboard(t *testing.T) {
 				Id:           "from db",
 				Owner:        db.Owner{Id: dbUser.Id},
 				Name:         request.Name,
+				ColumnCount:  81,
 				BuildConfigs: request.BuildConfigs,
 			}
 
@@ -365,6 +370,7 @@ func TestServer_CreateDashboard(t *testing.T) {
 					So(dashboardToDb.Id, ShouldNotBeEmpty)
 					So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 					So(dashboardToDb.Name, ShouldEqual, request.Name)
+					So(dashboardToDb.ColumnCount, ShouldEqual, 8)
 					So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
 					So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
 
@@ -557,7 +563,8 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 		Convey("With a valid request", func() {
 			request := api.UpdateDashboardRequest{
-				Name: "This is me new dashboard",
+				Name:        "This is me new dashboard",
+				ColumnCount: 99,
 				BuildConfigs: []db.BuildConfig{
 					{Id: "db1"}, {Id: "db2"},
 				},
@@ -587,6 +594,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 					Id:           "from db",
 					Owner:        db.Owner{Id: dbUser.Id},
 					Name:         request.Name,
+					ColumnCount:  88,
 					BuildConfigs: request.BuildConfigs,
 				}
 
@@ -609,6 +617,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 						So(dashboardToDb.Id, ShouldEqual, id)
 						So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 						So(dashboardToDb.Name, ShouldEqual, request.Name)
+						So(dashboardToDb.ColumnCount, ShouldEqual, 99)
 						So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
 						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
 

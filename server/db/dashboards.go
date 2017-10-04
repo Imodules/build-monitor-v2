@@ -8,6 +8,7 @@ import (
 type Dashboard struct {
 	Id           string        `bson:"_id" json:"id"`
 	Name         string        `bson:"name" json:"name"`
+	ColumnCount  int           `bson:"columnCount" json:"columnCount"`
 	Owner        Owner         `bson:"owner" json:"owner"`
 	BuildConfigs []BuildConfig `bson:"buildConfigs" json:"buildConfigs"`
 }
@@ -29,6 +30,7 @@ func (appDb *AppDb) UpsertDashboard(r Dashboard) (*Dashboard, error) {
 			"$set": bson.M{
 				"modifiedAt":   now,
 				"name":         r.Name,
+				"columnCount":  r.ColumnCount,
 				"owner":        r.Owner,
 				"buildConfigs": r.BuildConfigs,
 			},
@@ -74,6 +76,7 @@ func (appDb *AppDb) DashboardList() ([]Dashboard, error) {
 			"_id":          1,
 			"name":         1,
 			"owner":        1,
+			"columnCount":  1,
 			"buildConfigs": 1,
 		}).All(&dashboardList); err != nil {
 		return nil, err

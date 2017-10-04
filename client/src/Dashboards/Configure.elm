@@ -15,7 +15,7 @@ isFormValid model =
         isValid =
             not (List.any (\c -> not c.abbreviation.isValid) model.dashboardForm.buildConfigs)
     in
-    model.dashboardForm.name.isValid && isValid
+    model.dashboardForm.name.isValid && model.dashboardForm.columnCount.isValid && isValid
 
 
 view : Model -> List Project -> List BuildType -> Html Msg

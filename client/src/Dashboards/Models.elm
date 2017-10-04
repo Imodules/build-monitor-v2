@@ -26,6 +26,7 @@ initialFormModel : DashboardForm
 initialFormModel =
     { id = ""
     , name = initTextField
+    , columnCount = initTextField
     , buildConfigs = []
     , isDirty = False
     , tab = Select
@@ -42,6 +43,7 @@ initialBuildConfigForm id abbr =
 type alias Dashboard =
     { id : Id
     , name : String
+    , columnCount: Int
     , owner : Owner
     , buildConfigs : List BuildConfig
     }
@@ -62,6 +64,7 @@ type alias BuildConfigForm =
 type alias DashboardForm =
     { id : Id
     , name : TextField
+    , columnCount: TextField
     , buildConfigs : List BuildConfigForm
     , isDirty : Bool
     , tab : EditTab
@@ -83,6 +86,7 @@ buildConfigToForm bc =
 type alias DashboardDetails =
     { id : Id
     , name : String
+    , columnCount: Int
     , configs : List ConfigDetail
     }
 

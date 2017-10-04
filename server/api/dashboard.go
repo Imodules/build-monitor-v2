@@ -21,9 +21,10 @@ func (s *Server) Dashboards(ctx echo.Context) error {
 }
 
 type DashboardDetails struct {
-	Id      string            `json:"id"`
-	Name    string            `json:"name"`
-	Details []BuildTypeDetail `json:"details"`
+	Id          string            `json:"id"`
+	Name        string            `json:"name"`
+	ColumnCount int               `json:"columnCount"`
+	Details     []BuildTypeDetail `json:"details"`
 }
 
 type BuildTypeDetail struct {
@@ -52,8 +53,9 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 	}
 
 	details := DashboardDetails{
-		Id:   dashboard.Id,
-		Name: dashboard.Name,
+		Id:          dashboard.Id,
+		Name:        dashboard.Name,
+		ColumnCount: dashboard.ColumnCount,
 	}
 
 	for _, c := range dashboard.BuildConfigs {
@@ -73,6 +75,7 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 
 type UpdateDashboardRequest struct {
 	Name         string           `json:"name"`
+	ColumnCount  int              `json:"columnCount"`
 	BuildConfigs []db.BuildConfig `json:"buildConfigs"`
 }
 
@@ -89,6 +92,7 @@ func (s *Server) CreateDashboard(ctx echo.Context) error {
 	dashboard := db.Dashboard{
 		Id:           bson.NewObjectId().Hex(),
 		Name:         r.Name,
+		ColumnCount:  r.ColumnCount,
 		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
 		BuildConfigs: r.BuildConfigs,
 	}
@@ -154,6 +158,7 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 	dashboard := db.Dashboard{
 		Id:           id,
 		Name:         r.Name,
+		ColumnCount:  r.ColumnCount,
 		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
 		BuildConfigs: r.BuildConfigs,
 	}

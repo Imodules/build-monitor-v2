@@ -39,6 +39,7 @@ type AuthMsg
 
 type DashboardMsg
     = ChangeDashboardName String
+    | ChangeDashboardColumnCount String
     | OnFetchDashboards (WebData (List Dashboard))
     | OnFetchDetails (WebData DashboardDetails)
     | ChangeBranches Time

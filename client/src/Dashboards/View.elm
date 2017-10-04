@@ -2,7 +2,6 @@ module Dashboards.View exposing (..)
 
 import Dashboards.Lib exposing (findVisibleBranch)
 import Dashboards.Models exposing (Branch, Build, BuildStatus(Failure, Running, Success), ConfigDetail, DashboardDetails)
-import Date.Distance exposing (inWords)
 import Html exposing (Html, a, div, h2, h4, i, section, text)
 import Html.Attributes exposing (class, href, id)
 import List.Extra exposing (getAt)
@@ -11,7 +10,6 @@ import Msgs exposing (Msg)
 import Pages.Components exposing (iconLink)
 import RemoteData
 import Routes exposing (Route(DashboardsRoute))
-import Time.DateTime as DateTime
 
 
 view : Model -> Html Msg
@@ -53,11 +51,11 @@ maybeDetails model =
 
 detailsPage : Model -> DashboardDetails -> Html Msg
 detailsPage model details =
-    div [ class "columns is-multiline build-items" ] (List.map (\c -> configItem model c) details.configs)
+    div [ class "columns is-multiline build-items" ] (List.map (\c -> configItem model details c) details.configs)
 
 
-configItem : Model -> ConfigDetail -> Html Msg
-configItem model cd =
+configItem : Model -> DashboardDetails -> ConfigDetail -> Html Msg
+configItem model details cd =
     let
         branchIndex =
             let
@@ -86,8 +84,12 @@ configItem model cd =
                     else
                         "success"
                    )
+
+        itemSize = 
+            "is-" ++ toString details.columnCount
+
     in
-    div [ class "column is-3 is-paddingless buildItem" ]
+    div [ class ("column " ++ itemSize ++ " is-paddingless buildItem") ]
         [ div [ class wrapperClass ]
             [ biTitle cd.abbreviation
             , biSubTitle (getSubtitleText cd branch)

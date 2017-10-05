@@ -5,6 +5,7 @@ import (
 
 	"build-monitor-v2/server/api"
 	"build-monitor-v2/server/cfg"
+	"build-monitor-v2/server/tc"
 
 	"errors"
 
@@ -20,9 +21,10 @@ func TestCreate(t *testing.T) {
 		conf := cfg.Config{}
 		log := logrus.WithField("test", "TestCreate")
 		session := mgo.Session{}
+		tcServer := tc.Server{}
 
 		Convey("It should return a new s object", func() {
-			server := api.Create(log, &conf, &session)
+			server := api.Create(log, &conf, &session, &tcServer)
 
 			So(server, ShouldNotBeNil)
 			So(server.Config, ShouldEqual, &conf)

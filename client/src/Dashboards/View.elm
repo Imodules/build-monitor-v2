@@ -32,12 +32,12 @@ topBar model =
         theDate =
             getDate model
     in
-    div [ class "level top-bar" ]
-        [ div [ class "level-item" ] [ text (DateFormat.format config "%H:%M:%S%:z" theDate) ]
-        , div [ class "level-item" ] [ text (DateFormat.format config "%a, %B %-@d %Y" theDate) ]
-        , div [ class "level-item" ] [ text (DateFormat.formatUtc config "%H:%M:%S UTC" theDate) ]
-        , div [ class "level-right" ] [ div [ class "level-item" ] [ configLink ] ]
-        ]
+        div [ class "level top-bar" ]
+            [ div [ class "level-item" ] [ text (DateFormat.format config "%H:%M:%S%:z" theDate) ]
+            , div [ class "level-item" ] [ text (DateFormat.format config "%a, %B %-@d %Y" theDate) ]
+            , div [ class "level-item" ] [ text (DateFormat.formatUtc config "%H:%M:%S UTC" theDate) ]
+            , div [ class "level-right" ] [ div [ class "level-item" ] [ configLink ] ]
+            ]
 
 
 configLink : Html Msg
@@ -54,8 +54,8 @@ maybeDetails model =
         RemoteData.Loading ->
             text "Loading..."
 
-        RemoteData.Success projects ->
-            detailsPage model projects
+        RemoteData.Success details ->
+            detailsPage model details
 
         RemoteData.Failure error ->
             text (toString error)
@@ -74,12 +74,12 @@ configItem model details cd =
                 vb =
                     findVisibleBranch cd.id model.dashboards.visibleBranches
             in
-            case vb of
-                Just visibleBranch ->
-                    visibleBranch.index
+                case vb of
+                    Just visibleBranch ->
+                        visibleBranch.index
 
-                _ ->
-                    0
+                    _ ->
+                        0
 
         branch =
             case getAt branchIndex cd.branches of
@@ -88,6 +88,9 @@ configItem model details cd =
 
                 _ ->
                     { name = "NO BRANCHES", isRunning = False, builds = [] }
+
+        branchCount =
+            List.length cd.branches
 
         wrapperClass =
             "bi-wrapper "
@@ -109,14 +112,14 @@ configItem model details cd =
             else
                 itemBaseClass
     in
-    div [ class itemClass ]
-        [ div [ class wrapperClass ]
-            [ biTitle cd.abbreviation
-            , biSubTitle (getSubtitleText cd branch)
-            , buildRow branch.builds
-            , bottomRow model branch.builds
+        div [ class itemClass ]
+            [ div [ class wrapperClass ]
+                [ biTitle cd.abbreviation
+                , biSubTitle (getSubtitleText cd branch) branchCount
+                , buildRow branch.builds
+                , bottomRow model branch.builds
+                ]
             ]
-        ]
 
 
 biTitle : String -> Html Msg
@@ -124,9 +127,9 @@ biTitle t =
     div [ class "bi-title" ] [ text t ]
 
 
-biSubTitle : String -> Html Msg
-biSubTitle t =
-    div [ class "bi-sub-title" ] [ text t ]
+biSubTitle : String -> Int -> Html Msg
+biSubTitle t branchCount =
+    div [ class "bi-sub-title" ] [ text (t ++ " (of " ++ toString branchCount ++ ")") ]
 
 
 buildRow : List Build -> Html Msg
@@ -140,15 +143,15 @@ bottomRow model builds =
         maybeLastBuild =
             List.head builds
     in
-    case maybeLastBuild of
-        Just lastBuild ->
-            div [ class "columns bottom-row" ]
-                [ div [ class "column is-10 left-side is-size-3" ] [ leftStatus model lastBuild ]
-                , div [ class "column is-2 right-side is-size-3" ] [ rightStatus model lastBuild ]
-                ]
+        case maybeLastBuild of
+            Just lastBuild ->
+                div [ class "columns bottom-row" ]
+                    [ div [ class "column is-10 left-side is-size-3" ] [ leftStatus model lastBuild ]
+                    , div [ class "column is-2 right-side is-size-3" ] [ rightStatus model lastBuild ]
+                    ]
 
-        _ ->
-            div [ class "bottom-row" ] [ text "no info" ]
+            _ ->
+                div [ class "bottom-row" ] [ text "no info" ]
 
 
 getDate : Model -> Date
@@ -162,7 +165,7 @@ getAgoText model build =
         dateAgo =
             DateDistance.inWords build.startDate (getDate model)
     in
-    dateAgo ++ " ago"
+        dateAgo ++ " ago"
 
 
 leftStatus : Model -> Build -> Html Msg
@@ -190,12 +193,12 @@ rightStatus model build =
             else
                 durationMinText
     in
-    case build.status of
-        Running ->
-            text (toString build.progress ++ " %")
+        case build.status of
+            Running ->
+                text (toString build.progress ++ " %")
 
-        _ ->
-            text durationText
+            _ ->
+                text durationText
 
 
 zeroPad : Int -> String
@@ -253,4 +256,4 @@ getSubtitleText cd branch =
             else
                 ""
     in
-    cd.name ++ branchString
+        cd.name ++ branchString

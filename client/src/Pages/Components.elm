@@ -45,6 +45,14 @@ icon v =
     span [ class "icon" ] [ i [ class v ] [] ]
 
 
+refreshProjectsButton : Html Msg
+refreshProjectsButton =
+    button [ class "button", onClick Msgs.RefreshServerProjects ]
+        [ icon "fa fa-refresh"
+        , span [] [ text "Refresh Projects" ]
+        ]
+
+
 textField : TextField -> String -> String -> String -> Icon -> (String -> Msg) -> Html Msg
 textField field fieldType id_ labelText icon msg_ =
     let
@@ -57,22 +65,22 @@ textField field fieldType id_ labelText icon msg_ =
             else
                 "input"
     in
-    div [ class "field" ]
-        [ label [ class "label", for id_ ] [ text labelText ]
-        , div [ class "control has-icons-left" ]
-            [ input
-                [ class inputClass
-                , id id_
-                , type_ fieldType
-                , value field.value
-                , onInput msg_
-                , required True
+        div [ class "field" ]
+            [ label [ class "label", for id_ ] [ text labelText ]
+            , div [ class "control has-icons-left" ]
+                [ input
+                    [ class inputClass
+                    , id id_
+                    , type_ fieldType
+                    , value field.value
+                    , onInput msg_
+                    , required True
+                    ]
+                    []
+                , span [ class "icon is-small is-left" ] [ i [ class ("fa " ++ icon) ] [] ]
                 ]
-                []
-            , span [ class "icon is-small is-left" ] [ i [ class ("fa " ++ icon) ] [] ]
+            , p [ class "help is-danger" ] [ text field.error ]
             ]
-        , p [ class "help is-danger" ] [ text field.error ]
-        ]
 
 
 textBox : TextField -> (String -> Msg) -> Html Msg
@@ -87,17 +95,17 @@ textBox field msg_ =
             else
                 "input"
     in
-    div [ class "field" ]
-        [ div [ class "control" ]
-            [ input
-                [ class inputClass
-                , type_ "text"
-                , value field.value
-                , onInput msg_
+        div [ class "field" ]
+            [ div [ class "control" ]
+                [ input
+                    [ class inputClass
+                    , type_ "text"
+                    , value field.value
+                    , onInput msg_
+                    ]
+                    []
                 ]
-                []
             ]
-        ]
 
 
 textArea : TextField -> String -> String -> (String -> Msg) -> Html Msg
@@ -112,17 +120,17 @@ textArea field id_ labelText msg_ =
             else
                 "textarea"
     in
-    div [ class "field" ]
-        [ label [ class "label", for id_ ] [ text labelText ]
-        , div [ class "control" ]
-            [ textarea
-                [ class inputClass
-                , id id_
-                , value field.value
-                , onInput msg_
-                , required True
+        div [ class "field" ]
+            [ label [ class "label", for id_ ] [ text labelText ]
+            , div [ class "control" ]
+                [ textarea
+                    [ class inputClass
+                    , id id_
+                    , value field.value
+                    , onInput msg_
+                    , required True
+                    ]
+                    []
                 ]
-                []
+            , p [ class "help is-danger" ] [ text field.error ]
             ]
-        , p [ class "help is-danger" ] [ text field.error ]
-        ]

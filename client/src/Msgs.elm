@@ -23,6 +23,8 @@ type Msg
     | OnSignUp (Result Http.Error User)
     | OnLogin (Result Http.Error User)
     | OnReAuth (Result Http.Error User)
+    | RefreshServerProjects
+    | OnRefreshServerProjects (Result Http.Error ())
     | Logout
     | RefreshPageData Time
     | OnFetchProjects (WebData (List Project))

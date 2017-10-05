@@ -29,7 +29,6 @@ var RefreshBuildTypes = func(c *Server) error {
 		return pmErr
 	}
 
-	c.Log.Infof("List of buildTypes:")
 	for _, buildType := range buildTypes {
 		if _, ok := projectMap[buildType.ProjectID]; ok {
 			dbBuildType := BuildTypeToDb(buildType)

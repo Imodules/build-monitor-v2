@@ -19,7 +19,6 @@ var RefreshProjects = func(c *Server) error {
 		return pmErr
 	}
 
-	c.Log.Infof("List of projects:")
 	for _, project := range projects {
 		if project.ID != "_Root" {
 			dbProject := ProjectToDb(project)

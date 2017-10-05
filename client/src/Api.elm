@@ -66,6 +66,19 @@ authPost url token body decoder =
         }
 
 
+authEmptyPost : String -> Token -> Http.Request ()
+authEmptyPost url token =
+    Http.request
+        { method = "POST"
+        , headers = [ authHeader token ]
+        , url = url
+        , body = Http.emptyBody
+        , expect = Http.expectStringResponse (\_ -> Ok ())
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
 authPut : String -> Token -> Http.Body -> Decode.Decoder a -> Http.Request a
 authPut url token body decoder =
     Http.request
@@ -104,3 +117,12 @@ fetchBuildTypes baseApiUrl =
     Http.get (Urls.buildTypes baseApiUrl) buildTypesDecoder
         |> RemoteData.sendRequest
         |> Cmd.map Msgs.OnFetchBuildTypes
+
+
+refreshServerProjects : String -> Token -> Cmd Msg
+refreshServerProjects baseApiUrl token =
+    let
+        request =
+            authEmptyPost (Urls.refreshServerProjects baseApiUrl) token
+    in
+        Http.send Msgs.OnRefreshServerProjects request

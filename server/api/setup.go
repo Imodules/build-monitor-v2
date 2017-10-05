@@ -51,6 +51,7 @@ func setupRoutes(s *Server) {
 	secureApi.POST("/dashboards", s.CreateDashboard)
 	secureApi.PUT("/dashboards/:id", s.UpdateDashboard)
 	secureApi.DELETE("/dashboards/:id", s.DeleteDashboard)
+	secureApi.POST("/refresh", s.Refresh)
 }
 
 func logRoutes(s *Server) {

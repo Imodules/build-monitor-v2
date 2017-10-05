@@ -32,22 +32,23 @@ func main() {
 	session := setupDatabase(log, config)
 	defer session.Close()
 
-	server := api.Create(
-		log.WithField("component", "api"),
-		&config,
-		session,
-	)
-
-	if err := server.Setup(); err != nil {
-		log.Fatalf("Failed to setup server: %v", err)
-	}
-
 	tcLog := log.WithField("component", "tcMonitor")
 	tcDb := db.Create(session.Copy(), &config, tcLog, time.Now)
 
 	tcMonitor := tc.NewServer(tcLog, &config, tcDb)
 	if err := tcMonitor.Start(); err != nil {
 		log.Fatalf("Failed to start Teamcity monitor: %v", err)
+	}
+
+	server := api.Create(
+		log.WithField("component", "api"),
+		&config,
+		session,
+		&tcMonitor,
+	)
+
+	if err := server.Setup(); err != nil {
+		log.Fatalf("Failed to setup server: %v", err)
 	}
 
 	go func() {

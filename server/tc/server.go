@@ -38,7 +38,7 @@ type Server struct {
 	Log                        *logrus.Entry
 	TcPollInterval             time.Duration
 	TcRunningBuildPollInterval time.Duration
-	stop                       chan bool
+	commands                   chan string
 	stopped                    chan bool
 }
 
@@ -63,7 +63,7 @@ func (c *Server) Start() error {
 		return err
 	}
 
-	c.stop = make(chan bool)
+	c.commands = make(chan string)
 	c.stopped = make(chan bool)
 
 	// Now start our monitor
@@ -73,7 +73,7 @@ func (c *Server) Start() error {
 }
 
 func (c *Server) Shutdown() {
-	c.stop <- true
+	c.commands <- "shutdown"
 
 	select {
 	case <-c.stopped:
@@ -82,6 +82,10 @@ func (c *Server) Shutdown() {
 	case <-time.After(time.Second * 10):
 		c.Log.Error("Failed to stop after 10 seconds")
 	}
+}
+
+func (c *Server) Refresh() {
+	c.commands <- "refresh"
 }
 
 func getIntervalDuration(log *logrus.Entry, name, interval string) time.Duration {
@@ -102,9 +106,17 @@ func monitor(c *Server) {
 
 	for shouldStop == false {
 		select {
-		case shouldStop = <-c.stop:
-			c.Log.Info("Stopping")
-			break
+		case command := <-c.commands:
+			switch command {
+			case "shutdown":
+				c.Log.Info("Stopping")
+				shouldStop = true
+				break
+			case "refresh":
+				refresh(c)
+				refreshBuildHistories(c)
+			}
+
 		case <-time.After(currentPollInterval):
 			runningBuilds = GetRunningBuilds(c, runningBuilds)
 			if len(runningBuilds) == 0 {
@@ -119,7 +131,6 @@ func monitor(c *Server) {
 }
 
 func refresh(c *Server) error {
-	// TODO: Need to be able to recieve message form API to trigger this
 	if err := RefreshProjects(c); err != nil {
 		return err
 	}

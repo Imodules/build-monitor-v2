@@ -1,6 +1,7 @@
 module Update exposing (..)
 
 import Auth.Api exposing (reAuthenticate)
+import Api exposing (refreshServerProjects)
 import Auth.Models
 import Auth.Update as Auth
 import Dashboards.Update as Dashboards
@@ -12,7 +13,7 @@ import Msgs exposing (Msg(..))
 import Navigation exposing (back, newUrl)
 import Ports exposing (logout, setTokenStorage)
 import Routes exposing (Route(DashboardRoute, DashboardsRoute))
-import Routing exposing (getLocationCommand, getLocationRefreshCommand, parseLocation, toPath)
+import Routing exposing (getLocationCommand, getLocationRefreshCommand, parseLocation, toPath, getToken)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -35,7 +36,7 @@ update msg model =
                 newRoute =
                     parseLocation location
             in
-            ( { model | route = newRoute }, getLocationCommand model newRoute )
+                ( { model | route = newRoute }, getLocationCommand model newRoute )
 
         SetTokenStorage token ->
             ( model, setTokenStorage token )
@@ -61,6 +62,12 @@ update msg model =
         OnReAuth result ->
             handleReAuth model result
 
+        RefreshServerProjects ->
+            ( model, refreshServerProjects model.flags.apiUrl (getToken model) )
+
+        OnRefreshServerProjects _ ->
+            ( model, Cmd.none )
+
         RefreshPageData _ ->
             let
                 cmdList =
@@ -74,7 +81,7 @@ update msg model =
                         _ ->
                             Cmd.batch cmdList
             in
-            ( model, cmd )
+                ( model, cmd )
 
         OnFetchProjects response ->
             ( { model | projects = response }, Cmd.none )
@@ -99,7 +106,7 @@ handleAuth model result =
                 x =
                     Debug.log "error on authentication" r
             in
-            ( model, Cmd.none )
+                ( model, Cmd.none )
 
 
 handleReAuth : Model -> Result Http.Error User -> ( Model, Cmd Msg )
@@ -110,16 +117,16 @@ handleReAuth model result =
                 newModel =
                     { model | user = Just user_ }
             in
-            ( newModel
-            , Cmd.batch
-                [ setTokenStorage user_.token
-                , Lib.createCommand (RefreshPageData 0)
-                ]
-            )
+                ( newModel
+                , Cmd.batch
+                    [ setTokenStorage user_.token
+                    , Lib.createCommand (RefreshPageData 0)
+                    ]
+                )
 
         Err r ->
             let
                 x =
                     Debug.log "error on authentication" r
             in
-            ( model, Cmd.none )
+                ( model, Cmd.none )

@@ -36,3 +36,8 @@ dashboards baseApiUrl =
 dashboard : String -> Id -> String
 dashboard baseApiUrl id =
     baseApiUrl ++ "/dashboards/" ++ id
+
+
+refreshServerProjects : String -> String
+refreshServerProjects baseApiUrl =
+    baseApiUrl ++ "/refresh"

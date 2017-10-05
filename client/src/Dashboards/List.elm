@@ -5,7 +5,7 @@ import Html exposing (Html, div, h4, h5, i, li, text, ul)
 import Html.Attributes exposing (class, id)
 import Models exposing (Model)
 import Msgs exposing (Msg)
-import Pages.Components exposing (icon, iconLinkButton)
+import Pages.Components exposing (icon, iconLinkButton, refreshProjectsButton)
 import RemoteData
 import Routes exposing (Route(DashboardRoute, EditDashboardRoute, NewDashboardRoute))
 import Types exposing (Id)
@@ -14,7 +14,7 @@ import Types exposing (Id)
 view : Model -> Html Msg
 view model =
     div [ id "dashboards" ]
-        [ div [ class "button-area" ] [ newDashboardButton ]
+        [ div [ class "button-area" ] [ newDashboardButton, refreshProjectsButton ]
         , div [ class "project-area" ] [ maybeDashboards model model.dashboards.dashboards ]
         ]
 
@@ -46,7 +46,7 @@ dashboardList model dashboards =
         content =
             List.map (\d -> dashboardListItem model d) dashboards
     in
-    div [] content
+        div [] content
 
 
 dashboardListItem : Model -> Dashboard -> Html Msg

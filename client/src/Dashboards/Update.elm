@@ -4,8 +4,9 @@ import Dashboards.Api as Api
 import Dashboards.Lib exposing (configInList, getBuildPath, getDefaultPrefix)
 import Dashboards.Models as Dashboards exposing (BuildConfigForm, ConfigDetail, EditTab(Configure, Select), VisibleBranch, buildConfigToForm, initialBuildConfigForm, initialFormModel)
 import Lib exposing (createCommand)
-import List.Extra exposing (find, swapAt)
+import List.Extra exposing (find, swapAt, findIndex, getAt)
 import Models exposing (Model)
+import Dashboards.Models exposing (DashboardDetails, Branch)
 import Msgs exposing (DashboardMsg(..), Msg(ChangeLocation, DashboardMsg))
 import RemoteData
 import Routes exposing (Route(DashboardsRoute))
@@ -43,7 +44,16 @@ update_ baseUrl token msg model_ =
                     ( { model | details = response, visibleBranches = newVisibleBranches }, Cmd.none )
 
             ChangeBranches _ ->
-                ( { model | visibleBranches = switchBranches model.visibleBranches }, Cmd.none )
+                let
+                    newVisibleBranches =
+                        case model.details of
+                            RemoteData.Success details ->
+                                switchBranches details.configs model.visibleBranches
+
+                            _ ->
+                                model.visibleBranches
+                in
+                    ( { model | visibleBranches = newVisibleBranches }, Cmd.none )
 
             ChangeDashboardName value ->
                 let
@@ -316,21 +326,61 @@ updateVisibleBranches cds old =
         List.map updateBranch cds
 
 
-switchBranches : List VisibleBranch -> List VisibleBranch
-switchBranches branches =
+switchBranches : List ConfigDetail -> List VisibleBranch -> List VisibleBranch
+switchBranches configs branches =
     List.map
         (\b ->
             if b.size == 1 then
                 b
             else
-                incrementBranch b
+                incrementBranch configs b
         )
         branches
 
 
-incrementBranch : VisibleBranch -> VisibleBranch
-incrementBranch branch =
-    if branch.index < branch.size - 1 then
-        { branch | index = branch.index + 1 }
-    else
-        { branch | index = 0 }
+incrementBranch : List ConfigDetail -> VisibleBranch -> VisibleBranch
+incrementBranch configs vb =
+    let
+        cfg =
+            find (\x -> x.id == vb.id) configs
+
+        isRunning =
+            False
+
+        runningBranchIndex =
+            case cfg of
+                Just config ->
+                    if config.isRunning then
+                        getRunningBranchIndex config vb.index
+                    else
+                        Nothing
+
+                _ ->
+                    Nothing
+    in
+        case runningBranchIndex of
+            Just index ->
+                { vb | index = index }
+
+            _ ->
+                if vb.index < vb.size - 1 then
+                    { vb | index = vb.index + 1 }
+                else
+                    { vb | index = 0 }
+
+
+getRunningBranchIndex : ConfigDetail -> Int -> Maybe Int
+getRunningBranchIndex config currentIndex =
+    let
+        maybeCurrentBranch =
+            getAt currentIndex config.branches
+
+        runningBranches =
+            List.filter (\x -> x.isRunning) config.branches
+    in
+        case maybeCurrentBranch of
+            Just branch ->
+                findIndex (\x -> x.isRunning && x.name /= branch.name) config.branches
+
+            _ ->
+                findIndex (\x -> x.isRunning) config.branches

@@ -6,6 +6,7 @@ import (
 
 	"build-monitor-v2/server/cfg"
 	"build-monitor-v2/server/db"
+	"build-monitor-v2/server/tc"
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
@@ -39,7 +40,11 @@ func TestMain(m *testing.M) {
 	testLogger := logrus.StandardLogger().WithField("integration_test", true)
 	db.Ensure(session, testLogger)
 
-	s = Create(testLogger, config, session)
+	// tcDb := db.Create(session.Copy(), config, testLogger, time.Now)
+	// tcMonitor := tc.NewServer(testLogger, config, tcDb)
+	tcServer := tc.Server{}
+
+	s = Create(testLogger, config, session, &tcServer)
 	s.Setup()
 
 	os.Exit(m.Run())

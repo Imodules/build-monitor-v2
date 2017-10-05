@@ -58,23 +58,29 @@ type IAppDb interface {
 	DashboardBuildTypeList(dashboardId string) ([]db.BuildType, error)
 }
 
+type ITcServer interface {
+	Refresh()
+}
+
 type Server struct {
 	Config    *cfg.Config
 	Log       *logrus.Entry
 	DbSession *mgo.Session
 	Server    IServer
+	TcServer  ITcServer
 }
 
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func Create(log *logrus.Entry, config *cfg.Config, session *mgo.Session) *Server {
+func Create(log *logrus.Entry, config *cfg.Config, session *mgo.Session, tc ITcServer) *Server {
 	return &Server{
 		Config:    config,
 		Log:       log,
 		DbSession: session,
 		Server:    echo.New(),
+		TcServer:  tc,
 	}
 }
 
@@ -92,4 +98,12 @@ func (s *Server) Shutdown() {
 	}
 
 	s.Log.Info("Stopped")
+}
+
+func (s *Server) Refresh(ctx echo.Context) error {
+	s.Log.Info("Refreshing")
+
+	s.TcServer.Refresh()
+
+	return nil
 }

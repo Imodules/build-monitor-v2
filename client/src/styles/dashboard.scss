@@ -35,7 +35,7 @@ div#dashboard {
   }
 }
 
-div.clockBar {
+div.top-bar {
   color: white;
   font-size: 200%;
 }
@@ -61,7 +61,7 @@ div.buildItem {
 	  background-color: $error-dark;
 	}
 
-	.leftStatus, .rightStatus {
+	.bottom-row {
 	  color: white;
 	}
 

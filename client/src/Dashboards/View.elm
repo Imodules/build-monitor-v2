@@ -4,7 +4,9 @@ import Dashboards.Lib exposing (findVisibleBranch)
 import Dashboards.Models exposing (Branch, Build, BuildStatus(Failure, Running, Success), ConfigDetail, DashboardDetails)
 import Date exposing (Date)
 import Date.Distance as DateDistance
+import Date.Extra.Config.Config_en_us exposing (config)
 import Date.Extra.Core as DateExtra
+import Date.Extra.Format as DateFormat
 import Html exposing (Html, a, div, h2, h4, i, section, text)
 import Html.Attributes exposing (class, href, id)
 import List.Extra exposing (getAt)
@@ -25,8 +27,14 @@ view model =
 
 topBar : Model -> Html Msg
 topBar model =
+    let
+        theDate =
+            getDate model
+    in
     div [ class "level top-bar" ]
-        [ div [ class "level-left" ] []
+        [ div [ class "level-item" ] [ text (DateFormat.format config "%H:%M:%S%:z" theDate) ]
+        , div [ class "level-item" ] [ text (DateFormat.format config "%a, %B %-@d %Y" theDate) ]
+        , div [ class "level-item" ] [ text (DateFormat.formatUtc config "%H:%M:%S UTC" theDate) ]
         , div [ class "level-right" ] [ div [ class "level-item" ] [ configLink ] ]
         ]
 
@@ -119,12 +127,18 @@ buildRow builds =
 bottomRow : Model -> List Build -> Html Msg
 bottomRow model builds =
     let
-        lastBuild =
+        maybeLastBuild =
             List.head builds
     in
-    div [ class "level" ]
-        [ div [ class "level-left leftStatus is-size-3" ] [ leftStatus model lastBuild ]
-        ]
+    case maybeLastBuild of
+        Just lastBuild ->
+            div [ class "level" ]
+                [ div [ class "level-left bottom-row is-size-3" ] [ leftStatus model lastBuild ]
+                , div [ class "level-right bottom-row is-size-3" ] [ rightStatus model lastBuild ]
+                ]
+
+        _ ->
+            div [ class "level-item" ] [ text "no info" ]
 
 
 getDate : Model -> Date
@@ -141,19 +155,24 @@ getAgoText model build =
     dateAgo ++ " ago"
 
 
-leftStatus : Model -> Maybe Build -> Html Msg
-leftStatus model maybeBuild =
-    case maybeBuild of
-        Just build ->
-            case build.status of
-                Running ->
-                    div [ class "level-item" ] [ text build.statusText ]
-
-                _ ->
-                    div [ class "level-item" ] [ text (getAgoText model build) ]
+leftStatus : Model -> Build -> Html Msg
+leftStatus model build =
+    case build.status of
+        Running ->
+            div [ class "level-item" ] [ text build.statusText ]
 
         _ ->
-            div [ class "level-item" ] [ text "no info" ]
+            div [ class "level-item" ] [ text (getAgoText model build) ]
+
+
+rightStatus : Model -> Build -> Html Msg
+rightStatus model build =
+    case build.status of
+        Running ->
+            div [ class "level-item" ] [ text (toString build.progress ++ " %") ]
+
+        _ ->
+            div [ class "level-item" ] [ text build.number ]
 
 
 buildItem : Build -> Html Msg

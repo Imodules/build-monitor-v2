@@ -139,8 +139,7 @@ getLocationRefreshCommand model route =
 
 authRoutes : List Route
 authRoutes =
-    [ DashboardsRoute
-    , NewDashboardRoute
+    [ NewDashboardRoute
     ]
 
 

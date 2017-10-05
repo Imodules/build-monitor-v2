@@ -54,20 +54,20 @@ func NewServer(log *logrus.Entry, c *cfg.Config, appDb IDb) Server {
 
 func (c *Server) Start() error {
 	// Refresh projects on start to ensure we are able to connect and read from the server
-	//if err := refresh(c); err != nil {
-	//	return err
-	//}
-	//
-	//// Get histories for all needed build types
-	//if err := refreshBuildHistories(c); err != nil {
-	//	return err
-	//}
-	//
-	//c.stop = make(chan bool)
-	//c.stopped = make(chan bool)
-	//
-	//// Now start our monitor
-	//go monitor(c)
+	if err := refresh(c); err != nil {
+		return err
+	}
+
+	// Get histories for all needed build types
+	if err := refreshBuildHistories(c); err != nil {
+		return err
+	}
+
+	c.stop = make(chan bool)
+	c.stopped = make(chan bool)
+
+	// Now start our monitor
+	go monitor(c)
 
 	return nil
 }

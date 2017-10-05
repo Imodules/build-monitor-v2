@@ -1,6 +1,6 @@
 module Dashboards.AddEdit exposing (add, edit)
 
-import Dashboards.Components exposing (cancelButton, dashboardNameField, dashboardColumnCountField, saveButton)
+import Dashboards.Components exposing (cancelButton, dashboardColumnCountField, dashboardNameField, saveButton)
 import Dashboards.Configure as DashboardConfigure
 import Dashboards.Models as DashboardsModel exposing (DashboardForm, EditTab(Configure, Select))
 import Dashboards.Select as DashboardSelect

@@ -1,23 +1,27 @@
 module Decoders exposing (..)
 
+import Date exposing (Date)
+import Date.Extra.Utils as DateExtraUtils
 import Json.Decode as Decode exposing (Decoder, andThen, fail, string, succeed)
 import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 import Models exposing (BuildType, Project, User)
-import Time.DateTime as DateTime exposing (DateTime)
 import Types exposing (Owner)
 
 
-dateTimeDecoder : Decoder DateTime
+dateTimeDecoder : Decoder Date
 dateTimeDecoder =
     let
-        convert : String -> Decoder DateTime
+        convert : String -> Decoder Date
         convert raw =
-            case DateTime.fromISO8601 raw of
-                Ok date ->
-                    succeed date
+            succeed (DateExtraUtils.unsafeFromString raw)
 
-                Err error ->
-                    fail error
+        --        convert raw =
+        --            case DateTime.fromISO8601 raw of
+        --                Ok date ->
+        --                    succeed date
+        --
+        --                Err error ->
+        --                    fail error
     in
     string |> andThen convert
 

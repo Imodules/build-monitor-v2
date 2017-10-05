@@ -1,11 +1,11 @@
 module Dashboards.Decoders exposing (..)
 
 import Dashboards.Models as Dashboards exposing (Branch, Build, BuildConfig, BuildStatus(Failure, Running, Success, Unknown), ConfigDetail, Dashboard, DashboardDetails)
+import Date exposing (Date)
 import Decoders exposing (dateTimeDecoder, ownerDecoder)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, optional, required)
 import Json.Encode as Encode
-import Time.DateTime as DateTime exposing (DateTime, dateTime, zero)
 
 
 dashboardsDecoder : Decoder (List Dashboard)
@@ -35,7 +35,7 @@ updateDashboardEncoder model =
     let
         attributes =
             [ ( "name", Encode.string model.dashboardForm.name.value )
-            , ("columnCount", Encode.int (Result.withDefault 0 (String.toInt model.dashboardForm.columnCount.value)))
+            , ( "columnCount", Encode.int (Result.withDefault 0 (String.toInt model.dashboardForm.columnCount.value)) )
             , ( "buildConfigs", Encode.list <| List.map buildConfigEncoder <| model.dashboardForm.buildConfigs )
             ]
     in
@@ -86,8 +86,8 @@ buildDecoder =
         |> required "status" buildStatusDecoder
         |> optional "statusText" Decode.string ""
         |> optional "progress" Decode.int 0
-        |> optional "startDate" dateTimeDecoder (dateTime zero)
-        |> optional "finishDate" dateTimeDecoder (dateTime zero)
+        |> required "startDate" dateTimeDecoder
+        |> required "finishDate" dateTimeDecoder
 
 
 buildStatusDecoder : Decoder BuildStatus

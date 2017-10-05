@@ -1,7 +1,7 @@
 module Dashboards.Models exposing (..)
 
+import Date exposing (Date)
 import RemoteData exposing (WebData)
-import Time.DateTime as DateTime exposing (DateTime)
 import Types exposing (Id, Owner, TextField, initTextField, initTextFieldValue)
 
 
@@ -43,7 +43,7 @@ initialBuildConfigForm id abbr =
 type alias Dashboard =
     { id : Id
     , name : String
-    , columnCount: Int
+    , columnCount : Int
     , owner : Owner
     , buildConfigs : List BuildConfig
     }
@@ -64,7 +64,7 @@ type alias BuildConfigForm =
 type alias DashboardForm =
     { id : Id
     , name : TextField
-    , columnCount: TextField
+    , columnCount : TextField
     , buildConfigs : List BuildConfigForm
     , isDirty : Bool
     , tab : EditTab
@@ -86,7 +86,7 @@ buildConfigToForm bc =
 type alias DashboardDetails =
     { id : Id
     , name : String
-    , columnCount: Int
+    , columnCount : Int
     , configs : List ConfigDetail
     }
 
@@ -125,6 +125,6 @@ type alias Build =
     , status : BuildStatus
     , statusText : String
     , progress : Int
-    , startDate : DateTime
-    , finishDate : DateTime
+    , startDate : Date
+    , finishDate : Date
     }

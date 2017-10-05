@@ -6,6 +6,7 @@ import Navigation exposing (Location)
 import Ports exposing (getTokenFromStorage, gotTokenFromStorage)
 import Routes exposing (Route)
 import Routing exposing (getLocationCommand, parseLocation)
+import Task
 import Time exposing (Time, second)
 import Update exposing (update)
 import View exposing (view)
@@ -34,8 +35,9 @@ init flags location =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Time.every (10 * second) Msgs.RefreshPageData
+        [ Time.every (1 * second) Msgs.GotTime
         , Time.every (5 * second) (Msgs.ChangeBranches >> Msgs.DashboardMsg)
+        , Time.every (10 * second) Msgs.RefreshPageData
         , gotTokenFromStorage Msgs.GotTokenFromStorage
         ]
 

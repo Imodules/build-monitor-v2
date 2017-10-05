@@ -162,10 +162,12 @@ updateDashboardName value =
     , error = error
     }
 
+
 updateColumnCount : String -> TextField
-updateColumnCount value = 
+updateColumnCount value =
     let
-        intValue = Result.withDefault 0 (String.toInt value)
+        intValue =
+            Result.withDefault 0 (String.toInt value)
 
         ( isValid, error ) =
             if intValue < 1 || intValue > 12 then
@@ -178,6 +180,7 @@ updateColumnCount value =
     , isDirty = True
     , error = error
     }
+
 
 updateBuildConfigAbbreviation : Id -> String -> List BuildConfigForm -> List BuildConfigForm
 updateBuildConfigAbbreviation id value configs =

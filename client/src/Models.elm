@@ -2,15 +2,17 @@ module Models exposing (..)
 
 import Auth.Models as Auth
 import Dashboards.Models as Dashboards
+import Date exposing (Date)
 import RemoteData exposing (WebData)
 import Routes exposing (Route)
-import Time.DateTime as DateTime exposing (DateTime)
+import Time exposing (Time)
 import Types exposing (..)
 
 
 initialModel : Flags -> Route -> Model
 initialModel flags route =
     { flags = flags
+    , currentTime = 0
     , route = route
     , user = Nothing
     , auth = Auth.initialModel
@@ -27,6 +29,7 @@ type alias Flags =
 
 type alias Model =
     { flags : Flags
+    , currentTime : Time
     , route : Route
     , user : Maybe User
     , auth : Auth.Model
@@ -38,12 +41,12 @@ type alias Model =
 
 type alias User =
     { id : Id
-    , createdAt : DateTime
-    , modifiedAt : DateTime
+    , createdAt : Date
+    , modifiedAt : Date
     , username : Username
     , email : Email
     , token : Token
-    , lastLoginAt : DateTime
+    , lastLoginAt : Date
     }
 
 

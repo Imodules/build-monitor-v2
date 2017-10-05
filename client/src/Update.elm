@@ -21,6 +21,9 @@ update msg model =
         DoNothing ->
             ( model, Cmd.none )
 
+        GotTime time ->
+            ( { model | currentTime = time }, Cmd.none )
+
         ChangeLocation route ->
             ( model, newUrl (toPath route) )
 

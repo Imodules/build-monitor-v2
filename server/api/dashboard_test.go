@@ -155,8 +155,8 @@ func TestServer_DashboardDetails(t *testing.T) {
 			mockDb.On("DashboardBuildTypeList", dashboard.Id).Return(buildTypes, nil)
 
 			expected := api.DashboardDetails{
-				Id:   dashboard.Id,
-				Name: dashboard.Name,
+				Id:          dashboard.Id,
+				Name:        dashboard.Name,
 				ColumnCount: 98,
 			}
 
@@ -182,8 +182,8 @@ func TestServer_DashboardDetails(t *testing.T) {
 
 		Convey("When we get the dashboard with builds selected", func() {
 			dashboard := db.Dashboard{
-				Id:   id,
-				Name: "a cooler",
+				Id:          id,
+				Name:        "a cooler",
 				ColumnCount: 44,
 				BuildConfigs: []db.BuildConfig{
 					{Id: "bcfg1", Abbreviation: "BC-1"},
@@ -258,8 +258,8 @@ func TestServer_DashboardDetails(t *testing.T) {
 				mockDb.On("DashboardBuildTypeList", dashboard.Id).Return(buildTypes, nil)
 
 				expected := api.DashboardDetails{
-					Id:   dashboard.Id,
-					Name: dashboard.Name,
+					Id:          dashboard.Id,
+					Name:        dashboard.Name,
 					ColumnCount: 44,
 					Details: []api.BuildTypeDetail{
 						{

@@ -12,6 +12,7 @@ import Types exposing (..)
 
 type Msg
     = DoNothing
+    | GotTime Time
     | ChangeLocation Route
     | OnLocationChange Location
     | GoBack

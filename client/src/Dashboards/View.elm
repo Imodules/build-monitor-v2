@@ -6,6 +6,7 @@ import Date exposing (Date)
 import Date.Distance as DateDistance
 import Date.Extra.Config.Config_en_us exposing (config)
 import Date.Extra.Core as DateExtra
+import Date.Extra.Duration as DateDuration
 import Date.Extra.Format as DateFormat
 import Html exposing (Html, a, div, h2, h4, i, section, text)
 import Html.Attributes exposing (class, href, id)
@@ -132,13 +133,13 @@ bottomRow model builds =
     in
     case maybeLastBuild of
         Just lastBuild ->
-            div [ class "level" ]
-                [ div [ class "level-left bottom-row is-size-3" ] [ leftStatus model lastBuild ]
-                , div [ class "level-right bottom-row is-size-3" ] [ rightStatus model lastBuild ]
+            div [ class "columns bottom-row" ]
+                [ div [ class "column is-9 left-side is-size-3" ] [ leftStatus model lastBuild ]
+                , div [ class "column is-3 right-side is-size-3" ] [ rightStatus model lastBuild ]
                 ]
 
         _ ->
-            div [ class "level-item" ] [ text "no info" ]
+            div [ class "bottom-row" ] [ text "no info" ]
 
 
 getDate : Model -> Date
@@ -159,20 +160,41 @@ leftStatus : Model -> Build -> Html Msg
 leftStatus model build =
     case build.status of
         Running ->
-            div [ class "level-item" ] [ text build.statusText ]
+            text build.statusText
 
         _ ->
-            div [ class "level-item" ] [ text (getAgoText model build) ]
+            text (getAgoText model build)
 
 
 rightStatus : Model -> Build -> Html Msg
 rightStatus model build =
+    let
+        duration =
+            DateDuration.diff build.finishDate build.startDate
+
+        durationMinText =
+            zeroPad duration.minute ++ ":" ++ zeroPad duration.second
+
+        durationText =
+            if duration.hour > 0 then
+                zeroPad duration.hour ++ ":" ++ durationMinText
+            else
+                durationMinText
+    in
     case build.status of
         Running ->
-            div [ class "level-item" ] [ text (toString build.progress ++ " %") ]
+            text (toString build.progress ++ " %")
 
         _ ->
-            div [ class "level-item" ] [ text build.number ]
+            text durationText
+
+
+zeroPad : Int -> String
+zeroPad v =
+    if v > 9 then
+        toString v
+    else
+        "0" ++ toString v
 
 
 buildItem : Build -> Html Msg

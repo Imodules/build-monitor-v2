@@ -62,7 +62,17 @@ div.buildItem {
 	}
 
 	.bottom-row {
-	  color: white;
+		color: white;
+		
+		.left-side {
+			text-align: left;
+			overflow: hidden;
+		}
+
+		.right-side {
+			text-align: right;
+			overflow: hidden;
+		}
 	}
 
 	.bi-title {

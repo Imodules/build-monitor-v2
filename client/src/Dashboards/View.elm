@@ -87,7 +87,7 @@ configItem model details cd =
                     branch
 
                 _ ->
-                    { name = "NO BRANCHES", builds = [] }
+                    { name = "NO BRANCHES", isRunning = False, builds = [] }
 
         wrapperClass =
             "bi-wrapper "
@@ -99,8 +99,17 @@ configItem model details cd =
 
         itemSize =
             "is-" ++ toString details.columnCount
+
+        itemBaseClass =
+            "column " ++ itemSize ++ " is-paddingless buildItem"
+
+        itemClass =
+            if branch.isRunning then
+                itemBaseClass ++ " blink_me"
+            else
+                itemBaseClass
     in
-    div [ class ("column " ++ itemSize ++ " is-paddingless buildItem") ]
+    div [ class itemClass ]
         [ div [ class wrapperClass ]
             [ biTitle cd.abbreviation
             , biSubTitle (getSubtitleText cd branch)
@@ -134,8 +143,8 @@ bottomRow model builds =
     case maybeLastBuild of
         Just lastBuild ->
             div [ class "columns bottom-row" ]
-                [ div [ class "column is-9 left-side is-size-3" ] [ leftStatus model lastBuild ]
-                , div [ class "column is-3 right-side is-size-3" ] [ rightStatus model lastBuild ]
+                [ div [ class "column is-10 left-side is-size-3" ] [ leftStatus model lastBuild ]
+                , div [ class "column is-2 right-side is-size-3" ] [ rightStatus model lastBuild ]
                 ]
 
         _ ->

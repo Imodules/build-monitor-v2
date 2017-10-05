@@ -53,3 +53,5 @@ type DashboardMsg
     | ChangeBuildAbbreviation Id String
     | OnSelectTabClick
     | OnConfigureTabClick
+    | SortConfigUp Int
+    | SortConfigDown Int

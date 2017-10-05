@@ -68,6 +68,7 @@ configDetailDecoder =
         |> required "id" Decode.string
         |> required "name" Decode.string
         |> required "abbreviation" Decode.string
+        |> required "isRunning" Decode.bool
         |> optional "branches" (Decode.list branchDecoder) []
 
 
@@ -75,6 +76,7 @@ branchDecoder : Decoder Branch
 branchDecoder =
     decode Branch
         |> optional "name" Decode.string ""
+        |> required "isRunning" Decode.bool
         |> optional "builds" (Decode.list buildDecoder) []
 
 

@@ -95,6 +95,7 @@ type alias ConfigDetail =
     { id : Id
     , name : String
     , abbreviation : String
+    , isRunning : Bool
     , branches : List Branch
     }
 
@@ -108,6 +109,7 @@ type alias VisibleBranch =
 
 type alias Branch =
     { name : String
+    , isRunning : Bool
     , builds : List Build
     }
 

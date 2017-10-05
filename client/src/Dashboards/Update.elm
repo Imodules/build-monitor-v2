@@ -4,7 +4,7 @@ import Dashboards.Api as Api
 import Dashboards.Lib exposing (configInList, getBuildPath, getDefaultPrefix)
 import Dashboards.Models as Dashboards exposing (BuildConfigForm, ConfigDetail, EditTab(Configure, Select), VisibleBranch, buildConfigToForm, initialBuildConfigForm, initialFormModel)
 import Lib exposing (createCommand)
-import List.Extra exposing (find)
+import List.Extra exposing (find, swapAt)
 import Models exposing (Model)
 import Msgs exposing (DashboardMsg(..), Msg(ChangeLocation, DashboardMsg))
 import RemoteData
@@ -19,7 +19,7 @@ update msg model =
         ( newDashboards, cmd ) =
             update_ model.flags.apiUrl (getToken model) msg model
     in
-    ( { model | dashboards = newDashboards }, cmd )
+        ( { model | dashboards = newDashboards }, cmd )
 
 
 update_ : String -> Token -> DashboardMsg -> Model -> ( Dashboards.Model, Cmd Msg )
@@ -28,123 +28,137 @@ update_ baseUrl token msg model_ =
         model =
             model_.dashboards
     in
-    case msg of
-        OnFetchDashboards response ->
-            ( { model | dashboards = response }, Cmd.none )
+        case msg of
+            OnFetchDashboards response ->
+                ( { model | dashboards = response }, Cmd.none )
 
-        OnFetchDetails response ->
-            let
-                newVisibleBranches =
-                    if model.visibleBranches == [] then
-                        initVisibleBranches model
-                    else
-                        model.visibleBranches
-            in
-            ( { model | details = response, visibleBranches = newVisibleBranches }, Cmd.none )
+            OnFetchDetails response ->
+                let
+                    newVisibleBranches =
+                        if model.visibleBranches == [] then
+                            initVisibleBranches model
+                        else
+                            model.visibleBranches
+                in
+                    ( { model | details = response, visibleBranches = newVisibleBranches }, Cmd.none )
 
-        ChangeBranches _ ->
-            ( { model | visibleBranches = switchBranches model.visibleBranches }, Cmd.none )
+            ChangeBranches _ ->
+                ( { model | visibleBranches = switchBranches model.visibleBranches }, Cmd.none )
 
-        ChangeDashboardName value ->
-            let
-                newDashboardForm old =
-                    { old | name = updateDashboardName value, isDirty = True }
-            in
-            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+            ChangeDashboardName value ->
+                let
+                    newDashboardForm old =
+                        { old | name = updateDashboardName value, isDirty = True }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
-        ChangeDashboardColumnCount value ->
-            let
-                newDashboardForm old =
-                    { old | columnCount = updateColumnCount value, isDirty = True }
-            in
-            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+            ChangeDashboardColumnCount value ->
+                let
+                    newDashboardForm old =
+                        { old | columnCount = updateColumnCount value, isDirty = True }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
-        ChangeBuildAbbreviation id value ->
-            let
-                newDashboardForm old =
-                    { old | buildConfigs = updateBuildConfigAbbreviation id value old.buildConfigs, isDirty = True }
-            in
-            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+            ChangeBuildAbbreviation id value ->
+                let
+                    newDashboardForm old =
+                        { old | buildConfigs = updateBuildConfigAbbreviation id value old.buildConfigs, isDirty = True }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
-        ClickBuildType id ->
-            let
-                updatedList old =
-                    if configInList id old then
-                        List.filter (\i -> i.id /= id) old
-                    else
-                        getNewConfig model_ id :: old
+            ClickBuildType id ->
+                let
+                    updatedList old =
+                        if configInList id old then
+                            List.filter (\i -> i.id /= id) old
+                        else
+                            getNewConfig model_ id :: old
 
-                newDashboardForm old =
-                    { old | buildConfigs = updatedList old.buildConfigs, isDirty = True }
-            in
-            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+                    newDashboardForm old =
+                        { old | buildConfigs = updatedList old.buildConfigs, isDirty = True }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
-        CreateDashboard ->
-            ( model, Api.createDashboard baseUrl token model )
+            CreateDashboard ->
+                ( model, Api.createDashboard baseUrl token model )
 
-        EditDashboard ->
-            ( model, Api.editDashboard baseUrl token model )
+            EditDashboard ->
+                ( model, Api.editDashboard baseUrl token model )
 
-        OnSelectTabClick ->
-            let
-                newDashboardForm old =
-                    { old | tab = Select }
-            in
-            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+            OnSelectTabClick ->
+                let
+                    newDashboardForm old =
+                        { old | tab = Select }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
-        OnConfigureTabClick ->
-            let
-                newDashboardForm old =
-                    { old | tab = Configure }
-            in
-            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+            OnConfigureTabClick ->
+                let
+                    newDashboardForm old =
+                        { old | tab = Configure }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
-        StartCreateDashboard ->
-            ( { model | dashboardForm = initialFormModel }, Cmd.none )
+            StartCreateDashboard ->
+                ( { model | dashboardForm = initialFormModel }, Cmd.none )
 
-        StartEditDashboard id ->
-            let
-                dashboards =
-                    case model.dashboards of
-                        RemoteData.Success dashboards ->
-                            dashboards
+            StartEditDashboard id ->
+                let
+                    dashboards =
+                        case model.dashboards of
+                            RemoteData.Success dashboards ->
+                                dashboards
 
-                        _ ->
-                            []
+                            _ ->
+                                []
 
-                maybeDashboardToEdit =
-                    find (\i -> i.id == id) dashboards
+                    maybeDashboardToEdit =
+                        find (\i -> i.id == id) dashboards
 
-                newDashboardForm old =
-                    case maybeDashboardToEdit of
-                        Just dashboard ->
-                            if String.isEmpty old.id || old.id /= id then
-                                { id = dashboard.id
-                                , name = initTextFieldValue dashboard.name
-                                , columnCount = initTextFieldValue (toString dashboard.columnCount)
-                                , buildConfigs = List.map buildConfigToForm dashboard.buildConfigs
-                                , isDirty = False
-                                , tab = Select
-                                }
-                            else
-                                old
+                    newDashboardForm old =
+                        case maybeDashboardToEdit of
+                            Just dashboard ->
+                                if String.isEmpty old.id || old.id /= id then
+                                    { id = dashboard.id
+                                    , name = initTextFieldValue dashboard.name
+                                    , columnCount = initTextFieldValue (toString dashboard.columnCount)
+                                    , buildConfigs = List.map buildConfigToForm dashboard.buildConfigs
+                                    , isDirty = False
+                                    , tab = Select
+                                    }
+                                else
+                                    old
 
-                        _ ->
-                            Dashboards.initialFormModel
-            in
-            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+                            _ ->
+                                Dashboards.initialFormModel
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
-        OnCreateDashboard result ->
-            case result of
-                Ok dashboard ->
-                    ( model, createCommand (ChangeLocation DashboardsRoute) )
+            OnCreateDashboard result ->
+                case result of
+                    Ok dashboard ->
+                        ( model, createCommand (ChangeLocation DashboardsRoute) )
 
-                Err dashboard ->
-                    let
-                        x =
-                            Debug.log "error saving dashboard" dashboard
-                    in
-                    ( model, Cmd.none )
+                    Err dashboard ->
+                        let
+                            x =
+                                Debug.log "error saving dashboard" dashboard
+                        in
+                            ( model, Cmd.none )
+
+            SortConfigUp i ->
+                let
+                    newDashboardForm old =
+                        { old | buildConfigs = sortConfig i -1 old.buildConfigs, isDirty = True }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
+            SortConfigDown i ->
+                let
+                    newDashboardForm old =
+                        { old | buildConfigs = sortConfig i 1 old.buildConfigs, isDirty = True }
+                in
+                    ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
 
 updateDashboardName : String -> TextField
@@ -156,11 +170,11 @@ updateDashboardName value =
             else
                 ( True, "" )
     in
-    { value = value
-    , isValid = isValid
-    , isDirty = True
-    , error = error
-    }
+        { value = value
+        , isValid = isValid
+        , isDirty = True
+        , error = error
+        }
 
 
 updateColumnCount : String -> TextField
@@ -175,11 +189,11 @@ updateColumnCount value =
             else
                 ( True, "" )
     in
-    { value = value
-    , isValid = isValid
-    , isDirty = True
-    , error = error
-    }
+        { value = value
+        , isValid = isValid
+        , isDirty = True
+        , error = error
+        }
 
 
 updateBuildConfigAbbreviation : Id -> String -> List BuildConfigForm -> List BuildConfigForm
@@ -191,7 +205,24 @@ updateBuildConfigAbbreviation id value configs =
             else
                 config
     in
-    List.map findAndUpdate configs
+        List.map findAndUpdate configs
+
+
+sortConfig : Int -> Int -> List BuildConfigForm -> List BuildConfigForm
+sortConfig idx direction configs =
+    let
+        newIdx =
+            idx + direction
+
+        maybeList =
+            swapAt idx newIdx configs
+    in
+        case maybeList of
+            Just list ->
+                list
+
+            _ ->
+                configs
 
 
 updateAbbreviation : String -> TextField
@@ -203,11 +234,11 @@ updateAbbreviation value =
             else
                 ( True, "" )
     in
-    { value = value
-    , isValid = isValid
-    , isDirty = True
-    , error = error
-    }
+        { value = value
+        , isValid = isValid
+        , isDirty = True
+        , error = error
+        }
 
 
 getNewConfig : Model -> Id -> BuildConfigForm
@@ -235,7 +266,7 @@ getNewConfig model id =
         prefix =
             getDefaultPrefix buildPath
     in
-    initialBuildConfigForm id prefix
+        initialBuildConfigForm id prefix
 
 
 initVisibleBranches : Dashboards.Model -> List VisibleBranch
@@ -277,12 +308,12 @@ updateVisibleBranches cds old =
                             else
                                 branch.index
                     in
-                    { branch | size = branchCount, index = validIndex }
+                        { branch | size = branchCount, index = validIndex }
 
                 _ ->
                     createVisibleBranch cd
     in
-    List.map updateBranch cds
+        List.map updateBranch cds
 
 
 switchBranches : List VisibleBranch -> List VisibleBranch

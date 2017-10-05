@@ -11,35 +11,38 @@ import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (smallIconLinkButton)
 import Routes exposing (Route(..))
-import Routing exposing (needsToLogin)
+import Routing exposing (isLoggedIn)
 
 
 view : Model -> Html Msg
 view model =
-    if needsToLogin model model.route then
-        noAccess model
-    else
-        case model.route of
-            SignUpRoute ->
-                SignUp.view model |> contentWrapper
+    case model.route of
+        SignUpRoute ->
+            SignUp.view model |> contentWrapper
 
-            LoginRoute ->
-                Login.view model |> contentWrapper
+        LoginRoute ->
+            Login.view model |> contentWrapper
 
-            DashboardRoute id ->
-                DashboardView.view model
+        DashboardRoute id ->
+            DashboardView.view model
 
-            EditDashboardRoute id ->
+        EditDashboardRoute id ->
+            if isLoggedIn model then
                 DashboardAddEdit.edit model id |> contentWrapper
+            else
+                noAccess model |> contentWrapper
 
-            NewDashboardRoute ->
+        NewDashboardRoute ->
+            if isLoggedIn model then
                 DashboardAddEdit.add model |> contentWrapper
+            else
+                noAccess model |> contentWrapper
 
-            DashboardsRoute ->
-                DashboardList.view model |> contentWrapper
+        DashboardsRoute ->
+            DashboardList.view model |> contentWrapper
 
-            NotFoundRoute ->
-                notFoundView model |> contentWrapper
+        NotFoundRoute ->
+            notFoundView model |> contentWrapper
 
 
 notFoundView : Model -> Html Msg

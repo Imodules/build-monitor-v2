@@ -13,13 +13,15 @@ type BuildType struct {
 	Name         string   `bson:"name" json:"name"`
 	Description  string   `bson:"description" json:"description"`
 	ProjectID    string   `bson:"projectId" json:"projectId"`
+	IsRunning    bool     `bson:"isRunning" json:"isRunning"`
 	Branches     []Branch `bson:"branches" json:"branches"`
 	DashboardIds []string `bson:"dashboardIds" json:"dashboardIds"`
 }
 
 type Branch struct {
-	Name   string  `bson:"name" json:"name"`
-	Builds []Build `bson:"builds" json:"builds"`
+	Name      string  `bson:"name" json:"name"`
+	IsRunning bool    `bson:"isRunning" json:"isRunning"`
+	Builds    []Build `bson:"builds" json:"builds"`
 }
 
 type Build struct {
@@ -74,6 +76,7 @@ func (appDb *AppDb) UpdateBuildTypeBuilds(buildTypeId string, branches []Branch)
 			"$set": bson.M{
 				"modifiedAt": now,
 				"branches":   branches,
+				"isRunning":  isRunning(branches), // TODO Test
 			},
 			"$unset": bson.M{"deleted": ""},
 		},
@@ -91,6 +94,16 @@ func (appDb *AppDb) UpdateBuildTypeBuilds(buildTypeId string, branches []Branch)
 	}
 
 	return &buildType, nil
+}
+
+func isRunning(branches []Branch) bool {
+	for _, b := range branches {
+		if b.IsRunning {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (appDb *AppDb) AddDashboardToBuildTypes(buildTypeIds []string, dashboardId string) error {

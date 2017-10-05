@@ -75,12 +75,12 @@ getLocationCommand model route =
         cmdList =
             List.append routeCommand refreshCommand
     in
-    case cmdList of
-        [] ->
-            Cmd.none
+        case cmdList of
+            [] ->
+                Cmd.none
 
-        _ ->
-            Cmd.batch cmdList
+            _ ->
+                Cmd.batch cmdList
 
 
 getLocationCommands : Model -> Route -> List (Cmd Msg)
@@ -89,15 +89,12 @@ getLocationCommands model route =
         token =
             getToken model
     in
-    if needsToLogin model route then
-        []
-    else
         case route of
             NewDashboardRoute ->
-                [ createCommand (DashboardMsg StartCreateDashboard) ]
+                cmdsIfLoggedIn model [ createCommand (DashboardMsg StartCreateDashboard) ]
 
             EditDashboardRoute id ->
-                [ createCommand (DashboardMsg (StartEditDashboard id)) ]
+                cmdsIfLoggedIn model [ createCommand (DashboardMsg (StartEditDashboard id)) ]
 
             DashboardsRoute ->
                 [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
@@ -112,20 +109,19 @@ getLocationRefreshCommand model route =
         token =
             getToken model
     in
-    if needsToLogin model route then
-        []
-    else
         case route of
             NewDashboardRoute ->
-                [ Api.fetchProjects model.flags.apiUrl
-                , Api.fetchBuildTypes model.flags.apiUrl
-                ]
+                cmdsIfLoggedIn model
+                    [ Api.fetchProjects model.flags.apiUrl
+                    , Api.fetchBuildTypes model.flags.apiUrl
+                    ]
 
             EditDashboardRoute id ->
-                [ DashboardsApi.fetchDashboards model.flags.apiUrl
-                , Api.fetchProjects model.flags.apiUrl
-                , Api.fetchBuildTypes model.flags.apiUrl
-                ]
+                cmdsIfLoggedIn model
+                    [ DashboardsApi.fetchDashboards model.flags.apiUrl
+                    , Api.fetchProjects model.flags.apiUrl
+                    , Api.fetchBuildTypes model.flags.apiUrl
+                    ]
 
             DashboardsRoute ->
                 [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
@@ -137,20 +133,17 @@ getLocationRefreshCommand model route =
                 []
 
 
-authRoutes : List Route
-authRoutes =
-    [ NewDashboardRoute
-    ]
+cmdsIfLoggedIn : Model -> List (Cmd Msg) -> List (Cmd Msg)
+cmdsIfLoggedIn model cmds =
+    if isLoggedIn model then
+        cmds
+    else
+        []
 
 
-requiresAuth : Route -> Bool
-requiresAuth route =
-    List.member route authRoutes
-
-
-needsToLogin : Model -> Route -> Bool
-needsToLogin model route =
-    requiresAuth route && (model.user == Nothing)
+isLoggedIn : Model -> Bool
+isLoggedIn model =
+    model.user /= Nothing
 
 
 onLinkClick : msg -> Attribute msg
@@ -161,7 +154,7 @@ onLinkClick message =
             , preventDefault = True
             }
     in
-    onWithOptions "click" options (Decode.succeed message)
+        onWithOptions "click" options (Decode.succeed message)
 
 
 parseLocation : Location -> Route

@@ -82,8 +82,20 @@ var ProcessRunningBuild = func(c *Server, b teamcity.Build, bt *db.BuildType) er
 		bt.Branches[index].Builds = bt.Branches[index].Builds[:12]
 	}
 
+	bt.Branches[index].IsRunning = isBranchRunning(bt.Branches[index].Builds)
+
 	_, updErr := c.Db.UpdateBuildTypeBuilds(bt.Id, bt.Branches)
 	return updErr
+}
+
+func isBranchRunning(builds []db.Build) bool {
+	for _, b := range builds {
+		if b.Status == teamcity.StatusRunning {
+			return true
+		}
+	}
+
+	return false
 }
 
 var GetBuildHistory = func(c *Server) error {

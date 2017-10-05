@@ -31,6 +31,7 @@ type BuildTypeDetail struct {
 	Id           string      `json:"id"`
 	Name         string      `json:"name"`
 	Abbreviation string      `json:"abbreviation"`
+	IsRunning    bool        `bson:"isRunning" json:"isRunning"`
 	Branches     []db.Branch `json:"branches"`
 }
 
@@ -65,6 +66,7 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 		if buildType != nil {
 			detail.Name = buildType.Name
 			detail.Branches = buildType.Branches
+			detail.IsRunning = buildType.IsRunning
 		}
 
 		details.Details = append(details.Details, detail)

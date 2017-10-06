@@ -24,6 +24,9 @@ type DashboardDetails struct {
 	Id          string            `json:"id"`
 	Name        string            `json:"name"`
 	ColumnCount int               `json:"columnCount"`
+	SuccessIcon string            `json:"successIcon"`
+	FailedIcon  string            `json:"failedIcon"`
+	RunningIcon string            `json:"runningIcon"`
 	Details     []BuildTypeDetail `json:"details"`
 }
 
@@ -57,6 +60,9 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 		Id:          dashboard.Id,
 		Name:        dashboard.Name,
 		ColumnCount: dashboard.ColumnCount,
+		SuccessIcon: dashboard.SuccessIcon,
+		FailedIcon:  dashboard.FailedIcon,
+		RunningIcon: dashboard.RunningIcon,
 	}
 
 	for _, c := range dashboard.BuildConfigs {
@@ -78,6 +84,9 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 type UpdateDashboardRequest struct {
 	Name         string           `json:"name"`
 	ColumnCount  int              `json:"columnCount"`
+	SuccessIcon  string           `json:"successIcon"`
+	FailedIcon   string           `json:"failedIcon"`
+	RunningIcon  string           `json:"runningIcon"`
 	BuildConfigs []db.BuildConfig `json:"buildConfigs"`
 }
 
@@ -95,6 +104,9 @@ func (s *Server) CreateDashboard(ctx echo.Context) error {
 		Id:           bson.NewObjectId().Hex(),
 		Name:         r.Name,
 		ColumnCount:  r.ColumnCount,
+		SuccessIcon:  r.SuccessIcon,
+		FailedIcon:   r.FailedIcon,
+		RunningIcon:  r.RunningIcon,
 		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
 		BuildConfigs: r.BuildConfigs,
 	}
@@ -161,6 +173,9 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 		Id:           id,
 		Name:         r.Name,
 		ColumnCount:  r.ColumnCount,
+		SuccessIcon:  r.SuccessIcon,
+		FailedIcon:   r.FailedIcon,
+		RunningIcon:  r.RunningIcon,
 		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
 		BuildConfigs: r.BuildConfigs,
 	}

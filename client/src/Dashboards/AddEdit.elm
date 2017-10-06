@@ -1,6 +1,6 @@
 module Dashboards.AddEdit exposing (add, edit)
 
-import Dashboards.Components exposing (cancelButton, dashboardColumnCountField, dashboardNameField, saveButton)
+import Dashboards.Components exposing (cancelButton, dashboardColumnCountField, dashboardNameField, failedIconField, runningIconField, saveButton, successIconField)
 import Dashboards.Configure as DashboardConfigure
 import Dashboards.Models as DashboardsModel exposing (DashboardForm, EditTab(Configure, Select))
 import Dashboards.Select as DashboardSelect
@@ -37,7 +37,12 @@ view model dashForm saveMsg =
     div [ id "settings" ]
         [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelButton ]
         , dashboardNameField dashForm
-        , dashboardColumnCountField dashForm
+        , div [ class "columns" ]
+            [ div [ class "column" ] [ dashboardColumnCountField dashForm ]
+            , div [ class "column" ] [ successIconField dashForm ]
+            , div [ class "column" ] [ failedIconField dashForm ]
+            , div [ class "column" ] [ runningIconField dashForm ]
+            ]
         , tabs dashForm
         , div [ class "project-area" ] [ maybeProjects model ]
         ]

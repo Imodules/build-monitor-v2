@@ -1,7 +1,6 @@
 module Dashboards.Decoders exposing (..)
 
 import Dashboards.Models as Dashboards exposing (Branch, Build, BuildConfig, BuildStatus(Failure, Running, Success, Unknown), ConfigDetail, Dashboard, DashboardDetails)
-import Date exposing (Date)
 import Decoders exposing (dateTimeDecoder, ownerDecoder)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, optional, required)
@@ -19,6 +18,9 @@ dashboardDecoder =
         |> required "id" Decode.string
         |> required "name" Decode.string
         |> required "columnCount" Decode.int
+        |> required "successIcon" Decode.string
+        |> required "failedIcon" Decode.string
+        |> required "runningIcon" Decode.string
         |> required "owner" ownerDecoder
         |> required "buildConfigs" (Decode.list buildConfigDecoder)
 
@@ -35,6 +37,9 @@ updateDashboardEncoder model =
     let
         attributes =
             [ ( "name", Encode.string model.dashboardForm.name.value )
+            , ( "successIcon", Encode.string model.dashboardForm.successIcon.value )
+            , ( "failedIcon", Encode.string model.dashboardForm.failedIcon.value )
+            , ( "runningIcon", Encode.string model.dashboardForm.runningIcon.value )
             , ( "columnCount", Encode.int (Result.withDefault 0 (String.toInt model.dashboardForm.columnCount.value)) )
             , ( "buildConfigs", Encode.list <| List.map buildConfigEncoder <| model.dashboardForm.buildConfigs )
             ]
@@ -59,6 +64,9 @@ detailsDecoder =
         |> required "id" Decode.string
         |> required "name" Decode.string
         |> required "columnCount" Decode.int
+        |> required "successIcon" Decode.string
+        |> required "failedIcon" Decode.string
+        |> required "runningIcon" Decode.string
         |> optional "details" (Decode.list configDetailDecoder) []
 
 

@@ -71,7 +71,7 @@ var ProcessRunningBuild = func(c *Server, b teamcity.Build, bt *db.BuildType) er
 	newBuild := BuildToDb(b)
 
 	if len(bt.Branches[index].Builds) == 0 {
-		bt.Branches[index].Builds = append(bt.Branches[index].Builds, newBuild)
+		bt.Branches[index].Builds = []db.Build{newBuild}
 	} else if bt.Branches[index].Builds[0].Id == newBuild.Id {
 		bt.Branches[index].Builds[0] = newBuild
 	} else {

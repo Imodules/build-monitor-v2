@@ -116,7 +116,7 @@ configItem model details cd =
         [ div [ class wrapperClass ]
             [ biTitle cd.abbreviation
             , biSubTitle (getSubtitleText cd branch (branchIndex + 1) branchCount)
-            , buildRow branch.builds
+            , buildRow branch.builds details.successIcon details.failedIcon details.runningIcon
             , bottomRow model branch.builds
             ]
         ]
@@ -132,9 +132,13 @@ biSubTitle t =
     div [ class "bi-sub-title" ] [ text t ]
 
 
-buildRow : List Build -> Html Msg
-buildRow builds =
-    div [ class "columns is-marginless" ] (List.map buildItem builds)
+buildRow : List Build -> String -> String -> String -> Html Msg
+buildRow builds sIcon fIcon rIcon =
+    let
+        biWithIcons build =
+            buildItem build sIcon fIcon rIcon
+    in
+    div [ class "columns is-marginless" ] (List.map biWithIcons builds)
 
 
 bottomRow : Model -> List Build -> Html Msg
@@ -209,32 +213,32 @@ zeroPad v =
         "0" ++ toString v
 
 
-buildItem : Build -> Html Msg
-buildItem build =
+buildItem : Build -> String -> String -> String -> Html Msg
+buildItem build sIcon fIcon rIcon =
     case build.status of
         Success ->
-            successItem
+            successItem sIcon
 
         Running ->
-            buildingItem
+            runningItem rIcon
 
         _ ->
-            failureItem
+            failureItem fIcon
 
 
-successItem : Html Msg
-successItem =
-    div [ class "column is-1 bhLabel bh-succ" ] [ i [ class "fa fa-trophy" ] [] ]
+successItem : String -> Html Msg
+successItem icon_ =
+    div [ class "column is-1 bhLabel bh-succ" ] [ i [ class icon_ ] [] ]
 
 
-failureItem : Html Msg
-failureItem =
-    div [ class "column is-1 bhLabel bh-fail" ] [ i [ class "fa fa-trash-o" ] [] ]
+failureItem : String -> Html Msg
+failureItem icon_ =
+    div [ class "column is-1 bhLabel bh-fail" ] [ i [ class icon_ ] [] ]
 
 
-buildingItem : Html Msg
-buildingItem =
-    div [ class "column is-1 bhLabel bh-succ" ] [ i [ class "fa fa-circle-o-notch faa-spin animated" ] [] ]
+runningItem : String -> Html Msg
+runningItem icon_ =
+    div [ class "column is-1 bhLabel bh-succ" ] [ i [ class icon_ ] [] ]
 
 
 isLastBuildError : List Build -> Bool

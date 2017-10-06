@@ -57,3 +57,6 @@ type DashboardMsg
     | OnConfigureTabClick
     | SortConfigUp Int
     | SortConfigDown Int
+    | ChangeSuccessIcon String
+    | ChangeFailedIcon String
+    | ChangeRunningIcon String

@@ -68,6 +68,27 @@ update_ baseUrl token msg model_ =
             in
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
+        ChangeSuccessIcon value ->
+            let
+                newDashboardForm old =
+                    { old | successIcon = updateIcon value, isDirty = True }
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
+        ChangeFailedIcon value ->
+            let
+                newDashboardForm old =
+                    { old | failedIcon = updateIcon value, isDirty = True }
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
+        ChangeRunningIcon value ->
+            let
+                newDashboardForm old =
+                    { old | runningIcon = updateIcon value, isDirty = True }
+            in
+            ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
+
         ChangeBuildAbbreviation id value ->
             let
                 newDashboardForm old =
@@ -131,6 +152,9 @@ update_ baseUrl token msg model_ =
                                 { id = dashboard.id
                                 , name = initTextFieldValue dashboard.name
                                 , columnCount = initTextFieldValue (toString dashboard.columnCount)
+                                , successIcon = initTextFieldValue dashboard.successIcon
+                                , failedIcon = initTextFieldValue dashboard.failedIcon
+                                , runningIcon = initTextFieldValue dashboard.runningIcon
                                 , buildConfigs = List.map buildConfigToForm dashboard.buildConfigs
                                 , isDirty = False
                                 , tab = Select
@@ -195,6 +219,22 @@ updateColumnCount value =
         ( isValid, error ) =
             if intValue < 1 || intValue > 12 then
                 ( False, "Column count should be a value >= 1 and <= 12" )
+            else
+                ( True, "" )
+    in
+    { value = value
+    , isValid = isValid
+    , isDirty = True
+    , error = error
+    }
+
+
+updateIcon : String -> TextField
+updateIcon value =
+    let
+        ( isValid, error ) =
+            if String.length value == 0 then
+                ( False, "A value is required" )
             else
                 ( True, "" )
     in

@@ -26,7 +26,10 @@ initialFormModel : DashboardForm
 initialFormModel =
     { id = ""
     , name = initTextField
-    , columnCount = initTextField
+    , columnCount = initTextFieldValue "6"
+    , successIcon = initTextFieldValue "fa fa-check"
+    , failedIcon = initTextFieldValue "fa fa-exclamation"
+    , runningIcon = initTextFieldValue "fa fa-circle-o-notch faa-spin animated"
     , buildConfigs = []
     , isDirty = False
     , tab = Select
@@ -44,6 +47,9 @@ type alias Dashboard =
     { id : Id
     , name : String
     , columnCount : Int
+    , successIcon : String
+    , failedIcon : String
+    , runningIcon : String
     , owner : Owner
     , buildConfigs : List BuildConfig
     }
@@ -65,6 +71,9 @@ type alias DashboardForm =
     { id : Id
     , name : TextField
     , columnCount : TextField
+    , successIcon : TextField
+    , failedIcon : TextField
+    , runningIcon : TextField
     , buildConfigs : List BuildConfigForm
     , isDirty : Bool
     , tab : EditTab
@@ -87,6 +96,9 @@ type alias DashboardDetails =
     { id : Id
     , name : String
     , columnCount : Int
+    , successIcon : String
+    , failedIcon : String
+    , runningIcon : String
     , configs : List ConfigDetail
     }
 

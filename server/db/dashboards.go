@@ -10,6 +10,9 @@ type Dashboard struct {
 	Name         string        `bson:"name" json:"name"`
 	ColumnCount  int           `bson:"columnCount" json:"columnCount"`
 	Owner        Owner         `bson:"owner" json:"owner"`
+	SuccessIcon  string        `bson:"successIcon" json:"successIcon"`
+	FailedIcon   string        `bson:"failedIcon" json:"failedIcon"`
+	RunningIcon  string        `bson:"runningIcon" json:"runningIcon"`
 	BuildConfigs []BuildConfig `bson:"buildConfigs" json:"buildConfigs"`
 }
 
@@ -31,6 +34,9 @@ func (appDb *AppDb) UpsertDashboard(r Dashboard) (*Dashboard, error) {
 				"modifiedAt":   now,
 				"name":         r.Name,
 				"columnCount":  r.ColumnCount,
+				"successIcon":  r.SuccessIcon,
+				"failedIcon":   r.FailedIcon,
+				"runningIcon":  r.RunningIcon,
 				"owner":        r.Owner,
 				"buildConfigs": r.BuildConfigs,
 			},
@@ -77,6 +83,9 @@ func (appDb *AppDb) DashboardList() ([]Dashboard, error) {
 			"name":         1,
 			"owner":        1,
 			"columnCount":  1,
+			"successIcon":  1,
+			"failedIcon":   1,
+			"runningIcon":  1,
 			"buildConfigs": 1,
 		}).All(&dashboardList); err != nil {
 		return nil, err

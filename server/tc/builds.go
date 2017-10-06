@@ -2,6 +2,7 @@ package tc
 
 import (
 	"build-monitor-v2/server/db"
+	"sort"
 	"time"
 
 	"github.com/pstuart2/go-teamcity"
@@ -78,14 +79,23 @@ var ProcessRunningBuild = func(c *Server, b teamcity.Build, bt *db.BuildType) er
 		bt.Branches[index].Builds = append([]db.Build{newBuild}, bt.Branches[index].Builds...)
 	}
 
-	if len(bt.Branches[index].Builds) > 12 {
-		bt.Branches[index].Builds = bt.Branches[index].Builds[:12]
-	}
-
+	bt.Branches[index].Builds = cleanBuilds(bt.Branches[index].Builds)
 	bt.Branches[index].IsRunning = isBranchRunning(bt.Branches[index].Builds)
 
 	_, updErr := c.Db.UpdateBuildTypeBuilds(bt.Id, bt.Branches)
 	return updErr
+}
+
+type buildsById []db.Build
+
+func (s buildsById) Len() int {
+	return len(s)
+}
+func (s buildsById) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s buildsById) Less(i, j int) bool {
+	return s[j].Id < s[i].Id
 }
 
 func isBranchRunning(builds []db.Build) bool {
@@ -96,6 +106,16 @@ func isBranchRunning(builds []db.Build) bool {
 	}
 
 	return false
+}
+
+func cleanBuilds(builds []db.Build) []db.Build {
+	sort.Sort(buildsById(builds))
+
+	if len(builds) > 12 {
+		return builds[:12]
+	}
+
+	return builds
 }
 
 var GetBuildHistory = func(c *Server) error {
@@ -131,13 +151,16 @@ var GetBuildHistory = func(c *Server) error {
 				branch = branchMap[build.BranchName]
 			}
 
-			if len(branch.Builds) < 12 {
-				branch.Builds = append(branch.Builds, BuildToDb(build))
-			}
+			branch.Builds = append(branch.Builds, BuildToDb(build))
 		}
 
 		if len(branchMap) > 0 {
-			_, updateErr := c.Db.UpdateBuildTypeBuilds(buildTypeId, branchMapToArray(branchMap))
+			branches := branchMapToArray(branchMap)
+			for i, branch := range branches {
+				branches[i].Builds = cleanBuilds(branch.Builds)
+			}
+
+			_, updateErr := c.Db.UpdateBuildTypeBuilds(buildTypeId, branches)
 			if updateErr != nil {
 				c.Log.Errorf("Failed to update db builds for buildType: %s, Error: %v", buildTypeId, updateErr)
 			}

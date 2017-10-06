@@ -299,13 +299,12 @@ func TestServer_ProcessRunningBuild(t *testing.T) {
 					{
 						Name: "this is a b-name",
 						Builds: []db.Build{
-							{Id: 800},
+							{Id: 794},
 							{Id: 799},
+							{Id: 800},
 							{Id: 798},
 							{Id: 797},
 							{Id: 796},
-							{Id: 795},
-							{Id: 794},
 							{Id: 793},
 							{Id: 792},
 							{Id: 791},
@@ -314,6 +313,7 @@ func TestServer_ProcessRunningBuild(t *testing.T) {
 							{Id: 788},
 							{Id: 787},
 							{Id: 786},
+							{Id: 795},
 						},
 					},
 				},
@@ -328,7 +328,7 @@ func TestServer_ProcessRunningBuild(t *testing.T) {
 
 				tc.ProcessRunningBuild(&c, tcBuild, &dbBuildType)
 
-				Convey("It will add the build to the beginning and remove any builds > 12 from the end And update the database", func() {
+				Convey("It will add the build to the beginning, sort by id and remove any builds > 12 from the end And update the database", func() {
 					dbMock.AssertExpectations(t)
 
 					So(len(branchesPassedToDb), ShouldEqual, 1)
@@ -337,6 +337,7 @@ func TestServer_ProcessRunningBuild(t *testing.T) {
 					So(len(branchesPassedToDb[0].Builds), ShouldEqual, 12)
 					So(branchesPassedToDb[0].Builds[0].Id, ShouldEqual, tcBuild.ID)
 					So(branchesPassedToDb[0].Builds[1].Id, ShouldEqual, 800)
+					So(branchesPassedToDb[0].Builds[2].Id, ShouldEqual, 799)
 					So(branchesPassedToDb[0].Builds[11].Id, ShouldEqual, 790)
 				})
 			})

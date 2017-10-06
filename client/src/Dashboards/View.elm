@@ -1,6 +1,6 @@
 module Dashboards.View exposing (..)
 
-import Dashboards.Lib exposing (findVisibleBranch)
+import Dashboards.Lib exposing (findVisibleBranch, getDate)
 import Dashboards.Models exposing (Branch, Build, BuildStatus(Failure, Running, Success), ConfigDetail, DashboardDetails)
 import Date exposing (Date)
 import Date.Distance as DateDistance
@@ -20,33 +20,6 @@ import Routes exposing (Route(DashboardsRoute))
 
 view : Model -> Html Msg
 view model =
-    div [ id "dashboard" ]
-        [ topBar model
-        , maybeDetails model
-        ]
-
-
-topBar : Model -> Html Msg
-topBar model =
-    let
-        theDate =
-            getDate model
-    in
-        div [ class "level top-bar" ]
-            [ div [ class "level-item" ] [ text (DateFormat.format config "%A, %b %-@d, %H:%M:%S%:z" theDate) ]
-            , div [ class "level-item" ] [ text (DateFormat.format config "%Y" theDate) ]
-            , div [ class "level-item" ] [ text (DateFormat.formatUtc config "%A, %b %-@d, %H:%M:%S UTC" theDate) ]
-            , div [ class "level-right" ] [ div [ class "level-item" ] [ configLink ] ]
-            ]
-
-
-configLink : Html Msg
-configLink =
-    div [ id "configLink" ] [ iconLink "button is-link" DashboardsRoute "fa fa-cogs" ]
-
-
-maybeDetails : Model -> Html Msg
-maybeDetails model =
     case model.dashboards.details of
         RemoteData.NotAsked ->
             text ""
@@ -55,15 +28,37 @@ maybeDetails model =
             text "Loading..."
 
         RemoteData.Success details ->
-            detailsPage model details
+            dashoard model details
 
         RemoteData.Failure error ->
             text (toString error)
 
 
-detailsPage : Model -> DashboardDetails -> Html Msg
-detailsPage model details =
-    div [ class "columns is-multiline build-items" ] (List.map (\c -> configItem model details c) details.configs)
+dashoard : Model -> DashboardDetails -> Html Msg
+dashoard model details =
+    div [ id "dashboard" ]
+        [ topBar model details
+        , div [ class "columns is-multiline build-items" ] (List.map (\c -> configItem model details c) details.configs)
+        ]
+
+
+topBar : Model -> DashboardDetails -> Html Msg
+topBar model dashboard =
+    let
+        theDate =
+            getDate model
+    in
+        div [ class "level top-bar" ]
+            [ div [ class "level-item" ] [ text (DateFormat.format config dashboard.leftDateFormat theDate) ]
+            , div [ class "level-item" ] [ text (DateFormat.format config dashboard.centerDateFormat theDate) ]
+            , div [ class "level-item" ] [ text (DateFormat.formatUtc config dashboard.rightDateFormat theDate) ]
+            , div [ class "level-right" ] [ div [ class "level-item" ] [ configLink ] ]
+            ]
+
+
+configLink : Html Msg
+configLink =
+    div [ id "configLink" ] [ iconLink "button is-link" DashboardsRoute "fa fa-cogs" ]
 
 
 configItem : Model -> DashboardDetails -> ConfigDetail -> Html Msg
@@ -156,11 +151,6 @@ bottomRow model builds =
 
             _ ->
                 div [ class "bottom-row" ] [ text "no info" ]
-
-
-getDate : Model -> Date
-getDate model =
-    DateExtra.fromTime (round model.currentTime)
 
 
 getAgoText : Model -> Build -> String

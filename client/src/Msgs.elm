@@ -60,6 +60,9 @@ type DashboardMsg
     | ChangeSuccessIcon String
     | ChangeFailedIcon String
     | ChangeRunningIcon String
+    | ChangeLeftDateFormat String
+    | ChangeCenterDateFormat String
+    | ChangeRightDateFormat String
     | DeleteDashboard Id
     | ConfirmDeleteDashboard Id
     | CancelDeleteDashboard

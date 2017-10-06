@@ -1,13 +1,14 @@
 module Dashboards.AddEdit exposing (add, edit)
 
-import Dashboards.Components exposing (cancelLink, dashboardColumnCountField, dashboardNameField, failedIconField, runningIconField, saveButton, successIconField)
+import Dashboards.Components exposing (cancelLink, dashboardColumnCountField, dashboardNameField, failedIconField, runningIconField, saveButton, successIconField, dateFormatField)
 import Dashboards.Configure as DashboardConfigure
 import Dashboards.Models as DashboardsModel exposing (DashboardForm, EditTab(Configure, Select))
 import Dashboards.Select as DashboardSelect
-import Html exposing (Html, a, div, hr, li, span, text, ul)
-import Html.Attributes exposing (class, id)
+import Dashboards.Lib exposing (getDate)
+import Html exposing (Html, a, div, hr, li, span, text, ul, p)
+import Html.Attributes exposing (class, id, href, target)
 import Models exposing (BuildType, Model, Project)
-import Msgs exposing (DashboardMsg(CreateDashboard, EditDashboard, OnConfigureTabClick, OnSelectTabClick), Msg(DashboardMsg))
+import Msgs exposing (DashboardMsg(CreateDashboard, EditDashboard, OnConfigureTabClick, OnSelectTabClick, ChangeLeftDateFormat, ChangeCenterDateFormat, ChangeRightDateFormat), Msg(DashboardMsg))
 import Pages.Components exposing (icon)
 import RemoteData
 import Routing exposing (onLinkClick)
@@ -20,7 +21,7 @@ add model =
         dashForm =
             model.dashboards.dashboardForm
     in
-    view model dashForm (DashboardMsg CreateDashboard)
+        view model dashForm (DashboardMsg CreateDashboard)
 
 
 edit : Model -> Id -> Html Msg
@@ -29,23 +30,46 @@ edit model id =
         dashForm =
             model.dashboards.dashboardForm
     in
-    view model dashForm (DashboardMsg EditDashboard)
+        if dashForm.id == id then
+            view model dashForm (DashboardMsg EditDashboard)
+        else
+            text "Loading..."
 
 
 view : Model -> DashboardForm -> Msg -> Html Msg
 view model dashForm saveMsg =
-    div [ id "settings" ]
-        [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelLink ]
-        , dashboardNameField dashForm
-        , div [ class "columns" ]
-            [ div [ class "column" ] [ dashboardColumnCountField dashForm ]
-            , div [ class "column" ] [ successIconField dashForm ]
-            , div [ class "column" ] [ failedIconField dashForm ]
-            , div [ class "column" ] [ runningIconField dashForm ]
+    let
+        theDate =
+            getDate model
+    in
+        div [ id "settings" ]
+            [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelLink ]
+            , dashboardNameField dashForm
+            , div [ class "columns" ]
+                [ div [ class "column" ] [ dashboardColumnCountField dashForm ]
+                , div [ class "column" ] [ successIconField dashForm ]
+                , div [ class "column" ] [ failedIconField dashForm ]
+                , div [ class "column" ] [ runningIconField dashForm ]
+                ]
+            , div [ class "columns" ]
+                [ div [ class "column" ] [ dateFormatField dashForm.leftDateFormat "leftDateFormat" "Left Date Format" theDate (ChangeLeftDateFormat >> DashboardMsg) ]
+                , div [ class "column" ] [ dateFormatField dashForm.centerDateFormat "centerDateFormat" "Center Date Format" theDate (ChangeCenterDateFormat >> DashboardMsg) ]
+                , div [ class "column" ] [ dateFormatField dashForm.rightDateFormat "rightDateFormat" "Right Date Format (UTC)" theDate (ChangeRightDateFormat >> DashboardMsg) ]
+                ]
+            , div [ class "notification" ]
+                [ div [ class "level" ]
+                    [ div [ class "level-left" ]
+                        [ div [ class "level-item" ]
+                            [ text "Go"
+                            , a [ class "button is-link", target "_blank", href "https://github.com/rluiten/elm-date-extra/blob/master/DocFormat.md" ] [ text "here" ]
+                            , text "for formatting options"
+                            ]
+                        ]
+                    ]
+                ]
+            , tabs dashForm
+            , div [ class "project-area" ] [ maybeProjects model ]
             ]
-        , tabs dashForm
-        , div [ class "project-area" ] [ maybeProjects model ]
-        ]
 
 
 isFormValid : DashboardsModel.Model -> Bool
@@ -104,7 +128,7 @@ tab tabText img isActive msg =
             else
                 ""
     in
-    li [ class tabClass ] [ a [ onLinkClick (DashboardMsg msg) ] [ icon img, span [] [ text tabText ] ] ]
+        li [ class tabClass ] [ a [ onLinkClick (DashboardMsg msg) ] [ icon img, span [] [ text tabText ] ] ]
 
 
 projectArea : Model -> List Project -> List BuildType -> Html Msg

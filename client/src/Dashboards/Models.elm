@@ -28,10 +28,13 @@ initialFormModel : DashboardForm
 initialFormModel =
     { id = ""
     , name = initTextField
-    , columnCount = initTextFieldValue "6"
+    , columnCount = initTextFieldValue "3"
     , successIcon = initTextFieldValue "fa fa-check"
     , failedIcon = initTextFieldValue "fa fa-exclamation"
     , runningIcon = initTextFieldValue "fa fa-circle-o-notch faa-spin animated"
+    , leftDateFormat = initTextFieldValue "%A, %b %-@d, %H:%M:%S%:z"
+    , centerDateFormat = initTextFieldValue "%Y"
+    , rightDateFormat = initTextFieldValue "%A, %b %-@d, %H:%M:%S UTC"
     , buildConfigs = []
     , isDirty = False
     , tab = Select
@@ -52,6 +55,9 @@ type alias Dashboard =
     , successIcon : String
     , failedIcon : String
     , runningIcon : String
+    , leftDateFormat : String
+    , centerDateFormat : String
+    , rightDateFormat : String
     , owner : Owner
     , buildConfigs : List BuildConfig
     }
@@ -76,6 +82,9 @@ type alias DashboardForm =
     , successIcon : TextField
     , failedIcon : TextField
     , runningIcon : TextField
+    , leftDateFormat : TextField
+    , centerDateFormat : TextField
+    , rightDateFormat : TextField
     , buildConfigs : List BuildConfigForm
     , isDirty : Bool
     , tab : EditTab
@@ -101,6 +110,9 @@ type alias DashboardDetails =
     , successIcon : String
     , failedIcon : String
     , runningIcon : String
+    , leftDateFormat : String
+    , centerDateFormat : String
+    , rightDateFormat : String
     , configs : List ConfigDetail
     }
 

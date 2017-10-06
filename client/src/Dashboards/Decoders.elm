@@ -21,6 +21,9 @@ dashboardDecoder =
         |> required "successIcon" Decode.string
         |> required "failedIcon" Decode.string
         |> required "runningIcon" Decode.string
+        |> required "leftDateFormat" Decode.string
+        |> required "centerDateFormat" Decode.string
+        |> required "rightDateFormat" Decode.string
         |> required "owner" ownerDecoder
         |> required "buildConfigs" (Decode.list buildConfigDecoder)
 
@@ -40,11 +43,14 @@ updateDashboardEncoder model =
             , ( "successIcon", Encode.string model.dashboardForm.successIcon.value )
             , ( "failedIcon", Encode.string model.dashboardForm.failedIcon.value )
             , ( "runningIcon", Encode.string model.dashboardForm.runningIcon.value )
+            , ( "leftDateFormat", Encode.string model.dashboardForm.leftDateFormat.value )
+            , ( "centerDateFormat", Encode.string model.dashboardForm.centerDateFormat.value )
+            , ( "rightDateFormat", Encode.string model.dashboardForm.rightDateFormat.value )
             , ( "columnCount", Encode.int (Result.withDefault 0 (String.toInt model.dashboardForm.columnCount.value)) )
             , ( "buildConfigs", Encode.list <| List.map buildConfigEncoder <| model.dashboardForm.buildConfigs )
             ]
     in
-    Encode.object attributes
+        Encode.object attributes
 
 
 buildConfigEncoder : Dashboards.BuildConfigForm -> Encode.Value
@@ -55,7 +61,7 @@ buildConfigEncoder config =
             , ( "abbreviation", Encode.string config.abbreviation.value )
             ]
     in
-    Encode.object attributes
+        Encode.object attributes
 
 
 detailsDecoder : Decoder DashboardDetails
@@ -67,6 +73,9 @@ detailsDecoder =
         |> required "successIcon" Decode.string
         |> required "failedIcon" Decode.string
         |> required "runningIcon" Decode.string
+        |> required "leftDateFormat" Decode.string
+        |> required "centerDateFormat" Decode.string
+        |> required "rightDateFormat" Decode.string
         |> optional "details" (Decode.list configDetailDecoder) []
 
 

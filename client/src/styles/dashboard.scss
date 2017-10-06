@@ -45,7 +45,7 @@ div.buildItem {
   overflow: hidden;
 
   .bi-wrapper {
-	height: 280px;
+	height: 270px;
 	border: solid 5px;
 	padding: 3px;
 	border-radius: 10px;
@@ -82,9 +82,9 @@ div.buildItem {
 	  font-size: 800%;
 	  height: 175px;
 	  max-height: 175px;
-	  overflow: hidden;
-	  margin-top: -45px;
-	  margin-bottom: 10px;
+	  //overflow: hidden;
+	  margin-top: -50px;
+	  //margin-bottom: 10px;
 	}
 
 	.bi-sub-title {

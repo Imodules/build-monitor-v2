@@ -21,13 +21,16 @@ func (s *Server) Dashboards(ctx echo.Context) error {
 }
 
 type DashboardDetails struct {
-	Id          string            `json:"id"`
-	Name        string            `json:"name"`
-	ColumnCount int               `json:"columnCount"`
-	SuccessIcon string            `json:"successIcon"`
-	FailedIcon  string            `json:"failedIcon"`
-	RunningIcon string            `json:"runningIcon"`
-	Details     []BuildTypeDetail `json:"details"`
+	Id               string            `json:"id"`
+	Name             string            `json:"name"`
+	ColumnCount      int               `json:"columnCount"`
+	SuccessIcon      string            `json:"successIcon"`
+	FailedIcon       string            `json:"failedIcon"`
+	RunningIcon      string            `json:"runningIcon"`
+	LeftDateFormat   string            `json:"leftDateFormat"`
+	CenterDateFormat string            `json:"centerDateFormat"`
+	RightDateFormat  string            `json:"rightDateFormat"`
+	Details          []BuildTypeDetail `json:"details"`
 }
 
 type BuildTypeDetail struct {
@@ -57,12 +60,15 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 	}
 
 	details := DashboardDetails{
-		Id:          dashboard.Id,
-		Name:        dashboard.Name,
-		ColumnCount: dashboard.ColumnCount,
-		SuccessIcon: dashboard.SuccessIcon,
-		FailedIcon:  dashboard.FailedIcon,
-		RunningIcon: dashboard.RunningIcon,
+		Id:               dashboard.Id,
+		Name:             dashboard.Name,
+		ColumnCount:      dashboard.ColumnCount,
+		SuccessIcon:      dashboard.SuccessIcon,
+		FailedIcon:       dashboard.FailedIcon,
+		RunningIcon:      dashboard.RunningIcon,
+		LeftDateFormat:   dashboard.LeftDateFormat,
+		CenterDateFormat: dashboard.CenterDateFormat,
+		RightDateFormat:  dashboard.RightDateFormat,
 	}
 
 	for _, c := range dashboard.BuildConfigs {
@@ -82,12 +88,15 @@ func (s *Server) DashboardDetails(ctx echo.Context) error {
 }
 
 type UpdateDashboardRequest struct {
-	Name         string           `json:"name"`
-	ColumnCount  int              `json:"columnCount"`
-	SuccessIcon  string           `json:"successIcon"`
-	FailedIcon   string           `json:"failedIcon"`
-	RunningIcon  string           `json:"runningIcon"`
-	BuildConfigs []db.BuildConfig `json:"buildConfigs"`
+	Name             string           `json:"name"`
+	ColumnCount      int              `json:"columnCount"`
+	SuccessIcon      string           `json:"successIcon"`
+	FailedIcon       string           `json:"failedIcon"`
+	RunningIcon      string           `json:"runningIcon"`
+	LeftDateFormat   string           `json:"leftDateFormat"`
+	CenterDateFormat string           `json:"centerDateFormat"`
+	RightDateFormat  string           `json:"rightDateFormat"`
+	BuildConfigs     []db.BuildConfig `json:"buildConfigs"`
 }
 
 func (s *Server) CreateDashboard(ctx echo.Context) error {
@@ -101,14 +110,17 @@ func (s *Server) CreateDashboard(ctx echo.Context) error {
 	appDb := getAppDb(ctx)
 
 	dashboard := db.Dashboard{
-		Id:           bson.NewObjectId().Hex(),
-		Name:         r.Name,
-		ColumnCount:  r.ColumnCount,
-		SuccessIcon:  r.SuccessIcon,
-		FailedIcon:   r.FailedIcon,
-		RunningIcon:  r.RunningIcon,
-		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
-		BuildConfigs: r.BuildConfigs,
+		Id:               bson.NewObjectId().Hex(),
+		Name:             r.Name,
+		ColumnCount:      r.ColumnCount,
+		SuccessIcon:      r.SuccessIcon,
+		FailedIcon:       r.FailedIcon,
+		RunningIcon:      r.RunningIcon,
+		LeftDateFormat:   r.LeftDateFormat,
+		CenterDateFormat: r.CenterDateFormat,
+		RightDateFormat:  r.RightDateFormat,
+		Owner:            db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
+		BuildConfigs:     r.BuildConfigs,
 	}
 
 	dbDashboard, err := appDb.UpsertDashboard(dashboard)
@@ -170,14 +182,17 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 	}
 
 	dashboard := db.Dashboard{
-		Id:           id,
-		Name:         r.Name,
-		ColumnCount:  r.ColumnCount,
-		SuccessIcon:  r.SuccessIcon,
-		FailedIcon:   r.FailedIcon,
-		RunningIcon:  r.RunningIcon,
-		Owner:        db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
-		BuildConfigs: r.BuildConfigs,
+		Id:               id,
+		Name:             r.Name,
+		ColumnCount:      r.ColumnCount,
+		SuccessIcon:      r.SuccessIcon,
+		FailedIcon:       r.FailedIcon,
+		RunningIcon:      r.RunningIcon,
+		LeftDateFormat:   r.LeftDateFormat,
+		CenterDateFormat: r.CenterDateFormat,
+		RightDateFormat:  r.RightDateFormat,
+		Owner:            db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
+		BuildConfigs:     r.BuildConfigs,
 	}
 
 	dbDashboard, err := appDb.UpsertDashboard(dashboard)

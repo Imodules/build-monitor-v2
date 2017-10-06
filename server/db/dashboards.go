@@ -6,14 +6,17 @@ import (
 )
 
 type Dashboard struct {
-	Id           string        `bson:"_id" json:"id"`
-	Name         string        `bson:"name" json:"name"`
-	ColumnCount  int           `bson:"columnCount" json:"columnCount"`
-	Owner        Owner         `bson:"owner" json:"owner"`
-	SuccessIcon  string        `bson:"successIcon" json:"successIcon"`
-	FailedIcon   string        `bson:"failedIcon" json:"failedIcon"`
-	RunningIcon  string        `bson:"runningIcon" json:"runningIcon"`
-	BuildConfigs []BuildConfig `bson:"buildConfigs" json:"buildConfigs"`
+	Id               string        `bson:"_id" json:"id"`
+	Name             string        `bson:"name" json:"name"`
+	ColumnCount      int           `bson:"columnCount" json:"columnCount"`
+	Owner            Owner         `bson:"owner" json:"owner"`
+	SuccessIcon      string        `bson:"successIcon" json:"successIcon"`
+	FailedIcon       string        `bson:"failedIcon" json:"failedIcon"`
+	RunningIcon      string        `bson:"runningIcon" json:"runningIcon"`
+	LeftDateFormat   string        `bson:"leftDateFormat" json:"leftDateFormat"`
+	CenterDateFormat string        `bson:"centerDateFormat" json:"centerDateFormat"`
+	RightDateFormat  string        `bson:"rightDateFormat" json:"rightDateFormat"`
+	BuildConfigs     []BuildConfig `bson:"buildConfigs" json:"buildConfigs"`
 }
 
 type BuildConfig struct {
@@ -31,14 +34,17 @@ func (appDb *AppDb) UpsertDashboard(r Dashboard) (*Dashboard, error) {
 	change := mgo.Change{
 		Update: bson.M{
 			"$set": bson.M{
-				"modifiedAt":   now,
-				"name":         r.Name,
-				"columnCount":  r.ColumnCount,
-				"successIcon":  r.SuccessIcon,
-				"failedIcon":   r.FailedIcon,
-				"runningIcon":  r.RunningIcon,
-				"owner":        r.Owner,
-				"buildConfigs": r.BuildConfigs,
+				"modifiedAt":       now,
+				"name":             r.Name,
+				"columnCount":      r.ColumnCount,
+				"successIcon":      r.SuccessIcon,
+				"failedIcon":       r.FailedIcon,
+				"runningIcon":      r.RunningIcon,
+				"leftDateFormat":   r.LeftDateFormat,
+				"centerDateFormat": r.CenterDateFormat,
+				"rightDateFormat":  r.RightDateFormat,
+				"owner":            r.Owner,
+				"buildConfigs":     r.BuildConfigs,
 			},
 			"$unset":       bson.M{"deleted": ""},
 			"$setOnInsert": bson.M{"createdAt": now},
@@ -79,14 +85,17 @@ func (appDb *AppDb) DashboardList() ([]Dashboard, error) {
 		Find(bson.M{"deleted": bson.M{"$exists": false}}).
 		Sort("name").
 		Select(bson.M{
-			"_id":          1,
-			"name":         1,
-			"owner":        1,
-			"columnCount":  1,
-			"successIcon":  1,
-			"failedIcon":   1,
-			"runningIcon":  1,
-			"buildConfigs": 1,
+			"_id":              1,
+			"name":             1,
+			"owner":            1,
+			"columnCount":      1,
+			"successIcon":      1,
+			"failedIcon":       1,
+			"runningIcon":      1,
+			"leftDateFormat":   1,
+			"centerDateFormat": 1,
+			"rightDateFormat":  1,
+			"buildConfigs":     1,
 		}).All(&dashboardList); err != nil {
 		return nil, err
 	}

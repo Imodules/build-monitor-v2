@@ -193,6 +193,21 @@ update_ baseUrl token msg model_ =
             in
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
+        DeleteDashboard id ->
+            ( model, Api.deleteDashboard baseUrl token id )
+
+        OnDeleteDashboard result ->
+            case result of
+                Ok dashboard ->
+                    ( model, Api.fetchDashboards baseUrl )
+
+                Err dashboard ->
+                    let
+                        x =
+                            Debug.log "error deleting dashboard" dashboard
+                    in
+                    ( model, Cmd.none )
+
 
 updateDashboardName : String -> TextField
 updateDashboardName value =

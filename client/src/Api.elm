@@ -40,6 +40,19 @@ delete url decoder =
         }
 
 
+authDelete : String -> Token -> Http.Request ()
+authDelete url token =
+    Http.request
+        { method = "DELETE"
+        , headers = [ authHeader token ]
+        , url = url
+        , body = Http.emptyBody
+        , expect = Http.expectStringResponse (\_ -> Ok ())
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
 post : String -> Http.Body -> Decode.Decoder a -> Http.Request a
 post url body decoder =
     Http.request

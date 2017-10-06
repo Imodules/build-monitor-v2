@@ -1,11 +1,12 @@
 module Dashboards.List exposing (..)
 
+import Dashboards.Components exposing (deleteButton)
 import Dashboards.Lib exposing (isOwner)
 import Dashboards.Models exposing (Dashboard)
 import Html exposing (Html, div, h4, h5, i, li, text, ul)
 import Html.Attributes exposing (class, disabled, id)
 import Models exposing (Model)
-import Msgs exposing (Msg)
+import Msgs exposing (DashboardMsg(DeleteDashboard), Msg)
 import Pages.Components exposing (icon, iconLinkButton, loginBanner, refreshProjectsButton)
 import RemoteData
 import Routes exposing (Route(DashboardRoute, EditDashboardRoute, NewDashboardRoute))
@@ -63,9 +64,10 @@ dashboardListItem model dashboard =
             [ div [ class "level-left" ]
                 [ div [ class "level-item" ] [ h4 [ class "title is-4" ] [ icon "fa fa-tachometer fa-fw", text dashboard.name ] ]
                 ]
-            , div [ class "level-right" ]
+            , div [ class "level-right buttons" ]
                 [ editButton model dashboard
                 , viewButton dashboard.id
+                , deleteButton_ model dashboard
                 ]
             ]
         ]
@@ -85,4 +87,13 @@ editButton model dashboard =
     if disableEdit then
         div [] []
     else
-        div [ class "level-item" ] [ iconLinkButton "is-info" (EditDashboardRoute dashboard.id) "fa-edit" "Edit" ]
+        div [ class "level-item" ] [ iconLinkButton "is-default" (EditDashboardRoute dashboard.id) "fa-edit" "Edit" ]
+
+
+deleteButton_ : Model -> Dashboard -> Html Msg
+deleteButton_ model dashboard =
+    let
+        disableButton =
+            not (isOwner model dashboard.owner)
+    in
+    div [ class "level-item" ] [ deleteButton (Msgs.DashboardMsg (DeleteDashboard dashboard.id)) disableButton ]

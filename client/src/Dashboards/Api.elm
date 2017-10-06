@@ -1,10 +1,10 @@
 module Dashboards.Api exposing (..)
 
-import Api exposing (authGet, authPost, authPut, post)
+import Api exposing (authDelete, authGet, authPost, authPut, post)
 import Dashboards.Decoders exposing (dashboardDecoder, dashboardsDecoder, detailsDecoder, updateDashboardEncoder)
 import Dashboards.Models as Dashboards
 import Http
-import Msgs exposing (DashboardMsg(OnCreateDashboard, OnFetchDashboards, OnFetchDetails), Msg)
+import Msgs exposing (DashboardMsg(OnCreateDashboard, OnDeleteDashboard, OnFetchDashboards, OnFetchDetails), Msg)
 import RemoteData
 import Types exposing (Id, Token)
 import Urls
@@ -48,3 +48,12 @@ dashboardDetails baseApiUrl id =
     Http.get (Urls.dashboard baseApiUrl id) detailsDecoder
         |> RemoteData.sendRequest
         |> Cmd.map (OnFetchDetails >> Msgs.DashboardMsg)
+
+
+deleteDashboard : String -> Token -> Id -> Cmd Msg
+deleteDashboard baseApiUrl token id =
+    let
+        request =
+            authDelete (Urls.dashboard baseApiUrl id) token
+    in
+    Http.send (OnDeleteDashboard >> Msgs.DashboardMsg) request

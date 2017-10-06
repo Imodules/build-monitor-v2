@@ -17,6 +17,14 @@ saveButton saveMsg disabled_ =
         ]
 
 
+deleteButton : Msg -> Bool -> Html Msg
+deleteButton deleteMsg disabled_ =
+    button [ class "button is-danger", disabled disabled_, onClick deleteMsg ]
+        [ icon "fa fa-remove"
+        , span [] [ text "Delete" ]
+        ]
+
+
 cancelButton : Html Msg
 cancelButton =
     iconLinkButton "" DashboardsRoute "fa-times-circle-o" "Cancel"

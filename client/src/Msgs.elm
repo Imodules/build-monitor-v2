@@ -60,3 +60,5 @@ type DashboardMsg
     | ChangeSuccessIcon String
     | ChangeFailedIcon String
     | ChangeRunningIcon String
+    | DeleteDashboard Id
+    | OnDeleteDashboard (Result Http.Error ())

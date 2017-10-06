@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/ian-kent/gofigure"
+	"github.com/jasonlvhit/gocron"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
 )
@@ -40,6 +41,8 @@ func main() {
 		log.Fatalf("Failed to start Teamcity monitor: %v", err)
 	}
 
+	gocron.Every(1).Hour().Do(func() { tcMonitor.Refresh() })
+
 	server := api.Create(
 		log.WithField("component", "api"),
 		&config,
@@ -57,7 +60,11 @@ func main() {
 		}
 	}()
 
+	cronChannel := gocron.Start()
+
 	waitForShutdownSignal(log)
+
+	cronChannel <- true
 
 	server.Shutdown()
 	tcMonitor.Shutdown()

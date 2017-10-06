@@ -38,6 +38,12 @@
   revision = "c9dc3a1359affde410a8d90e28132a1126604270"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/jasonlvhit/gocron"
+  packages = ["."]
+  revision = "42a5804d37aa0b9239b265e894a16b8edbf52d54"
+
+[[projects]]
   name = "github.com/jtolds/gls"
   packages = ["."]
   revision = "77f18212c9c7edc9bd6a33d383a7b545ce62f064"
@@ -154,6 +160,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7964f3140fe45d40a63fbfdf2741a12b8b6bda1cefa0c159f85f3ab30c0375a1"
+  inputs-digest = "8d8a0b8207b42801dcf95780e0820a9a17d3aa8bec136d70d8f3c6fefc5e350e"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -58,11 +58,6 @@ func (c *Server) Start() error {
 		return err
 	}
 
-	// Get histories for all needed build types
-	if err := refreshBuildHistories(c); err != nil {
-		return err
-	}
-
 	c.commands = make(chan string)
 	c.stopped = make(chan bool)
 
@@ -114,7 +109,6 @@ func monitor(c *Server) {
 				break
 			case "refresh":
 				refresh(c)
-				refreshBuildHistories(c)
 			}
 
 		case <-time.After(currentPollInterval):
@@ -135,9 +129,9 @@ func refresh(c *Server) error {
 		return err
 	}
 
-	return RefreshBuildTypes(c)
-}
+	if err := RefreshBuildTypes(c); err != nil {
+		return err
+	}
 
-func refreshBuildHistories(c *Server) error {
 	return GetBuildHistory(c)
 }

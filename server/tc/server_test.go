@@ -151,69 +151,69 @@ func TestServer_Start_Shutdown(t *testing.T) {
 			})
 		})
 
-		// Convey("When we fail to start the monitor because RefreshBuildTypes fails", func() {
-		// 	expectedError := errors.New("there was something wrong")
+		Convey("When we fail to start the monitor because RefreshBuildTypes fails", func() {
+			expectedError := errors.New("there was something wrong")
 
-		// 	oldRefreshProjects := tc.RefreshProjects
-		// 	refreshProjectsCallCount := 0
-		// 	tc.RefreshProjects = func(tcs *tc.Server) error {
-		// 		refreshProjectsCallCount++
-		// 		return nil
-		// 	}
-		// 	defer func() { tc.RefreshProjects = oldRefreshProjects }()
+			oldRefreshProjects := tc.RefreshProjects
+			refreshProjectsCallCount := 0
+			tc.RefreshProjects = func(tcs *tc.Server) error {
+				refreshProjectsCallCount++
+				return nil
+			}
+			defer func() { tc.RefreshProjects = oldRefreshProjects }()
 
-		// 	oldRefreshBuildTypes := tc.RefreshBuildTypes
-		// 	refreshBuildTypesCallCount := 0
-		// 	tc.RefreshBuildTypes = func(tcs *tc.Server) error {
-		// 		refreshBuildTypesCallCount++
-		// 		return expectedError
-		// 	}
-		// 	defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
+			oldRefreshBuildTypes := tc.RefreshBuildTypes
+			refreshBuildTypesCallCount := 0
+			tc.RefreshBuildTypes = func(tcs *tc.Server) error {
+				refreshBuildTypesCallCount++
+				return expectedError
+			}
+			defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
 
-		// 	Convey("It should call RefreshProjects at startup", func() {
+			Convey("It should call RefreshProjects at startup", func() {
 
-		// 		err := c.Start()
-		// 		So(err, ShouldEqual, expectedError)
-		// 		So(refreshProjectsCallCount, ShouldEqual, 1)
-		// 		So(refreshBuildTypesCallCount, ShouldEqual, 1)
-		// 	})
-		// })
+				err := c.Start()
+				So(err, ShouldEqual, expectedError)
+				So(refreshProjectsCallCount, ShouldEqual, 1)
+				So(refreshBuildTypesCallCount, ShouldEqual, 1)
+			})
+		})
 
-		// Convey("When we fail to start the monigor because GetBuildHistory fails", func() {
-		// 	expectedError := errors.New("there was something wrong")
+		Convey("When we fail to start the monigor because GetBuildHistory fails", func() {
+			expectedError := errors.New("there was something wrong")
 
-		// 	oldRefreshProjects := tc.RefreshProjects
-		// 	refreshProjectsCallCount := 0
-		// 	tc.RefreshProjects = func(tcs *tc.Server) error {
-		// 		refreshProjectsCallCount++
-		// 		return nil
-		// 	}
-		// 	defer func() { tc.RefreshProjects = oldRefreshProjects }()
+			oldRefreshProjects := tc.RefreshProjects
+			refreshProjectsCallCount := 0
+			tc.RefreshProjects = func(tcs *tc.Server) error {
+				refreshProjectsCallCount++
+				return nil
+			}
+			defer func() { tc.RefreshProjects = oldRefreshProjects }()
 
-		// 	oldRefreshBuildTypes := tc.RefreshBuildTypes
-		// 	refreshBuildTypesCallCount := 0
-		// 	tc.RefreshBuildTypes = func(tcs *tc.Server) error {
-		// 		refreshBuildTypesCallCount++
-		// 		return nil
-		// 	}
-		// 	defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
+			oldRefreshBuildTypes := tc.RefreshBuildTypes
+			refreshBuildTypesCallCount := 0
+			tc.RefreshBuildTypes = func(tcs *tc.Server) error {
+				refreshBuildTypesCallCount++
+				return nil
+			}
+			defer func() { tc.RefreshBuildTypes = oldRefreshBuildTypes }()
 
-		// 	oldGetBuildHistory := tc.GetBuildHistory
-		// 	refreshBuildHistoryCallCount := 0
-		// 	tc.GetBuildHistory = func(tcs *tc.Server) error {
-		// 		refreshBuildHistoryCallCount++
-		// 		return expectedError
-		// 	}
-		// 	defer func() { tc.GetBuildHistory = oldGetBuildHistory }()
+			oldGetBuildHistory := tc.GetBuildHistory
+			refreshBuildHistoryCallCount := 0
+			tc.GetBuildHistory = func(tcs *tc.Server) error {
+				refreshBuildHistoryCallCount++
+				return expectedError
+			}
+			defer func() { tc.GetBuildHistory = oldGetBuildHistory }()
 
-		// 	Convey("It should call RefreshProjects at startup", func() {
+			Convey("It should call RefreshProjects at startup", func() {
 
-		// 		err := c.Start()
-		// 		So(err, ShouldEqual, expectedError)
-		// 		So(refreshProjectsCallCount, ShouldEqual, 1)
-		// 		So(refreshBuildTypesCallCount, ShouldEqual, 1)
-		// 		So(refreshBuildHistoryCallCount, ShouldEqual, 1)
-		// 	})
-		// })
+				err := c.Start()
+				So(err, ShouldEqual, expectedError)
+				So(refreshProjectsCallCount, ShouldEqual, 1)
+				So(refreshBuildTypesCallCount, ShouldEqual, 1)
+				So(refreshBuildHistoryCallCount, ShouldEqual, 1)
+			})
+		})
 	})
 }

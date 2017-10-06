@@ -6,7 +6,6 @@ import Navigation exposing (Location)
 import Ports exposing (getTokenFromStorage, gotTokenFromStorage)
 import Routes exposing (Route)
 import Routing exposing (getLocationCommand, parseLocation)
-import Task
 import Time exposing (Time, second)
 import Update exposing (update)
 import View exposing (view)

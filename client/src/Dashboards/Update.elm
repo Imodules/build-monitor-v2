@@ -194,7 +194,13 @@ update_ baseUrl token msg model_ =
             ( { model | dashboardForm = newDashboardForm model.dashboardForm }, Cmd.none )
 
         DeleteDashboard id ->
+            ( { model | deleteDashboardId = id }, Cmd.none )
+
+        ConfirmDeleteDashboard id ->
             ( model, Api.deleteDashboard baseUrl token id )
+
+        CancelDeleteDashboard ->
+            ( { model | deleteDashboardId = "" }, Cmd.none )
 
         OnDeleteDashboard result ->
             case result of

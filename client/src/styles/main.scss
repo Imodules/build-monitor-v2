@@ -44,4 +44,10 @@ div.elm-overlay {
   }
 }
 
+.level-item.buttons {
+  button {
+    margin-right: 5px;
+  }
+}
+
 @import "dashboard";

@@ -1,12 +1,12 @@
 module Dashboards.List exposing (..)
 
-import Dashboards.Components exposing (deleteButton)
+import Dashboards.Components exposing (cancelButton, deleteButton)
 import Dashboards.Lib exposing (isOwner)
 import Dashboards.Models exposing (Dashboard)
 import Html exposing (Html, div, h4, h5, i, li, text, ul)
 import Html.Attributes exposing (class, disabled, id)
 import Models exposing (Model)
-import Msgs exposing (DashboardMsg(DeleteDashboard), Msg)
+import Msgs exposing (DashboardMsg(CancelDeleteDashboard, ConfirmDeleteDashboard, DeleteDashboard), Msg)
 import Pages.Components exposing (icon, iconLinkButton, loginBanner, refreshProjectsButton)
 import RemoteData
 import Routes exposing (Route(DashboardRoute, EditDashboardRoute, NewDashboardRoute))
@@ -59,17 +59,29 @@ dashboardList model dashboards =
 
 dashboardListItem : Model -> Dashboard -> Html Msg
 dashboardListItem model dashboard =
+    let
+        buttonAreaContent =
+            if model.dashboards.deleteDashboardId == dashboard.id then
+                confirmDashboardDelete
+            else
+                dashboardButtons
+    in
     div [ class "box" ]
         [ div [ class "level" ]
             [ div [ class "level-left" ]
                 [ div [ class "level-item" ] [ h4 [ class "title is-4" ] [ icon "fa fa-tachometer fa-fw", text dashboard.name ] ]
                 ]
-            , div [ class "level-right buttons" ]
-                [ editButton model dashboard
-                , viewButton dashboard.id
-                , deleteButton_ model dashboard
-                ]
+            , buttonAreaContent model dashboard
             ]
+        ]
+
+
+dashboardButtons : Model -> Dashboard -> Html Msg
+dashboardButtons model dashboard =
+    div [ class "level-right buttons" ]
+        [ editButton model dashboard
+        , viewButton dashboard.id
+        , deleteButton_ model dashboard
         ]
 
 
@@ -97,3 +109,18 @@ deleteButton_ model dashboard =
             not (isOwner model dashboard.owner)
     in
     div [ class "level-item" ] [ deleteButton (Msgs.DashboardMsg (DeleteDashboard dashboard.id)) disableButton ]
+
+
+confirmDashboardDelete : Model -> Dashboard -> Html Msg
+confirmDashboardDelete model dashboard =
+    let
+        disableButton =
+            not (isOwner model dashboard.owner)
+    in
+    div [ class "level-right notification is-warning is-marginless" ]
+        [ div [ class "level-item" ] [ text "Are you shour you want to delete this dashboard?" ]
+        , div [ class "level-item buttons" ]
+            [ deleteButton (Msgs.DashboardMsg (ConfirmDeleteDashboard dashboard.id)) disableButton
+            , cancelButton (Msgs.DashboardMsg CancelDeleteDashboard) False
+            ]
+        ]

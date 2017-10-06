@@ -10,6 +10,7 @@ type alias Model =
     , dashboardForm : DashboardForm
     , details : WebData DashboardDetails
     , visibleBranches : List VisibleBranch
+    , deleteDashboardId : Id
     }
 
 
@@ -19,6 +20,7 @@ initialModel =
     , dashboardForm = initialFormModel
     , details = RemoteData.NotAsked
     , visibleBranches = []
+    , deleteDashboardId = ""
     }
 
 

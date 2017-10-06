@@ -11,22 +11,29 @@ import Routes exposing (Route(DashboardsRoute))
 
 saveButton : Msg -> Bool -> Html Msg
 saveButton saveMsg disabled_ =
-    button [ class "button is-success", disabled disabled_, onClick saveMsg ]
-        [ icon "fa fa-check-square-o"
-        , span [] [ text "Save" ]
-        ]
+    actionButton "is-success" "fa fa-check-square-o" "Save" saveMsg disabled_
 
 
 deleteButton : Msg -> Bool -> Html Msg
 deleteButton deleteMsg disabled_ =
-    button [ class "button is-danger", disabled disabled_, onClick deleteMsg ]
-        [ icon "fa fa-remove"
-        , span [] [ text "Delete" ]
+    actionButton "is-danger" "fa fa-remove" "Delete" deleteMsg disabled_
+
+
+cancelButton : Msg -> Bool -> Html Msg
+cancelButton msg disabled_ =
+    actionButton "is-default" "fa fa-times-circle-o" "Cancel" msg disabled_
+
+
+actionButton : String -> String -> String -> Msg -> Bool -> Html Msg
+actionButton class_ icon_ text_ msg disabled_ =
+    button [ class ("button " ++ class_), disabled disabled_, onClick msg ]
+        [ icon icon_
+        , span [] [ text text_ ]
         ]
 
 
-cancelButton : Html Msg
-cancelButton =
+cancelLink : Html Msg
+cancelLink =
     iconLinkButton "" DashboardsRoute "fa-times-circle-o" "Cancel"
 
 

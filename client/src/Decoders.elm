@@ -4,9 +4,9 @@ import Date exposing (Date)
 import Date.Extra.Utils as DateExtraUtils
 import Json.Decode as Decode exposing (Decoder, andThen, fail, string, succeed)
 import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
-import Models exposing (BuildType, Project, User, Model)
-import Types exposing (Owner)
 import Json.Encode as Encode
+import Models exposing (BuildType, Model, Project, User)
+import Types exposing (Owner)
 
 
 dateTimeDecoder : Decoder Date
@@ -24,7 +24,7 @@ dateTimeDecoder =
         --                Err error ->
         --                    fail error
     in
-        string |> andThen convert
+    string |> andThen convert
 
 
 profileDecoder : Decode.Decoder User
@@ -81,4 +81,4 @@ refreshRequestEncoder model =
             [ ( "t", Encode.float model.currentTime )
             ]
     in
-        Encode.object attributes
+    Encode.object attributes

@@ -1,26 +1,33 @@
 module Dashboards.List exposing (..)
 
+import Dashboards.Lib exposing (isOwner)
 import Dashboards.Models exposing (Dashboard)
 import Html exposing (Html, div, h4, h5, i, li, text, ul)
-import Html.Attributes exposing (class, id)
+import Html.Attributes exposing (class, disabled, id)
 import Models exposing (Model)
 import Msgs exposing (Msg)
-import Pages.Components exposing (icon, iconLinkButton, refreshProjectsButton)
+import Pages.Components exposing (icon, iconLinkButton, loginBanner, refreshProjectsButton)
 import RemoteData
 import Routes exposing (Route(DashboardRoute, EditDashboardRoute, NewDashboardRoute))
-import Types exposing (Id)
+import Routing exposing (isLoggedIn)
+import Types exposing (Id, Owner)
 
 
 view : Model -> Html Msg
 view model =
     div [ id "dashboards" ]
-        [ div [ class "button-area" ] [ newDashboardButton, refreshProjectsButton ]
+        [ loginBanner model
+        , div [ class "button-area" ] [ newDashboardButton model, refreshProjectsButton model ]
         , div [ class "project-area" ] [ maybeDashboards model model.dashboards.dashboards ]
         ]
 
 
-newDashboardButton : Html Msg
-newDashboardButton =
+newDashboardButton : Model -> Html Msg
+newDashboardButton model =
+    let
+        isDisabled =
+            not (isLoggedIn model)
+    in
     iconLinkButton "is-success" NewDashboardRoute "fa-plus" "New Dashboard"
 
 
@@ -46,7 +53,7 @@ dashboardList model dashboards =
         content =
             List.map (\d -> dashboardListItem model d) dashboards
     in
-        div [] content
+    div [] content
 
 
 dashboardListItem : Model -> Dashboard -> Html Msg
@@ -57,8 +64,8 @@ dashboardListItem model dashboard =
                 [ div [ class "level-item" ] [ h4 [ class "title is-4" ] [ icon "fa fa-tachometer fa-fw", text dashboard.name ] ]
                 ]
             , div [ class "level-right" ]
-                [ viewButton dashboard.id
-                , editButton dashboard.id
+                [ editButton model dashboard
+                , viewButton dashboard.id
                 ]
             ]
         ]
@@ -69,6 +76,13 @@ viewButton id =
     div [ class "level-item" ] [ iconLinkButton "is-primary" (DashboardRoute id) "fa-eye" "View" ]
 
 
-editButton : Id -> Html Msg
-editButton id =
-    div [ class "level-item" ] [ iconLinkButton "is-info" (EditDashboardRoute id) "fa-edit" "Edit" ]
+editButton : Model -> Dashboard -> Html Msg
+editButton model dashboard =
+    let
+        disableEdit =
+            not (isOwner model dashboard.owner)
+    in
+    if disableEdit then
+        div [] []
+    else
+        div [ class "level-item" ] [ iconLinkButton "is-info" (EditDashboardRoute dashboard.id) "fa-edit" "Edit" ]

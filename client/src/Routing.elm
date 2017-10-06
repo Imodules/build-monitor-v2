@@ -75,12 +75,12 @@ getLocationCommand model route =
         cmdList =
             List.append routeCommand refreshCommand
     in
-        case cmdList of
-            [] ->
-                Cmd.none
+    case cmdList of
+        [] ->
+            Cmd.none
 
-            _ ->
-                Cmd.batch cmdList
+        _ ->
+            Cmd.batch cmdList
 
 
 getLocationCommands : Model -> Route -> List (Cmd Msg)
@@ -89,18 +89,18 @@ getLocationCommands model route =
         token =
             getToken model
     in
-        case route of
-            NewDashboardRoute ->
-                cmdsIfLoggedIn model [ createCommand (DashboardMsg StartCreateDashboard) ]
+    case route of
+        NewDashboardRoute ->
+            cmdsIfLoggedIn model [ createCommand (DashboardMsg StartCreateDashboard) ]
 
-            EditDashboardRoute id ->
-                cmdsIfLoggedIn model [ createCommand (DashboardMsg (StartEditDashboard id)) ]
+        EditDashboardRoute id ->
+            cmdsIfLoggedIn model [ createCommand (DashboardMsg (StartEditDashboard id)) ]
 
-            DashboardsRoute ->
-                [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
+        DashboardsRoute ->
+            [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
 
-            _ ->
-                []
+        _ ->
+            []
 
 
 getLocationRefreshCommand : Model -> Route -> List (Cmd Msg)
@@ -109,28 +109,28 @@ getLocationRefreshCommand model route =
         token =
             getToken model
     in
-        case route of
-            NewDashboardRoute ->
-                cmdsIfLoggedIn model
-                    [ Api.fetchProjects model.flags.apiUrl
-                    , Api.fetchBuildTypes model.flags.apiUrl
-                    ]
+    case route of
+        NewDashboardRoute ->
+            cmdsIfLoggedIn model
+                [ Api.fetchProjects model.flags.apiUrl
+                , Api.fetchBuildTypes model.flags.apiUrl
+                ]
 
-            EditDashboardRoute id ->
-                cmdsIfLoggedIn model
-                    [ DashboardsApi.fetchDashboards model.flags.apiUrl
-                    , Api.fetchProjects model.flags.apiUrl
-                    , Api.fetchBuildTypes model.flags.apiUrl
-                    ]
+        EditDashboardRoute id ->
+            cmdsIfLoggedIn model
+                [ DashboardsApi.fetchDashboards model.flags.apiUrl
+                , Api.fetchProjects model.flags.apiUrl
+                , Api.fetchBuildTypes model.flags.apiUrl
+                ]
 
-            DashboardsRoute ->
-                [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
+        DashboardsRoute ->
+            [ DashboardsApi.fetchDashboards model.flags.apiUrl ]
 
-            DashboardRoute id ->
-                [ DashboardsApi.dashboardDetails model.flags.apiUrl id ]
+        DashboardRoute id ->
+            [ DashboardsApi.dashboardDetails model.flags.apiUrl id ]
 
-            _ ->
-                []
+        _ ->
+            []
 
 
 cmdsIfLoggedIn : Model -> List (Cmd Msg) -> List (Cmd Msg)
@@ -154,7 +154,7 @@ onLinkClick message =
             , preventDefault = True
             }
     in
-        onWithOptions "click" options (Decode.succeed message)
+    onWithOptions "click" options (Decode.succeed message)
 
 
 parseLocation : Location -> Route

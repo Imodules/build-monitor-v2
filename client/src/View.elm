@@ -9,7 +9,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models exposing (Model)
 import Msgs exposing (Msg)
-import Pages.Components exposing (smallIconLinkButton)
+import Pages.Components exposing (loginBanner, smallIconLinkButton)
 import Routes exposing (Route(..))
 import Routing exposing (isLoggedIn)
 
@@ -30,13 +30,13 @@ view model =
             if isLoggedIn model then
                 DashboardAddEdit.edit model id |> contentWrapper
             else
-                noAccess model |> contentWrapper
+                loginBanner model |> contentWrapper
 
         NewDashboardRoute ->
             if isLoggedIn model then
                 DashboardAddEdit.add model |> contentWrapper
             else
-                noAccess model |> contentWrapper
+                loginBanner model |> contentWrapper
 
         DashboardsRoute ->
             DashboardList.view model |> contentWrapper
@@ -48,16 +48,6 @@ view model =
 notFoundView : Model -> Html Msg
 notFoundView model =
     div [ class "notification is-info" ] [ text "I cannot find that page" ]
-
-
-noAccess : Model -> Html Msg
-noAccess model =
-    div [ class "notification is-warning" ]
-        [ text "You must "
-        , smallIconLinkButton "is-dark is-outlined" LoginRoute "fa-sign-in" "Login"
-        , text " or "
-        , smallIconLinkButton "is-primary is-outlined" SignUpRoute "fa-check-square-o" "Sign Up"
-        ]
 
 
 contentWrapper : Html Msg -> Html Msg

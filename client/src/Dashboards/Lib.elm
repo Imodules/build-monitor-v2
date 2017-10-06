@@ -2,8 +2,8 @@ module Dashboards.Lib exposing (..)
 
 import Dashboards.Models exposing (BuildConfigForm, VisibleBranch)
 import List.Extra exposing (find)
-import Models exposing (BuildType, Project, initialProject)
-import Types exposing (Id)
+import Models exposing (BuildType, Model, Project, initialProject)
+import Types exposing (Id, Owner)
 
 
 configInList : Id -> List BuildConfigForm -> Bool
@@ -77,3 +77,13 @@ getFirstLetter s =
 findVisibleBranch : Id -> List VisibleBranch -> Maybe VisibleBranch
 findVisibleBranch id branches =
     find (\b -> b.id == id) branches
+
+
+isOwner : Model -> Owner -> Bool
+isOwner model owner =
+    case model.user of
+        Just user ->
+            user.id == owner.id
+
+        _ ->
+            False

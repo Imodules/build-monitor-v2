@@ -125,4 +125,4 @@ refreshServerProjects baseApiUrl token =
         request =
             authEmptyPost (Urls.refreshServerProjects baseApiUrl) token
     in
-        Http.send Msgs.OnRefreshServerProjects request
+    Http.send Msgs.OnRefreshServerProjects request

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"strings"
 	"time"
 
 	"build-monitor-v2/server/db"
@@ -57,6 +58,12 @@ func getSetupRequestHandler(s *Server) func(f echo.HandlerFunc) echo.HandlerFunc
 	return func(f echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {
 			req := ctx.Request()
+
+			if strings.Index(req.URL.Path, "/api") != 0 {
+				s.Log.Info("Not an api call: " + s.Config.ClientPath)
+				return ctx.File(s.Config.ClientPath + "index.html")
+			}
+
 			requestId := uuid.NewRandom().String()
 
 			logger := s.Log.WithFields(logrus.Fields{

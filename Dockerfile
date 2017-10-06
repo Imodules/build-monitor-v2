@@ -11,6 +11,10 @@ COPY ./server server
 
 WORKDIR server
 
+RUN apk update && apk add --no-cache git
+RUN go get -u github.com/golang/dep/cmd/dep
+RUN dep ensure
+
 ENV BM_CLIENT_PATH="../client"
 RUN go build -o buildMonitorServer
 

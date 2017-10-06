@@ -31,7 +31,7 @@ ensureServer: FORCE
 	cd server; dep ensure; cd ..
 
 ensureClient: FORCE
-	cd client; yarn install --silent; cd ..
+	cd client; yarn install --silent; elm package install --yes; cd ..
 
 docker: clean buildClient
 	docker build -t build-monitor-v2:latest .; \

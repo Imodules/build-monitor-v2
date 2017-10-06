@@ -5,7 +5,7 @@
   "author": "Paul Stuart",
   "license": "MIT",
   "scripts": {
-    "build": "NODE_ENV=production webpack -p",
+    "build": "cross-env NODE_ENV=production webpack -p",
     "clean": "rm -rf dist",
     "client": "cross-env NODE_ENV=development webpack-dev-server --port 3000",
     "server": "cd ../server && go run main.go",

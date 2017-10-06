@@ -32,12 +32,12 @@ topBar model =
         theDate =
             getDate model
     in
-    div [ class "level top-bar" ]
-        [ div [ class "level-item" ] [ text (DateFormat.format config "%H:%M:%S%:z" theDate) ]
-        , div [ class "level-item" ] [ text (DateFormat.format config "%a, %B %-@d %Y" theDate) ]
-        , div [ class "level-item" ] [ text (DateFormat.formatUtc config "%H:%M:%S UTC" theDate) ]
-        , div [ class "level-right" ] [ div [ class "level-item" ] [ configLink ] ]
-        ]
+        div [ class "level top-bar" ]
+            [ div [ class "level-item" ] [ text (DateFormat.format config "%A, %b %-@d, %H:%M:%S%:z" theDate) ]
+            , div [ class "level-item" ] [ text (DateFormat.format config "%Y" theDate) ]
+            , div [ class "level-item" ] [ text (DateFormat.formatUtc config "%A, %b %-@d, %H:%M:%S UTC" theDate) ]
+            , div [ class "level-right" ] [ div [ class "level-item" ] [ configLink ] ]
+            ]
 
 
 configLink : Html Msg
@@ -74,12 +74,12 @@ configItem model details cd =
                 vb =
                     findVisibleBranch cd.id model.dashboards.visibleBranches
             in
-            case vb of
-                Just visibleBranch ->
-                    visibleBranch.index
+                case vb of
+                    Just visibleBranch ->
+                        visibleBranch.index
 
-                _ ->
-                    0
+                    _ ->
+                        0
 
         branch =
             case getAt branchIndex cd.branches of
@@ -112,14 +112,14 @@ configItem model details cd =
             else
                 itemBaseClass
     in
-    div [ class itemClass ]
-        [ div [ class wrapperClass ]
-            [ biTitle cd.abbreviation
-            , biSubTitle (getSubtitleText cd branch (branchIndex + 1) branchCount)
-            , buildRow branch.builds details.successIcon details.failedIcon details.runningIcon
-            , bottomRow model branch.builds
+        div [ class itemClass ]
+            [ div [ class wrapperClass ]
+                [ biTitle cd.abbreviation
+                , biSubTitle (getSubtitleText cd branch (branchIndex + 1) branchCount)
+                , buildRow branch.builds details.successIcon details.failedIcon details.runningIcon
+                , bottomRow model branch.builds
+                ]
             ]
-        ]
 
 
 biTitle : String -> Html Msg
@@ -138,7 +138,7 @@ buildRow builds sIcon fIcon rIcon =
         biWithIcons build =
             buildItem build sIcon fIcon rIcon
     in
-    div [ class "columns is-marginless" ] (List.map biWithIcons builds)
+        div [ class "columns is-marginless" ] (List.map biWithIcons builds)
 
 
 bottomRow : Model -> List Build -> Html Msg
@@ -147,15 +147,15 @@ bottomRow model builds =
         maybeLastBuild =
             List.head builds
     in
-    case maybeLastBuild of
-        Just lastBuild ->
-            div [ class "columns bottom-row" ]
-                [ div [ class "column is-10 left-side is-size-3" ] [ leftStatus model lastBuild ]
-                , div [ class "column is-2 right-side is-size-3" ] [ rightStatus model lastBuild ]
-                ]
+        case maybeLastBuild of
+            Just lastBuild ->
+                div [ class "columns bottom-row" ]
+                    [ div [ class "column is-10 left-side is-size-3" ] [ leftStatus model lastBuild ]
+                    , div [ class "column is-2 right-side is-size-3" ] [ rightStatus model lastBuild ]
+                    ]
 
-        _ ->
-            div [ class "bottom-row" ] [ text "no info" ]
+            _ ->
+                div [ class "bottom-row" ] [ text "no info" ]
 
 
 getDate : Model -> Date
@@ -169,7 +169,7 @@ getAgoText model build =
         dateAgo =
             DateDistance.inWords build.startDate (getDate model)
     in
-    dateAgo ++ " ago"
+        dateAgo ++ " ago"
 
 
 leftStatus : Model -> Build -> Html Msg
@@ -197,12 +197,12 @@ rightStatus model build =
             else
                 durationMinText
     in
-    case build.status of
-        Running ->
-            text (toString build.progress ++ " %")
+        case build.status of
+            Running ->
+                text (toString build.progress ++ " %")
 
-        _ ->
-            text durationText
+            _ ->
+                text durationText
 
 
 zeroPad : Int -> String
@@ -266,4 +266,4 @@ getSubtitleText cd branch i branchCount =
             else
                 branchNameString ++ " [" ++ toString i ++ "/" ++ toString branchCount ++ "]"
     in
-    cd.name ++ branchText
+        cd.name ++ branchText

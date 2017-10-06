@@ -37,7 +37,7 @@ subscriptions model =
     Sub.batch
         [ Time.every (1 * second) Msgs.GotTime
         , Time.every (5 * second) (Msgs.ChangeBranches >> Msgs.DashboardMsg)
-        , Time.every (10 * second) Msgs.RefreshPageData
+        , Time.every (5 * second) Msgs.RefreshPageData
         , gotTokenFromStorage Msgs.GotTokenFromStorage
         ]
 

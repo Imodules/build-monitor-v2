@@ -44,31 +44,33 @@ view model dashForm saveMsg =
     in
     div [ id "settings" ]
         [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelLink ]
-        , dashboardNameField dashForm
-        , div [ class "columns" ]
-            [ div [ class "column" ] [ dashboardColumnCountField dashForm ]
-            , div [ class "column" ] [ successIconField dashForm ]
-            , div [ class "column" ] [ failedIconField dashForm ]
-            , div [ class "column" ] [ runningIconField dashForm ]
-            ]
-        , div [ class "columns" ]
-            [ div [ class "column" ] [ dateFormatField dashForm.leftDateFormat "leftDateFormat" "Left Date Format" theDate (ChangeLeftDateFormat >> DashboardMsg) ]
-            , div [ class "column" ] [ dateFormatField dashForm.centerDateFormat "centerDateFormat" "Center Date Format" theDate (ChangeCenterDateFormat >> DashboardMsg) ]
-            , div [ class "column" ] [ dateFormatField dashForm.rightDateFormat "rightDateFormat" "Right Date Format (UTC)" theDate (ChangeRightDateFormat >> DashboardMsg) ]
-            ]
-        , div [ class "notification" ]
-            [ div [ class "level" ]
-                [ div [ class "level-left" ]
-                    [ div [ class "level-item" ]
-                        [ text "Go"
-                        , a [ class "button is-link", target "_blank", href "https://github.com/rluiten/elm-date-extra/blob/master/DocFormat.md" ] [ text "here" ]
-                        , text "for formatting options"
+        , div [ class "project-area" ]
+            [ dashboardNameField dashForm
+            , div [ class "columns is-marginless" ]
+                [ div [ class "column" ] [ dashboardColumnCountField dashForm ]
+                , div [ class "column" ] [ successIconField dashForm ]
+                , div [ class "column" ] [ failedIconField dashForm ]
+                , div [ class "column" ] [ runningIconField dashForm ]
+                ]
+            , div [ class "columns is-marginless" ]
+                [ div [ class "column" ] [ dateFormatField dashForm.leftDateFormat "leftDateFormat" "Left Date Format" theDate (ChangeLeftDateFormat >> DashboardMsg) ]
+                , div [ class "column" ] [ dateFormatField dashForm.centerDateFormat "centerDateFormat" "Center Date Format" theDate (ChangeCenterDateFormat >> DashboardMsg) ]
+                , div [ class "column" ] [ dateFormatField dashForm.rightDateFormat "rightDateFormat" "Right Date Format (UTC)" theDate (ChangeRightDateFormat >> DashboardMsg) ]
+                ]
+            , div [ class "notification" ]
+                [ div [ class "level" ]
+                    [ div [ class "level-left" ]
+                        [ div [ class "level-item" ]
+                            [ text "Go"
+                            , a [ class "button is-link", target "_blank", href "https://github.com/rluiten/elm-date-extra/blob/master/DocFormat.md" ] [ text "here" ]
+                            , text "for formatting options"
+                            ]
                         ]
                     ]
                 ]
+            , tabs dashForm
+            , maybeProjects model
             ]
-        , tabs dashForm
-        , div [ class "project-area" ] [ maybeProjects model ]
         ]
 
 

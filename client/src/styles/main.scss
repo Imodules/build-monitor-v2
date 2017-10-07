@@ -35,9 +35,19 @@ div.elm-overlay {
 }
 
 .project-area {
-  padding: 3px;
-  height: calc(100vh - 206px);
+  height: calc(100vh - 100px);
   overflow: auto;
+
+  .top-project {
+    &> .box {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    &> h4 {
+      margin-left: 10px;
+    }
+  }
 
   .top-project:not(:first-child) {
     margin-top: 40px;

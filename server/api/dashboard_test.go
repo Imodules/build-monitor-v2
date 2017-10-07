@@ -304,7 +304,9 @@ func TestServer_DashboardDetails(t *testing.T) {
 func TestServer_CreateDashboard(t *testing.T) {
 	Convey("Given a server", t, func() {
 		config := cfg.Config{JwtSecret: "this world"}
-		s := api.Server{Config: &config}
+		tcServer := new(ITcServerMock)
+
+		s := api.Server{Config: &config, TcServer: tcServer}
 
 		Convey("With an invalid request", func() {
 			c, rec := createTestPostRequest("/api/dashboards", []byte{})
@@ -356,6 +358,7 @@ func TestServer_CreateDashboard(t *testing.T) {
 			Convey("When the create succeeds", func() {
 				mockDb.On("UpsertDashboard", mock.AnythingOfType("db.Dashboard")).Return(&dbDashboard, nil)
 				mockDb.On("AddDashboardToBuildTypes", []string{"db1", "db2"}, dbDashboard.Id).Return(nil)
+				tcServer.On("Refresh").Return()
 
 				resultErr := s.CreateDashboard(c)
 
@@ -364,6 +367,7 @@ func TestServer_CreateDashboard(t *testing.T) {
 					So(resultErr, ShouldBeNil)
 
 					mockDb.AssertExpectations(t)
+					tcServer.AssertExpectations(t)
 
 					dashboardToDb := mockDb.Calls[0].Arguments[0].(db.Dashboard)
 
@@ -543,7 +547,9 @@ func TestServer_DeleteDashboard(t *testing.T) {
 func TestServer_UpdateDashboard(t *testing.T) {
 	Convey("Given a server", t, func() {
 		config := cfg.Config{JwtSecret: "this world"}
-		s := api.Server{Config: &config}
+		tcServer := new(ITcServerMock)
+
+		s := api.Server{Config: &config, TcServer: tcServer}
 
 		id := "9iolk"
 
@@ -603,6 +609,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 					mockDb.On("RemoveDashboardFromBuildTypes", id).Return(nil)
 					mockDb.On("UpsertDashboard", mock.AnythingOfType("db.Dashboard")).Return(&dbDashboard, nil)
 					mockDb.On("AddDashboardToBuildTypes", []string{"db1", "db2"}, dbDashboard.Id).Return(nil)
+					tcServer.On("Refresh").Return()
 
 					resultErr := s.UpdateDashboard(c)
 
@@ -611,6 +618,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 						So(resultErr, ShouldBeNil)
 
 						mockDb.AssertExpectations(t)
+						tcServer.AssertExpectations(t)
 
 						dashboardToDb := mockDb.Calls[2].Arguments[0].(db.Dashboard)
 

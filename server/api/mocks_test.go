@@ -281,3 +281,11 @@ func (m *IAppDbMock) DashboardBuildTypeList(dashboardId string) ([]db.BuildType,
 }
 
 //endregion
+
+type ITcServerMock struct {
+	mock.Mock
+}
+
+func (m *ITcServerMock) Refresh() {
+	m.Called()
+}

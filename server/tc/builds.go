@@ -158,6 +158,7 @@ var GetBuildHistory = func(c *Server) error {
 			branches := branchMapToArray(branchMap)
 			for i, branch := range branches {
 				branches[i].Builds = cleanBuilds(branch.Builds)
+				branches[i].IsRunning = isBranchRunning(branches[i].Builds)
 			}
 
 			_, updateErr := c.Db.UpdateBuildTypeBuilds(buildTypeId, branches)

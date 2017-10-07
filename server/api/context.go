@@ -6,6 +6,8 @@ import (
 
 	"build-monitor-v2/server/db"
 
+	"net/http"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/pborman/uuid"
@@ -54,14 +56,25 @@ func getAppDb(ctx echo.Context) IAppDb {
 	return obj.(IAppDb)
 }
 
+func isAssetRequest(r *http.Request) bool {
+	return strings.Index(r.URL.Path, "/assets/") == 0
+}
+
+func isNotApiRequest(r *http.Request) bool {
+	return strings.Index(r.URL.Path, "/api") != 0
+}
+
 func getSetupRequestHandler(s *Server) func(f echo.HandlerFunc) echo.HandlerFunc {
 	return func(f echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {
 			req := ctx.Request()
 
-			if strings.Index(req.URL.Path, "/api") != 0 {
-				s.Log.Info("Not an api call: " + s.Config.ClientPath)
-				return ctx.File(s.Config.ClientPath + "index.html")
+			if isAssetRequest(req) {
+				return f(ctx)
+			}
+
+			if isNotApiRequest(req) {
+				return ctx.File(s.Config.ClientPath + "/index.html")
 			}
 
 			requestId := uuid.NewRandom().String()

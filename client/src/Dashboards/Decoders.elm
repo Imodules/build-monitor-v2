@@ -50,7 +50,7 @@ updateDashboardEncoder model =
             , ( "buildConfigs", Encode.list <| List.map buildConfigEncoder <| model.dashboardForm.buildConfigs )
             ]
     in
-        Encode.object attributes
+    Encode.object attributes
 
 
 buildConfigEncoder : Dashboards.BuildConfigForm -> Encode.Value
@@ -61,7 +61,7 @@ buildConfigEncoder config =
             , ( "abbreviation", Encode.string config.abbreviation.value )
             ]
     in
-        Encode.object attributes
+    Encode.object attributes
 
 
 detailsDecoder : Decoder DashboardDetails

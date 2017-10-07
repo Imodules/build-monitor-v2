@@ -1,6 +1,9 @@
 module Dashboards.Components exposing (..)
 
 import Dashboards.Models as DashboardsModel exposing (DashboardForm)
+import Date exposing (Date)
+import Date.Extra.Config.Config_en_us exposing (config)
+import Date.Extra.Format as DateFormat
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -8,9 +11,6 @@ import Msgs exposing (DashboardMsg(ChangeDashboardColumnCount, ChangeDashboardNa
 import Pages.Components exposing (icon, iconLinkButton, textField)
 import Routes exposing (Route(DashboardsRoute))
 import Types exposing (TextField)
-import Date exposing (Date)
-import Date.Extra.Config.Config_en_us exposing (config)
-import Date.Extra.Format as DateFormat
 
 
 saveButton : Msg -> Bool -> Html Msg

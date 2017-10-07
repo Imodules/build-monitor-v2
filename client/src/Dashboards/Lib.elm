@@ -1,12 +1,11 @@
 module Dashboards.Lib exposing (..)
 
 import Dashboards.Models exposing (BuildConfigForm, VisibleBranch)
+import Date exposing (Date)
+import Date.Extra.Core as DateExtra
 import List.Extra exposing (find)
 import Models exposing (BuildType, Model, Project, initialProject)
 import Types exposing (Id, Owner)
-import Date exposing (Date)
-import Models exposing (Model)
-import Date.Extra.Core as DateExtra
 
 
 configInList : Id -> List BuildConfigForm -> Bool
@@ -20,12 +19,12 @@ getBuildPath id projects buildTypes =
         maybeBuildType =
             find (\i -> i.id == id) buildTypes
     in
-        case maybeBuildType of
-            Just buildType ->
-                getProjectPath buildType.projectId projects ++ " / " ++ buildType.name
+    case maybeBuildType of
+        Just buildType ->
+            getProjectPath buildType.projectId projects ++ " / " ++ buildType.name
 
-            _ ->
-                ""
+        _ ->
+            ""
 
 
 getProjectPath : Id -> List Project -> String
@@ -42,10 +41,10 @@ getProjectPath id projects =
                 _ ->
                     initialProject
     in
-        if parentProject.parentProjectId /= "_Root" then
-            parentProject.name ++ " / " ++ getProjectPath parentProject.parentProjectId projects
-        else
-            parentProject.name
+    if parentProject.parentProjectId /= "_Root" then
+        parentProject.name ++ " / " ++ getProjectPath parentProject.parentProjectId projects
+    else
+        parentProject.name
 
 
 getDefaultPrefix : String -> String
@@ -57,7 +56,7 @@ getDefaultPrefix path =
         parts =
             List.map (\p -> getPathPart p ++ "-") paths
     in
-        String.dropRight 1 (String.concat parts)
+    String.dropRight 1 (String.concat parts)
 
 
 getPathPart : String -> String
@@ -69,7 +68,7 @@ getPathPart s =
         letters =
             List.map getFirstLetter words
     in
-        String.concat letters
+    String.concat letters
 
 
 getFirstLetter : String -> String

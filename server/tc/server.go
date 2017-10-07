@@ -62,7 +62,7 @@ func (c *Server) Start() error {
 	c.stopped = make(chan bool)
 
 	// Now start our monitor
-	go monitor(c)
+	//go monitor(c)
 
 	return nil
 }
@@ -125,13 +125,14 @@ func monitor(c *Server) {
 }
 
 func refresh(c *Server) error {
-	if err := RefreshProjects(c); err != nil {
-		return err
-	}
-
-	if err := RefreshBuildTypes(c); err != nil {
-		return err
-	}
-
-	return GetBuildHistory(c)
+	//if err := RefreshProjects(c); err != nil {
+	//	return err
+	//}
+	//
+	//if err := RefreshBuildTypes(c); err != nil {
+	//	return err
+	//}
+	//
+	//return GetBuildHistory(c)
+	return nil
 }

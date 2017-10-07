@@ -2,7 +2,6 @@ package api
 
 import (
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
@@ -27,9 +26,7 @@ func setupMiddleware(s *Server) {
 
 func setupRoutes(s *Server) {
 
-	s.Server.GET("*", func(c echo.Context) error {
-		return c.File(s.Config.ClientPath + "index.html")
-	})
+	s.Server.Static("/assets", s.Config.ClientPath)
 
 	openApi := s.Server.Group("/api")
 	openApi.POST("/signup", s.SignUp)

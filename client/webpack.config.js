@@ -2,104 +2,105 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 
+const isProd = process.env.NODE_ENV === 'production';
+
 function getEntry() {
-	const result = [];
+    const result = [];
 
-	// the entry point of our app
-	result.push('./src/index.js');
+    // the entry point of our app
+    result.push('./src/index.js');
 
-	return result;
+    return result;
 }
 
 function getSettings() {
-	let settings = {};
-	const isProd = process.env.NODE_ENV === 'production';
+    let settings = {};
 
-	settings.apiUrl = isProd ? '/api' : 'http://localhost:3030/api';
+    settings.apiUrl = isProd ? '/api' : 'http://localhost:3030/api';
 
-	return settings;
+    return settings;
 }
 
 function getPlugins() {
-	const plugins = [
-		new HtmlWebpackPlugin(({
-			template: './src/index.html',
-			settings: JSON.stringify(getSettings())
-		}))
-	];
+    const plugins = [
+        new HtmlWebpackPlugin(({
+            template: './src/index.html',
+            settings: JSON.stringify(getSettings())
+        }))
+    ];
 
-	if (process.env.NODE_ENV === 'development') {
-		plugins.push(new WebpackNotifierPlugin());
-	}
+    if (process.env.NODE_ENV === 'development') {
+        plugins.push(new WebpackNotifierPlugin());
+    }
 
-	return plugins;
+    return plugins;
 }
 
 const config = function (env) {
-	let additionalElmFlags = '';
+    let additionalElmFlags = '';
 
-	if (process.env.NODE_ENV === 'development') {
-		additionalElmFlags = '&debug=true'
-	}
+    if (process.env.NODE_ENV === 'development') {
+        additionalElmFlags = '&debug=true'
+    }
 
-	return {
-		entry: getEntry(),
+    return {
+        entry: getEntry(),
 
-		output: {
-			path: path.resolve(__dirname + '/dist'),
-			filename: 'app.js',
-			publicPath: '/'
-		},
+        output: {
+            path: path.resolve(__dirname + '/dist'),
+            filename: 'app.js',
+            publicPath: isProd ? '/assets/' : '/'
+        },
 
-		plugins: getPlugins(),
+        plugins: getPlugins(),
 
-		module: {
-			rules: [{
-				test: /\.(css|scss)$/,
-				use: [
-					'style-loader',
-					'css-loader',
-					'sass-loader',
-				]
-			},
-				{
-					test: /\.elm$/,
-					exclude: [/elm-stuff/, /node_modules/],
-					loader: 'elm-webpack-loader?verbose=true&warn=true' + additionalElmFlags,
-				},
-				{
-					test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-					loader: 'url-loader?limit=10000&mimetype=application/font-woff',
-				},
-				{
-					test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-					loader: 'file-loader',
-				},
-			],
+        module: {
+            rules: [{
+                test: /\.(css|scss)$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader',
+                ]
+            },
+                {
+                    test: /\.elm$/,
+                    exclude: [/elm-stuff/, /node_modules/],
+                    loader: 'elm-webpack-loader?verbose=true&warn=true' + additionalElmFlags,
+                },
+                {
+                    test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                    loader: 'url-loader?limit=10000&mimetype=application/font-woff',
+                },
+                {
+                    test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                    loader: 'file-loader',
+                },
+            ],
 
-			noParse: /\.elm$/,
-		},
+            noParse: /\.elm$/,
+        },
 
-		devServer: {
-			inline: true,
-			stats: {
-				colors: true
-			},
-			historyApiFallback: {
-				index: '/'
-			}
-		},
+        devServer: {
+            inline: true,
+            stats: {
+                colors: true
+            },
+            historyApiFallback: {
+                index: '/'
+            }
+        },
 
 
-	};
+    };
 };
 
 module.exports = function (env) {
-	if (!env)
-		env = {};
+    if (!env)
+        env = {};
 
-	console.log('Node Env: ' + process.env.NODE_ENV);
-	console.log(env);
+    console.log('Node Env: ' + process.env.NODE_ENV);
+    console.log(env);
 
-	return config(env);
+    return config(env);
 };

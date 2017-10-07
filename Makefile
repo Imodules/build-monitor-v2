@@ -43,17 +43,9 @@ dockerRun:
 	--hostname build-monitor-v2 \
 	-p 3030:3030 \
 	--network host \
-	--rm --detach \
+	--rm \
 	build-monitor-v2
 
-dockerRunDev:
-	docker run \
-	--name build-monitor-v2 \
-	--hostname build-monitor-v2 \
-	-p 3030:3030 \
-	--network host \
-	--rm -e BM_TC_PROJECT_POLL_INTERVAL=20s \
-	build-monitor-v2
 
 # https://github.com/typicode/json-server
 jsonServer:

@@ -106,14 +106,14 @@ func TestGetSetupRequestHandler(t *testing.T) {
 
 	Convey("Given an API object", t, func() {
 		server := Server{
-			Config:    &cfg.Config{Port: 7630, PasswordSalt: "dumm fake one"},
+			Config:    &cfg.Config{Port: 7630, PasswordSalt: "dumm fake one", ClientPath: "this one"},
 			Log:       logrus.WithField("test", "TestSetupRequest"),
 			DbSession: session,
 		}
 
 		Convey("When the request is successful", func() {
 			e := echo.New()
-			req, _ := http.NewRequest(echo.GET, "/users", strings.NewReader(""))
+			req, _ := http.NewRequest(echo.GET, "/api/users", strings.NewReader(""))
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 
@@ -139,7 +139,7 @@ func TestGetSetupRequestHandler(t *testing.T) {
 			expectedError := errors.New("Something went wrong")
 
 			e := echo.New()
-			req, _ := http.NewRequest(echo.GET, "/users", strings.NewReader(""))
+			req, _ := http.NewRequest(echo.GET, "/api/users", strings.NewReader(""))
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 
@@ -160,5 +160,30 @@ func TestGetSetupRequestHandler(t *testing.T) {
 				So(rec.Code, ShouldEqual, http.StatusInternalServerError)
 			})
 		})
+
+		Convey("When the request is for an asset", func() {
+			e := echo.New()
+			req, _ := http.NewRequest(echo.GET, "/assets/app.js", strings.NewReader(""))
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+
+			var mockHandlerContext echo.Context
+			var mockHandler = func(ctx echo.Context) error {
+				mockHandlerContext = ctx
+				return nil
+			}
+
+			handlerError := getSetupRequestHandler(&server)(mockHandler)(c)
+
+			So(c.Get(loggerKey), ShouldBeNil)
+			So(c.Get(dbKey), ShouldBeNil)
+
+			Convey("The error should not be set", func() {
+				So(mockHandlerContext, ShouldEqual, c)
+				So(handlerError, ShouldBeNil)
+				So(rec.Code, ShouldEqual, http.StatusOK)
+			})
+		})
+
 	})
 }

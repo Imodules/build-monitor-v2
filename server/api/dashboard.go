@@ -131,6 +131,8 @@ func (s *Server) CreateDashboard(ctx echo.Context) error {
 
 	addDashboardToBuildTypes(appDb, dbDashboard)
 
+	//TODO: s.TcServer.Refresh();
+
 	return ctx.JSON(http.StatusCreated, dbDashboard)
 }
 
@@ -202,6 +204,8 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 	}
 
 	addDashboardToBuildTypes(appDb, dbDashboard)
+
+	//TODO: s.TcServer.Refresh();
 
 	return ctx.JSON(http.StatusOK, dbDashboard)
 }

@@ -3,7 +3,7 @@ module Dashboards.List exposing (..)
 import Dashboards.Components exposing (cancelButton, deleteButton)
 import Dashboards.Lib exposing (isOwner)
 import Dashboards.Models exposing (Dashboard)
-import Html exposing (Html, div, h4, h5, i, li, text, ul)
+import Html exposing (Html, div, h4, h5, i, li, nav, text, ul)
 import Html.Attributes exposing (class, disabled, id)
 import Models exposing (Model)
 import Msgs exposing (DashboardMsg(CancelDeleteDashboard, ConfirmDeleteDashboard, DeleteDashboard), Msg)
@@ -17,9 +17,11 @@ import Types exposing (Id, Owner)
 view : Model -> Html Msg
 view model =
     div [ id "dashboards" ]
-        [ loginBanner model
-        , div [ class "button-area" ] [ newDashboardButton model, refreshProjectsButton model ]
-        , div [ class "project-area" ] [ maybeDashboards model model.dashboards.dashboards ]
+        [ nav [ class "navbar nav-fixed-top" ]
+            [ div [ class "navbar-item" ] [ newDashboardButton model ]
+            , div [ class "navbar-item" ] [ refreshProjectsButton model ]
+            ]
+        , div [ class "project-area" ] [ loginBanner model, maybeDashboards model model.dashboards.dashboards ]
         ]
 
 

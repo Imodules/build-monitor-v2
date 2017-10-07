@@ -11,7 +11,7 @@ import Pages.Components exposing (textField)
 
 view : Model -> Html Msg
 view model =
-    div [ class "columns" ]
+    div [ class "columns wrapper" ]
         [ div [ class "column" ] [ signUpForm model.auth ]
         ]
 

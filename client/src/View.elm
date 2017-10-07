@@ -18,31 +18,31 @@ view : Model -> Html Msg
 view model =
     case model.route of
         SignUpRoute ->
-            SignUp.view model |> contentWrapper
+            SignUp.view model |> fluidContainer
 
         LoginRoute ->
-            Login.view model |> contentWrapper
+            Login.view model |> fluidContainer
 
         DashboardRoute id ->
             DashboardView.view model
 
         EditDashboardRoute id ->
             if isLoggedIn model then
-                DashboardAddEdit.edit model id |> contentWrapper
+                DashboardAddEdit.edit model id |> fluidContainer
             else
-                loginBanner model |> contentWrapper
+                loginBanner model |> fluidContainer
 
         NewDashboardRoute ->
             if isLoggedIn model then
-                DashboardAddEdit.add model |> contentWrapper
+                DashboardAddEdit.add model |> fluidContainer
             else
-                loginBanner model |> contentWrapper
+                loginBanner model |> fluidContainer
 
         DashboardsRoute ->
-            DashboardList.view model |> contentWrapper
+            DashboardList.view model |> fluidContainer
 
         NotFoundRoute ->
-            notFoundView model |> contentWrapper
+            notFoundView model |> fluidContainer
 
 
 notFoundView : Model -> Html Msg
@@ -50,6 +50,6 @@ notFoundView model =
     div [ class "notification is-info" ] [ text "I cannot find that page" ]
 
 
-contentWrapper : Html Msg -> Html Msg
-contentWrapper content_ =
-    div [ class "container is-fluid wrapper" ] [ content_ ]
+fluidContainer : Html Msg -> Html Msg
+fluidContainer content_ =
+    div [ class "container is-fluid" ] [ content_ ]

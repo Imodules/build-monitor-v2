@@ -5,7 +5,7 @@ div.elm-overlay {
 }
 
 .wrapper {
-  margin-top: 5px;
+  margin: 5px;
 }
 
 .button-area {
@@ -34,9 +34,18 @@ div.elm-overlay {
   }
 }
 
+.nav-fixed-top{
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+
 .project-area {
-  height: calc(100vh - 100px);
-  overflow: auto;
+  //height: calc(100vh - 100px);
+  //overflow: auto;
+  margin-top: 60px;
 
   .top-project {
     &> .box {

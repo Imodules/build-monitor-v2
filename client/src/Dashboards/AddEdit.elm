@@ -5,7 +5,7 @@ import Dashboards.Configure as DashboardConfigure
 import Dashboards.Lib exposing (getDate)
 import Dashboards.Models as DashboardsModel exposing (DashboardForm, EditTab(Configure, Select))
 import Dashboards.Select as DashboardSelect
-import Html exposing (Html, a, div, hr, li, p, span, text, ul)
+import Html exposing (Html, a, div, hr, li, nav, p, span, text, ul)
 import Html.Attributes exposing (class, href, id, target)
 import Models exposing (BuildType, Model, Project)
 import Msgs exposing (DashboardMsg(ChangeCenterDateFormat, ChangeLeftDateFormat, ChangeRightDateFormat, CreateDashboard, EditDashboard, OnConfigureTabClick, OnSelectTabClick), Msg(DashboardMsg))
@@ -43,8 +43,11 @@ view model dashForm saveMsg =
             getDate model
     in
     div [ id "settings" ]
-        [ div [ class "button-area" ] [ saveButton saveMsg (not (isFormValid model.dashboards)), cancelLink ]
-        , div [ class "project-area" ]
+        [ nav [ class "navbar nav-fixed-top" ]
+            [ div [ class "navbar-item" ] [ saveButton saveMsg (not (isFormValid model.dashboards)) ]
+            , div [ class "navbar-item" ] [ cancelLink ]
+            ]
+        , div [ class "project-area wrapper" ]
             [ dashboardNameField dashForm
             , div [ class "columns is-marginless" ]
                 [ div [ class "column" ] [ dashboardColumnCountField dashForm ]

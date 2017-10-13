@@ -446,9 +446,6 @@ incrementBranch configs vb =
         cfg =
             find (\x -> x.id == vb.id) configs
 
-        isRunning =
-            False
-
         runningBranchIndex =
             case cfg of
                 Just config ->

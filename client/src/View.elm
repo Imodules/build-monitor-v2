@@ -6,7 +6,7 @@ import Dashboards.AddEdit as DashboardAddEdit
 import Dashboards.List as DashboardList
 import Dashboards.View as DashboardView
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, id)
 import Models exposing (Model)
 import Msgs exposing (Msg)
 import Pages.Components exposing (loginBanner, smallIconLinkButton)
@@ -52,4 +52,4 @@ notFoundView model =
 
 fluidContainer : Html Msg -> Html Msg
 fluidContainer content_ =
-    div [ class "container is-fluid" ] [ content_ ]
+    div [ id "fluidWrapper", class "container is-fluid" ] [ content_ ]

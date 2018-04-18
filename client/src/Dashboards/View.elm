@@ -145,8 +145,8 @@ bottomRow model builds =
     case maybeLastBuild of
         Just lastBuild ->
             div [ class "columns bottom-row" ]
-                [ div [ class "column is-10 left-side is-size-3" ] [ leftStatus model lastBuild ]
-                , div [ class "column is-2 right-side is-size-3" ] [ rightStatus model lastBuild ]
+                [ div [ class "column is-9 left-side is-size-3" ] [ leftStatus model lastBuild ]
+                , div [ class "column is-3 right-side is-size-3" ] [ rightStatus model lastBuild ]
                 ]
 
         _ ->

@@ -572,7 +572,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 				Name:        "This is me new dashboard",
 				ColumnCount: 99,
 				BuildConfigs: []db.BuildConfig{
-					{Id: "db1"}, {Id: "db2"},
+					{Id: "db1"}, {Id: "NoLongerAvailable"}, {Id: "db2"},
 				},
 			}
 
@@ -597,11 +597,18 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 			Convey("When we are the owher", func() {
 				dbDashboard := db.Dashboard{
-					Id:           "from db",
-					Owner:        db.Owner{Id: dbUser.Id},
-					Name:         request.Name,
-					ColumnCount:  88,
-					BuildConfigs: request.BuildConfigs,
+					Id:          "from db",
+					Owner:       db.Owner{Id: dbUser.Id},
+					Name:        request.Name,
+					ColumnCount: 88,
+					BuildConfigs: []db.BuildConfig{
+						{Id: "db1"}, {Id: "db2"},
+					},
+				}
+
+				projects := []db.Project{
+					{Id: "db1"},
+					{Id: "db2"},
 				}
 
 				Convey("And the update succeeds", func() {
@@ -609,6 +616,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 					mockDb.On("RemoveDashboardFromBuildTypes", id).Return(nil)
 					mockDb.On("UpsertDashboard", mock.AnythingOfType("db.Dashboard")).Return(&dbDashboard, nil)
 					mockDb.On("AddDashboardToBuildTypes", []string{"db1", "db2"}, dbDashboard.Id).Return(nil)
+					mockDb.On("ProjectList").Return(projects, nil)
 					tcServer.On("Refresh").Return()
 
 					resultErr := s.UpdateDashboard(c)
@@ -620,14 +628,15 @@ func TestServer_UpdateDashboard(t *testing.T) {
 						mockDb.AssertExpectations(t)
 						tcServer.AssertExpectations(t)
 
-						dashboardToDb := mockDb.Calls[2].Arguments[0].(db.Dashboard)
+						dashboardToDb := mockDb.Calls[3].Arguments[0].(db.Dashboard)
 
 						So(dashboardToDb.Id, ShouldEqual, id)
 						So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 						So(dashboardToDb.Name, ShouldEqual, request.Name)
 						So(dashboardToDb.ColumnCount, ShouldEqual, 99)
+						So(len(dashboardToDb.BuildConfigs), ShouldEqual, 2)
 						So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
-						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
+						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[2].Id)
 
 						Convey("And return http.StatusOK", func() {
 
@@ -651,6 +660,7 @@ func TestServer_UpdateDashboard(t *testing.T) {
 					mockDb.On("FindDashboardById", id).Return(&dbDashboard, nil)
 					mockDb.On("RemoveDashboardFromBuildTypes", id).Return(nil)
 					mockDb.On("UpsertDashboard", mock.AnythingOfType("db.Dashboard")).Return(nil, expectedErr)
+					mockDb.On("ProjectList").Return(projects, nil)
 
 					resultErr := s.UpdateDashboard(c)
 
@@ -660,13 +670,14 @@ func TestServer_UpdateDashboard(t *testing.T) {
 
 						mockDb.AssertExpectations(t)
 
-						dashboardToDb := mockDb.Calls[2].Arguments[0].(db.Dashboard)
+						dashboardToDb := mockDb.Calls[3].Arguments[0].(db.Dashboard)
 
 						So(dashboardToDb.Id, ShouldNotBeEmpty)
 						So(dashboardToDb.Owner.Id.Hex(), ShouldEqual, dbUser.Id.Hex())
 						So(dashboardToDb.Name, ShouldEqual, request.Name)
+						So(len(dashboardToDb.BuildConfigs), ShouldEqual, 2)
 						So(dashboardToDb.BuildConfigs[0].Id, ShouldEqual, request.BuildConfigs[0].Id)
-						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[1].Id)
+						So(dashboardToDb.BuildConfigs[1].Id, ShouldEqual, request.BuildConfigs[2].Id)
 
 						Convey("And return http.StatusInternalServerError", func() {
 							So(rec.Code, ShouldEqual, http.StatusInternalServerError)

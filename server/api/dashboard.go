@@ -194,7 +194,7 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 		CenterDateFormat: r.CenterDateFormat,
 		RightDateFormat:  r.RightDateFormat,
 		Owner:            db.Owner{Id: bson.ObjectIdHex(claims.UserId), Username: claims.Username},
-		BuildConfigs:     r.BuildConfigs,
+		BuildConfigs:     getValidBuildConfigs(appDb, r.BuildConfigs),
 	}
 
 	dbDashboard, err := appDb.UpsertDashboard(dashboard)
@@ -208,6 +208,29 @@ func (s *Server) UpdateDashboard(ctx echo.Context) error {
 	s.TcServer.Refresh()
 
 	return ctx.JSON(http.StatusOK, dbDashboard)
+}
+
+func getValidBuildConfigs(appDb IAppDb, configs []db.BuildConfig) []db.BuildConfig {
+	projects, _ := appDb.ProjectList()
+
+	validConfigs := []db.BuildConfig{}
+	for _, bc := range configs {
+		if projectInList(projects, bc.Id) {
+			validConfigs = append(validConfigs, bc)
+		}
+	}
+
+	return validConfigs
+}
+
+func projectInList(projects []db.Project, id string) bool {
+	for _, p := range projects {
+		if p.Id == id {
+			return true
+		}
+	}
+
+	return false
 }
 
 func addDashboardToBuildTypes(appDb IAppDb, dbDashboard *db.Dashboard) {
